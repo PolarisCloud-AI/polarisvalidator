@@ -5,6 +5,9 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) 
 
 ---
+![dashboard1](dashboard/public/static/images/img1.png)
+![dashboard2](dashboard/public/static/images/img2.png)
+
 
 ## The Incentivized Internet <!-- omit in toc -->
 

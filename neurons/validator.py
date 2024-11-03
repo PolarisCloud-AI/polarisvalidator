@@ -11,7 +11,16 @@ from dotenv import load_dotenv
 import logging
 from huggingface_hub import HfApi
 from typing import List, Dict, Optional
-from utils.HFManager import fetch_training_metrics_commits
+from neurons.utils.HFManager import fetch_training_metrics_commits
+import sys
+import websockets
+
+# Add the parent directory to the Python path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+# Add the utils directory to the Python path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../utils')))
+
 load_dotenv()  # Load environment variables from .env file
 
 class TrainingValidator(BaseValidatorNeuron):
@@ -45,10 +54,10 @@ class TrainingValidator(BaseValidatorNeuron):
                 results =self.score_miners(metrics_list)
                 for miner_uid ,score  in results['rewards'].items():
                     self.update_scores(score, miner_uid)
-                # print(results['best_miner'])
-                # print(results['ranked_miners'])
-                # self.mark_job_as_done(job_id)
-    
+                
+                # Stream metrics after scoring
+                asyncio.run(self.stream_metrics(results))  # Ensure this is awaited properly
+
     def extract_metrics_by_job_id(self, job_id, commits):
         # Initialize an empty list to store the results
         results = []
@@ -165,6 +174,10 @@ class TrainingValidator(BaseValidatorNeuron):
     async def cleanup(self):
         # Cleanup logic here
         pass
+
+    async def stream_metrics(self, metrics):
+        async with websockets.connect('ws://localhost:8765') as websocket:
+            await websocket.send(json.dumps(metrics))
 
 # Main execution
 if __name__ == "__main__":
