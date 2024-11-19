@@ -77,7 +77,7 @@ class Llama2TrainingMiner(BaseMinerNeuron):
         self.initialize_model_and_tokenizer()
         self.initialize_dataset()
         self.setup_trainer()
-        selfwandb_run =initialize_wandb(self.job_id, self.miner_uid)
+        self.wandb_run =initialize_wandb(self.job_id, self.miner_uid)
 
 
     def _setup_environment(self):
@@ -98,7 +98,7 @@ class Llama2TrainingMiner(BaseMinerNeuron):
         )
 
         self.tokenizer = AutoTokenizer.from_pretrained(
-            self.model_name, use_auth_token=self.hf_token, trust_remote_code=True
+            self.model_name, token=self.hf_token, trust_remote_code=True
         )
         self.tokenizer.pad_token = self.tokenizer.eos_token
         self.tokenizer.padding_side = "right"
@@ -106,7 +106,7 @@ class Llama2TrainingMiner(BaseMinerNeuron):
         self.model = AutoModelForCausalLM.from_pretrained(
             self.model_name,
             quantization_config=bnb_config,
-            use_auth_token=self.hf_token,
+            token=self.hf_token,
             trust_remote_code=True,
             device_map='auto'
         )
