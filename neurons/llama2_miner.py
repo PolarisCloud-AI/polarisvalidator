@@ -232,8 +232,6 @@ class Llama2TrainingMiner(BaseMinerNeuron):
             synapse.model_hash = None
             # synapse.training_metrics = {} 
         return synapse
-turn (synapse.dendrite.hotkey not in self.metagraph.hotkeys, 
-                "Unrecognized hotkey" if synapse.dendrite.hotkey not in self.metagraph.hotkeys else "Hotkey recognized!")
 
     async def priority(self, synapse: TrainingProtocol) -> float:
         caller_uid = self.metagraph.hotkeys.index(synapse.dendrite.hotkey)
