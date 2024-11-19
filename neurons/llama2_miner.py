@@ -18,6 +18,9 @@ import uuid
 from utils.HFManager import commit_to_central_repo
 from utils.Helper import register_completed_job
 from utils.wandb_initializer import initialize_wandb
+import warnings
+warnings.filterwarnings("ignore", category=FutureWarning)
+warnings.filterwarnings("ignore", category=UserWarning)
 
 nest_asyncio.apply()
 class WandBTrainingCallback(TrainerCallback):
@@ -201,8 +204,8 @@ class Llama2TrainingMiner(BaseMinerNeuron):
                 })
             repo_name = f"finetuned-llama2-{self.job_id}-{int(time.time())}"
             repo_url = self.hf_api.create_repo(repo_name, private=False)
+            self.tokenizer.push_to_hub(repo_name, token=self.hf_token)
             self.model.push_to_hub(repo_name, token=self.hf_token)
-
             miner_uid = self.metagraph.hotkeys.index(self.wallet.hotkey.ss58_address)
             metrics = {
                 'total_epochs': self.epochs,
@@ -223,10 +226,6 @@ class Llama2TrainingMiner(BaseMinerNeuron):
             synapse.loss = final_loss
             synapse.model_hash = repo_name
             total_training_time= train_end_time - train_start_time
-            # register_completed_job(job_id,repo_url,final_loss,final_loss,total_training_time,miner_uid)
-            # synapse.training_metrics = metrics
-            # synapse.training_metrics['central_commit_url'] = central_commit_url
-
         except Exception as e:
             bt.logging.error(f"Error during training: {str(e)}")
             synapse.loss = None
@@ -235,6 +234,11 @@ class Llama2TrainingMiner(BaseMinerNeuron):
             if self.wandb_run():
                 wandb.finish()
         return synapse
+        
+    def save_state(self):
+        self.model.save_pretrained("./model_checkpoint")
+        self.tokenizer.save_pretrained("./model_checkpoint")
+    
 
 
     async def priority(self, synapse: TrainingProtocol) -> float:
@@ -255,14 +259,14 @@ class Llama2TrainingMiner(BaseMinerNeuron):
                 
                 result_synapse = await self.forward(dummy_synapse)
                 
-                if result_synapse.loss is not None:
+                if result_synapse and result_synapse.loss is not None:
                     self.save_state()
                 
                 await asyncio.sleep(300)
                 
             except Exception as e:
                 bt.logging.error(f"Error in training loop: {str(e)}")
-                await asyncio.sleep(300)
+                await asyncio.sleep(600)
 
     def save_state(self):
         self.model.save_pretrained("./model_checkpoint")
