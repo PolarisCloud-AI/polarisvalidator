@@ -40,11 +40,12 @@ class TrainingValidator(BaseValidatorNeuron):
         
         for job_id, commits in job_groups.items():
             metrics_list = self.extract_metrics_by_job_id(job_id, commits)
-            if metrics_list:
-                print(f"rewarding and scoring miners for jobid {job_id}")
-                results =self.score_miners(metrics_list)
-                for miner_uid ,score  in results['rewards'].items():
-                    self.update_scores(score, miner_uid)
+            print (metrics_list)
+            # if metrics_list:
+            #     print(f"rewarding and scoring miners for jobid {job_id}")
+            #     results =self.score_miners(metrics_list)
+            #     for miner_uid ,score  in results['rewards'].items():
+            #         self.update_scores(score, miner_uid)
                 # print(results['best_miner'])
                 # print(results['ranked_miners'])
                 # self.mark_job_as_done(job_id)

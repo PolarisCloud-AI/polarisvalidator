@@ -3,8 +3,9 @@ import os
 import bittensor as bt
 import asyncio
 import nest_asyncio
+import wandb
 from transformers import (AutoTokenizer, AutoModelForCausalLM, TrainingArguments, 
-                          BitsAndBytesConfig, DataCollatorForSeq2Seq)
+                          BitsAndBytesConfig, DataCollatorForSeq2Seq,TrainerCallback)
 from datasets import load_dataset
 from typing import Tuple
 from template.base.miner import BaseMinerNeuron
@@ -16,8 +17,38 @@ import torch
 import uuid
 from utils.HFManager import commit_to_central_repo
 from utils.Helper import register_completed_job
+from utils.wandb_initializer import initialize_wandb
 
 nest_asyncio.apply()
+class WandBTrainingCallback(TrainerCallback):
+    """Custom callback for real-time WandB logging during training."""
+    def __init__(self, wandb_run):
+        self.wandb_run = wandb_run
+        
+    def on_step_end(self, args, state, control, model=None, **kwargs):
+        if state.global_step % args.logging_steps == 0:
+            logs = state.log_history[-1] if state.log_history else {}
+            wandb.log({
+                "loss": logs.get("loss", 0),
+                "learning_rate": logs.get("learning_rate", 0),
+                "epoch": logs.get("epoch", 0),
+                "step": state.global_step,
+            })
+            
+    def on_evaluate(self, args, state, control, metrics=None, **kwargs):
+        if metrics:
+            wandb.log({
+                "eval_loss": metrics.get("eval_loss", 0),
+                "eval_perplexity": metrics.get("eval_perplexity", 0),
+            })
+
+    def on_epoch_end(self, args, state, control, **kwargs):
+        wandb.log({
+            "epoch": state.epoch,
+            "epoch_loss": state.log_history[-1].get("loss", 0) if state.log_history else 0
+        })
+
+
 
 class Llama2TrainingMiner(BaseMinerNeuron):
     def __init__(self, model_name: str = 'NousResearch/Llama-2-7b-chat-hf', 
@@ -27,7 +58,7 @@ class Llama2TrainingMiner(BaseMinerNeuron):
                  learning_rate: float = 2e-5, 
                  device: str = 'cuda', 
                  hf_token: str = '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', 
-                 central_repo: str = 'Tobius/yogpt_test',
+                 central_repo: str = 'Tobius/yogpt_v1',
                  job_id: str = None,
                  ):
         super().__init__()
@@ -40,11 +71,23 @@ class Llama2TrainingMiner(BaseMinerNeuron):
         self.hf_token = hf_token
         self.central_repo = central_repo
         self.job_id = job_id
-        login(self.hf_token)
+
+        self._setup_environment()
+        self.miner_uid = self.metagraph.hotkeys.index(self.wallet.hotkey.ss58_address)
         self.initialize_model_and_tokenizer()
         self.initialize_dataset()
         self.setup_trainer()
+        selfwandb_run =initialize_wandb(self.job_id, self.miner_uid)
+
+
+    def _setup_environment(self):
+        """Setup initial environment and connections."""
+        if self.hf_token:
+            login(self.hf_token)
         self.hf_api = HfApi(token=self.hf_token)
+        
+
+
 
     def initialize_model_and_tokenizer(self):
         bnb_config = BitsAndBytesConfig(
@@ -111,12 +154,12 @@ class Llama2TrainingMiner(BaseMinerNeuron):
             save_steps=50,
             save_total_limit=3,
             load_best_model_at_end=True,
-            report_to="tensorboard"
+            report_to="wandb"
         )
 
         data_collator = DataCollatorForSeq2Seq(
             self.tokenizer, pad_to_multiple_of=8, return_tensors="pt", padding=True, 
-            label_pad_token_id=self.tokenizer.pad_token_id  # Ensure label padding is correct
+            label_pad_token_id=self.tokenizer.pad_token_id
         )
 
         self.trainer = SFTTrainer(
@@ -127,6 +170,10 @@ class Llama2TrainingMiner(BaseMinerNeuron):
             args=training_args,
             data_collator=data_collator,
         )
+
+        if self.wandb_run:
+            wandb_callback = WandBTrainingCallback(self.wandb_run)
+            self.trainer.add_callback(wandb_callback)
 
     async def forward(self, synapse: TrainingProtocol) -> TrainingProtocol:
         try:
@@ -141,9 +188,18 @@ class Llama2TrainingMiner(BaseMinerNeuron):
             train_end_time = time.time()
 
             final_loss = train_result.training_loss
+            if self.wandb_run:
+                wandb.log({
+                    "final_loss": final_loss,
+                    "training_time": train_end_time - train_start_time,
+                    "epochs": self.epochs,
+                    "batch_size": self.batch_size,
+                    "learning_rate": self.learning_rate,
+                })
             repo_name = f"finetuned-llama2-{self.job_id}-{int(time.time())}"
             repo_url = self.hf_api.create_repo(repo_name, private=False)
             self.model.push_to_hub(repo_name, use_auth_token=self.hf_token)
+            self.tokenizer.push_to_hub(repo_name, use_temp_dir=False)
 
             miner_uid = self.metagraph.hotkeys.index(self.wallet.hotkey.ss58_address)
             metrics = {
@@ -162,7 +218,7 @@ class Llama2TrainingMiner(BaseMinerNeuron):
                 metrics,
                 miner_uid
             )
-
+            wandb.finish()
             synapse.loss = final_loss
             synapse.model_hash = repo_name
             total_training_time= train_end_time - train_start_time
@@ -176,7 +232,12 @@ class Llama2TrainingMiner(BaseMinerNeuron):
             synapse.model_hash = None
             # synapse.training_metrics = {} 
         return synapse
+turn (synapse.dendrite.hotkey not in self.metagraph.hotkeys, 
+                "Unrecognized hotkey" if synapse.dendrite.hotkey not in self.metagraph.hotkeys else "Hotkey recognized!")
 
+    async def priority(self, synapse: TrainingProtocol) -> float:
+        caller_uid = self.metagraph.hotkeys.index(synapse.dendrite.hotkey)
+        return float(self.metagraph.S[caller_uid])
     async def run_training_loop(self):
         while True:
             try:
