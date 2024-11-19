@@ -164,6 +164,7 @@ class Llama2TrainingMiner(BaseMinerNeuron):
             label_pad_token_id=self.tokenizer.pad_token_id
         )
         config = SFTConfig(
+            output_dir="./results",
             max_seq_length=512,
         )
         self.trainer = SFTTrainer(
