@@ -76,8 +76,9 @@ class Llama2TrainingMiner(BaseMinerNeuron):
         self.miner_uid = self.metagraph.hotkeys.index(self.wallet.hotkey.ss58_address)
         self.initialize_model_and_tokenizer()
         self.initialize_dataset()
-        self.setup_trainer()
         self.wandb_run =initialize_wandb(self.job_id, self.miner_uid)
+        self.setup_trainer()
+        
 
 
     def _setup_environment(self):
@@ -148,7 +149,7 @@ class Llama2TrainingMiner(BaseMinerNeuron):
             fp16=True,
             logging_steps=10,
             optim="paged_adamw_32bit",
-            evaluation_strategy="steps",
+            eval_strategy="steps",
             save_strategy="steps",
             eval_steps=50,
             save_steps=50,
