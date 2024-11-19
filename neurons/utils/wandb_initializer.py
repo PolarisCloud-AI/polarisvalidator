@@ -4,7 +4,7 @@ import os
 def initialize_wandb(job_id, miner_id):
     wandb_api_key="650810c567842db08fc2707d0668dc568cad00b4"
     wandb.login(key=wandb_api_key)  
-    miner_id=61
+    miner_id=64
     run_name = f"miner_{str(miner_id)}"
     wandb.init(
         project=str(job_id),

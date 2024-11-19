@@ -231,10 +231,10 @@ class Llama2TrainingMiner(BaseMinerNeuron):
             synapse.loss = None
             synapse.model_hash = None
         finally:
-            if self.wandb_run():
+            if self.wandb_run:
                 wandb.finish()
         return synapse
-        
+
     def save_state(self):
         self.model.save_pretrained("./model_checkpoint")
         self.tokenizer.save_pretrained("./model_checkpoint")
