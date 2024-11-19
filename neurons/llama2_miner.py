@@ -142,7 +142,7 @@ class Llama2TrainingMiner(BaseMinerNeuron):
 
         training_args = TrainingArguments(
             output_dir="./results",
-            run_name=f"training-{self.job_id}-{self.miner_uid}"
+            run_name=f"training-{self.job_id}-{self.miner_uid}",
             per_device_train_batch_size=int(self.batch_size),
             gradient_accumulation_steps=16,
             learning_rate=self.learning_rate,
