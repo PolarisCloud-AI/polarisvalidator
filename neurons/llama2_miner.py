@@ -142,6 +142,7 @@ class Llama2TrainingMiner(BaseMinerNeuron):
 
         training_args = TrainingArguments(
             output_dir="./results",
+            run_name=f"training-{self.job_id}-{self.miner_uid}"
             per_device_train_batch_size=int(self.batch_size),
             gradient_accumulation_steps=16,
             learning_rate=self.learning_rate,
@@ -169,6 +170,7 @@ class Llama2TrainingMiner(BaseMinerNeuron):
             eval_dataset=self.eval_dataset,
             tokenizer=self.tokenizer,
             args=training_args,
+            max_seq_length=512,
             data_collator=data_collator,
         )
 
@@ -199,8 +201,7 @@ class Llama2TrainingMiner(BaseMinerNeuron):
                 })
             repo_name = f"finetuned-llama2-{self.job_id}-{int(time.time())}"
             repo_url = self.hf_api.create_repo(repo_name, private=False)
-            self.model.push_to_hub(repo_name, use_auth_token=self.hf_token)
-            self.tokenizer.push_to_hub(repo_name, use_temp_dir=False)
+            self.model.push_to_hub(repo_name, token=self.hf_token)
 
             miner_uid = self.metagraph.hotkeys.index(self.wallet.hotkey.ss58_address)
             metrics = {
