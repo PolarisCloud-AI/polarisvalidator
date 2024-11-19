@@ -12,7 +12,7 @@ from template.base.miner import BaseMinerNeuron
 from template.protocol import TrainingProtocol
 from huggingface_hub import HfApi, login
 from peft import LoraConfig, TaskType, get_peft_model
-from trl import SFTTrainer
+from trl import SFTTrainer,SFTConfig
 import torch
 import uuid
 from utils.HFManager import commit_to_central_repo
@@ -163,14 +163,16 @@ class Llama2TrainingMiner(BaseMinerNeuron):
             self.tokenizer, pad_to_multiple_of=8, return_tensors="pt", padding=True, 
             label_pad_token_id=self.tokenizer.pad_token_id
         )
-
+        config = SFTConfig(
+            max_seq_length=512,
+        )
         self.trainer = SFTTrainer(
             model=self.model,
             train_dataset=self.train_dataset,
             eval_dataset=self.eval_dataset,
             tokenizer=self.tokenizer,
             args=training_args,
-            max_seq_length=512,
+            config=config,
             data_collator=data_collator,
         )
 
@@ -220,7 +222,6 @@ class Llama2TrainingMiner(BaseMinerNeuron):
                 metrics,
                 miner_uid
             )
-            wandb.finish()
             synapse.loss = final_loss
             synapse.model_hash = repo_name
             total_training_time= train_end_time - train_start_time
@@ -232,8 +233,11 @@ class Llama2TrainingMiner(BaseMinerNeuron):
             bt.logging.error(f"Error during training: {str(e)}")
             synapse.loss = None
             synapse.model_hash = None
-            # synapse.training_metrics = {} 
+        finally:
+            if self.wandb_run():
+                wandb.finish()
         return synapse
+
 
     async def priority(self, synapse: TrainingProtocol) -> float:
         caller_uid = self.metagraph.hotkeys.index(synapse.dendrite.hotkey)
