@@ -163,17 +163,14 @@ class Llama2TrainingMiner(BaseMinerNeuron):
             self.tokenizer, pad_to_multiple_of=8, return_tensors="pt", padding=True, 
             label_pad_token_id=self.tokenizer.pad_token_id
         )
-        config = SFTConfig(
-            output_dir="./results",
-            max_seq_length=512,
-        )
+        
         self.trainer = SFTTrainer(
             model=self.model,
             train_dataset=self.train_dataset,
             eval_dataset=self.eval_dataset,
             tokenizer=self.tokenizer,
             args=training_args,
-            config=config,
+            max_seq_length=512,
             data_collator=data_collator,
         )
 
