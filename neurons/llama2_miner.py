@@ -12,7 +12,7 @@ from template.base.miner import BaseMinerNeuron
 from template.protocol import TrainingProtocol
 from huggingface_hub import HfApi, login
 from peft import LoraConfig, TaskType, get_peft_model
-from trl import SFTTrainer
+from trl import SFTTrainer,SFTConfig
 import torch
 import uuid
 from utils.HFManager import commit_to_central_repo
@@ -164,7 +164,7 @@ class Llama2TrainingMiner(BaseMinerNeuron):
             label_pad_token_id=self.tokenizer.pad_token_id
         )
 
-        self.trainer = SFTTrainer(
+        self.trainer = SFTConfig(
             model=self.model,
             train_dataset=self.train_dataset,
             eval_dataset=self.eval_dataset,
