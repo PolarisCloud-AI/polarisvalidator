@@ -63,8 +63,8 @@ btcli subnet register --wallet.name miner --wallet.hotkey default --subtensor.ne
 
 #### 4. Clone the Repository
 ```bash
-git clone https://github.com/bigideainc/YoGPT_Bittensor.git
-cd YoGPT_Bittensor
+git clone https://github.com/tobiusaolo/yogptbittensor.git
+cd yogptbittensor
 ```
 
 #### 5. Install Required Packages
