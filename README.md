@@ -107,7 +107,6 @@ python3 neurons/runner_miner.py \
   --dataset_id mlabonne/guanaco-llama2-1k \
   --batchsize 32 \
   --hf_token 990q3894394u39492 \
-  --
 ```
 
 **Note:** Ensure your environment includes a **GPU with at least 12 GB of RAM** for optimal performance.
