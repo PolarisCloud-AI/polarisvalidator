@@ -56,9 +56,9 @@ btcli wallet new_hotkey --wallet.name miner --wallet.hotkey default
 #### 3. Register as a Miner
 Register on the testnet (UID 100) or mainnet (UID 12):
 ```bash
-btcli subnet register --wallet.name miner --wallet.hotkey default --subtensor.network test
+btcli subnet register --netuid 100 --wallet.name miner --wallet.hotkey default --subtensor.network test
 # or for mainnet:
-btcli subnet register --wallet.name miner --wallet.hotkey default --subtensor.network main
+btcli subnet register --netuid 12 --wallet.name miner --wallet.hotkey default --subtensor.network main
 ```
 
 #### 4. Clone the Repository
@@ -70,7 +70,6 @@ cd yogptbittensor
 #### 5. Install Required Packages
 ```bash
 pip install e .
-pip install -r requirements.txt
 ```
 
 #### 6. Start Mining
@@ -78,7 +77,7 @@ Visit the [YoGPT.ai Jobs Page](https://yogpt.ai/jobs) and select an open job. Co
 
 Run the mining program with the following command:
 ```bash
-python3 neurons/runner_miner.py   --netuid <netuid>   --subtensor.network <network>   --wallet.name <walletname>   --wallet.hotkey <hotkeyname> --model_type <model_type>  --epoch <epochs>   --learning_rate <learning_rate>   --job_id <job_id>   --dataset_id <dataset_id>   --batchsize <batch_size>   --hf_token <huggingface_token>
+python3 neurons/run_miner.py   --netuid <netuid>   --subtensor.network <network>   --wallet.name <walletname>   --wallet.hotkey <hotkeyname> --model_type <model_type>  --epoch <epochs>   --learning_rate <learning_rate>   --job_id <job_id>   --dataset_id <dataset_id>   --batchsize <batch_size>   --hf_token <huggingface_token>
 ```
 
 **Example**:
