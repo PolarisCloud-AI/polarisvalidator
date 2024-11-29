@@ -61,7 +61,6 @@ class Llama2TrainingMiner(BaseMinerNeuron):
                  learning_rate: float = 2e-5, 
                  device: str = 'cuda', 
                  hf_token: str = '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', 
-                 central_repo: str = 'Tobius/yogpt_v1',
                  job_id: str = None,
                  ):
         super().__init__()
@@ -217,8 +216,6 @@ class Llama2TrainingMiner(BaseMinerNeuron):
             }
 
             central_commit_url = commit_to_central_repo(
-                self.hf_token,
-                self.central_repo,
                 repo_url,
                 metrics,
                 miner_uid

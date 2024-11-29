@@ -86,7 +86,6 @@ def run_miner(config):
             learning_rate=config.learning_rate,
             device=config.device,
             hf_token=config.hf_token,
-            central_repo=config.central_repo,
             job_id=config.job_id
         )
 

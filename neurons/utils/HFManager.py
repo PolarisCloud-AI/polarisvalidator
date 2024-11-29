@@ -5,7 +5,7 @@ from datetime import datetime
 from huggingface_hub import HfApi, Repository,hf_hub_download
 from datetime import datetime
 from typing import List, Dict, Optional
-def commit_to_central_repo(hf_token: str, central_repo: str, model_repo: str, metrics: dict, miner_uid: int):
+def commit_to_central_repo(model_repo: str, metrics: dict, miner_uid: int):
     """
     Upload metrics and model information to a central Hugging Face repository using the Hub API.
     
@@ -15,6 +15,8 @@ def commit_to_central_repo(hf_token: str, central_repo: str, model_repo: str, me
     :param metrics: Dictionary containing training metrics
     :return: URL of the uploaded file in the central repository
     """
+    central_repo = 'Tobius/yogpt_v1',
+    hf_token='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'
     api = HfApi(token=hf_token)
     
     # Ensure the central repository exists, create if it doesn't

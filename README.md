@@ -73,11 +73,11 @@ pip install e .
 ```
 
 #### 6. Start Mining
-Visit the [YoGPT.ai Jobs Page](https://yogpt.ai/jobs) and select an open job. Copy the `job_id` and `dataset_id` for your chosen job.
+Visit the [A9Labs.ai Jobs Page](https://tobiusaolo.github.io/A9labsDashboard/) and select an open job. Copy the `job_id` and `dataset_id` for your chosen job.
 
 Run the mining program with the following command:
 ```bash
-python3 neurons/run_miner.py   --netuid <netuid>   --subtensor.network <network>   --wallet.name <walletname>   --wallet.hotkey <hotkeyname> --model_type <model_type>  --epoch <epochs>   --learning_rate <learning_rate>   --job_id <job_id>   --dataset_id <dataset_id>   --batchsize <batch_size>   --hf_token <huggingface_token>
+python3 neurons/run_miner.py   --netuid <netuid>   --subtensor.network <network>   --wallet.name <walletname>   --wallet.hotkey <hotkeyname> --model_type llama2  --epoch <epochs>   --learning_rate <learning_rate>   --job_id <job_id>   --dataset_id <dataset_id>   --batchsize <batch_size>   --hf_token <huggingface_token>
 ```
 
 **Example**:
