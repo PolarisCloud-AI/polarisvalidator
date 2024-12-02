@@ -59,7 +59,7 @@ class Llama2TrainingMiner(BaseMinerNeuron):
                  epochs: int = 1, 
                  batch_size: int = 8,
                  learning_rate: float = 2e-5, 
-                 device: str = 'cuda', 
+                 device: str = 'cpu',
                  hf_token: str = None, 
                  job_id: str = None,
                  ):
