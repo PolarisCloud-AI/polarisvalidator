@@ -77,12 +77,12 @@ Visit the [A9Labs.ai Jobs Page](https://tobiusaolo.github.io/A9labsDashboard/) a
 
 Run the mining program with the following command:
 ```bash
-python3 neurons/run_miner.py   --netuid <netuid>   --subtensor.network <network>   --wallet.name <walletname>   --wallet.hotkey <hotkeyname> --model_type llama2  --epoch <epochs>   --learning_rate <learning_rate>   --job_id <job_id>   --dataset_id <dataset_id>   --batchsize <batch_size>   --hf_token <huggingface_token>
+python3 neurons/run_miner.py   --netuid <netuid>   --subtensor.network <network>   --wallet.name <walletname>   --wallet.hotkey <hotkeyname> --model_type llama2  --epoch <epochs>   --learning_rate <learning_rate>   --job_id <job_id>   --dataset_id <dataset_id>   --batch_size <batch_size>   --hf_token <huggingface_token>
 ```
 
 **Example**:
 ```bash
-python3 neurons/runner_miner.py   --netuid 100   --subtensor.network test   --wallet.name miner   --wallet.hotkey default --model_type llama2  --epoch 10   --learning_rate 0.001   --job_id 12345   --dataset_id mlabonne/guanaco-llama2-1k   --batchsize 32   --hf_token YOUR_HF_TOKEN
+python3 neurons/runner_miner.py   --netuid 100   --subtensor.network test   --wallet.name miner   --wallet.hotkey default --model_type llama2  --epoch 10   --learning_rate 0.001   --job_id 12345   --dataset_id mlabonne/guanaco-llama2-1k   --batch_size 32   --hf_token YOUR_HF_TOKEN
 ```
 
 ---
