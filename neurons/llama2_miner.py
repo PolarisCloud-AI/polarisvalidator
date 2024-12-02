@@ -60,7 +60,7 @@ class Llama2TrainingMiner(BaseMinerNeuron):
                  batch_size: int = 8,
                  learning_rate: float = 2e-5, 
                  device: str = 'cuda', 
-                 hf_token: str = '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', 
+                 hf_token: str = None, 
                  job_id: str = None,
                  ):
         super().__init__()
@@ -223,6 +223,9 @@ class Llama2TrainingMiner(BaseMinerNeuron):
             synapse.loss = final_loss
             synapse.model_hash = repo_name
             total_training_time= train_end_time - train_start_time
+            print(f"Model training and upload is completed")
+            print(f"Your trained model has been uplodaed to {repo_url} repository")
+            print(f"Your training results have been submitted to the validator")
         except Exception as e:
             bt.logging.error(f"Error during training: {str(e)}")
             synapse.loss = None
@@ -235,6 +238,7 @@ class Llama2TrainingMiner(BaseMinerNeuron):
     def save_state(self):
         self.model.save_pretrained("./model_checkpoint")
         self.tokenizer.save_pretrained("./model_checkpoint")
+        print("trained model has been uploaded")
     
 
 
