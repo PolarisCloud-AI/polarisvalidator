@@ -71,7 +71,6 @@ class Llama2TrainingMiner(BaseMinerNeuron):
         self.learning_rate = learning_rate
         self.device = device
         self.hf_token = hf_token
-        self.central_repo = central_repo
         self.job_id = job_id
 
         self._setup_environment()
