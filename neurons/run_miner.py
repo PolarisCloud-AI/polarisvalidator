@@ -34,8 +34,6 @@ def get_config():
                       help='Unique job ID')
     parser.add_argument('--hf_token', type=str, required=True,
                       help='HuggingFace API token')
-    parser.add_argument('--central_repo', type=str, default='Tobius/yogpt_test',
-                      help='Central repository')
     parser.add_argument('--device', type=str, default='cuda',
                       help='Device to use for training')
 

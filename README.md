@@ -82,7 +82,7 @@ python3 neurons/run_miner.py   --netuid <netuid>   --subtensor.network <network>
 
 **Example**:
 ```bash
-python3 neurons/runner_miner.py   --netuid 100   --subtensor.network test   --wallet.name miner   --wallet.hotkey default --model_type llama2  --epoch 10   --learning_rate 0.001   --job_id 12345   --dataset_id mlabonne/guanaco-llama2-1k   --batch_size 32   --hf_token YOUR_HF_TOKEN
+python3 neurons/run_miner.py   --netuid 100   --subtensor.network test   --wallet.name miner   --wallet.hotkey default --model_type llama2  --epoch 10   --learning_rate 0.001   --job_id 12345   --dataset_id mlabonne/guanaco-llama2-1k   --batch_size 32   --hf_token YOUR_HF_TOKEN
 ```
 
 ---
