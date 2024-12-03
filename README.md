@@ -102,9 +102,9 @@ btcli wallet new_hotkey --wallet.name validator --wallet.hotkey default
 #### 2. Register as a Validator
 Register on the testnet (UID 100) or mainnet (UID 12):
 ```bash
-btcli subnet register --wallet.name validator --wallet.hotkey default --subtensor.network test
+btcli subnet register --netuid 100 --wallet.name validator --wallet.hotkey default --subtensor.network test
 # or for mainnet:
-btcli subnet register --wallet.name validator --wallet.hotkey default --subtensor.network main
+btcli subnet register --netuid 12 --wallet.name validator --wallet.hotkey default --subtensor.network main
 ```
 
 #### 3. Start Validating
