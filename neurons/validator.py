@@ -158,10 +158,10 @@ class TrainingValidator(BaseValidatorNeuron):
 # Main execution
 if __name__ == "__main__":
     async def main():
-        async with TrainingValidator(repo_name="Tobius/yogpt_test") as validator:
+        async with TrainingValidator(repo_name="Tobius/yogpt_v1") as validator:
             while True:
                 bt.logging.info(f"Validator running... {time.time()}")
-                await validator.forward()  # Ensure async function is called properly
-                await asyncio.sleep(5)  # Use asyncio.sleep instead of time.sleep
+                await validator.forward()
+                await asyncio.sleep(5) 
 
-    asyncio.run(main())  # Run the main async function
+    asyncio.run(main())

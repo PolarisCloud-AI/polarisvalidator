@@ -15,7 +15,7 @@ def commit_to_central_repo(model_repo: str, metrics: dict, miner_uid: int):
     :param metrics: Dictionary containing training metrics
     :return: URL of the uploaded file in the central repository
     """
-    central_repo = 'Tobius/yogpt_v1',
+    central_repo = "Tobius/yogpt_v1"
     hf_token='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'
     api = HfApi(token=hf_token)
     

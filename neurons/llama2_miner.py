@@ -283,23 +283,3 @@ class Llama2TrainingMiner(BaseMinerNeuron):
         caller_uid = self.metagraph.hotkeys.index(synapse.dendrite.hotkey)
         return float(self.metagraph.S[caller_uid])
 
-# if __name__ == "__main__":
-#     miner = Llama2TrainingMiner(
-#         model_name='NousResearch/Llama-2-7b-chat-hf',
-#         dataset_id='mlabonne/guanaco-llama2-1k',
-#         epochs=1,
-#         batch_size=8,
-#         learning_rate=2e-5,
-#         device='cuda',
-#         hf_token="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",
-#         central_repo="Tobius/yogpt_test",
-#         job_id=str(uuid.uuid4()),
-#     )
-    
-#     async def main():
-#         try:
-#             await miner.run_training_loop()
-#         except KeyboardInterrupt:
-#             bt.logging.info("Miner stopped.")
-
-#     asyncio.run(main())
