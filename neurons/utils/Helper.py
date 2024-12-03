@@ -8,7 +8,6 @@ import aiohttp
 import requests
 from dotenv import load_dotenv
 load_dotenv()
-BASE_URL = os.getenv("BASE_URL")
              
 async def fetch_open_jobs():
     """
@@ -20,7 +19,8 @@ async def fetch_open_jobs():
     Returns:
         list: A list of open jobs.
     """
-    websocket_url = f"{BASE_URL}/ws/jobs/open"
+    websocket_url ="wss://a9labsapi-1048667232204.us-central1.run.app/ws/jobs/open"
+    print(websocket_url)
     open_jobs_list = []
 
     try:
@@ -60,3 +60,4 @@ def update_job_status(job_id: str):
         return response.json()
     except requests.exceptions.RequestException as e:
         return {"error": str(e)}
+

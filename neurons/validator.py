@@ -12,7 +12,7 @@ import logging
 from huggingface_hub import HfApi
 from typing import List, Dict, Optional
 from neurons.utils.HFManager import fetch_training_metrics_commits
-from neurons.utils.Helper import fetch_open_jobs, update_job_status
+from neurons.utils.Helper import fetch_open_jobs,update_job_status
 import sys
 
 # Add the parent directory to the Python path
