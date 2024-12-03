@@ -50,16 +50,13 @@ async def fetch_open_jobs():
 
     return open_jobs_list
 
-
-
 def update_job_status(job_id: str):
     new_status ="Closed"
     Base_URL_1="https://a9labsapi-1048667232204.us-central1.run.app"
     url = f"{Base_URL_1}/jobs/{job_id}"
     try:
         response = requests.put(url, data={"status": new_status})
-        response.raise_for_status()  # Raise HTTPError for bad responses (4xx, 5xx)
+        response.raise_for_status()
         return response.json()
     except requests.exceptions.RequestException as e:
         return {"error": str(e)}
-result = update_job_status(job_id)
