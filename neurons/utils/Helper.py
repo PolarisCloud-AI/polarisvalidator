@@ -19,7 +19,7 @@ async def fetch_open_jobs():
     Returns:
         list: A list of open jobs.
     """
-    websocket_url ="wss://a9labsapi-1048667232204.us-central1.run.app/ws/jobs/open"
+    websocket_url = "wss://a9labsapi-1048667232204.us-central1.run.app/ws/jobs/open"
     print(websocket_url)
     open_jobs_list = []
 

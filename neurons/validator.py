@@ -39,6 +39,7 @@ class TrainingValidator(BaseValidatorNeuron):
         job_groups = {}
         loop = asyncio.get_event_loop()
         result = loop.run_until_complete(fetch_open_jobs())
+        print(result)
         for commit in commits:
             job_id = commit["metrics"]["job_id"]
             if job_id in result:
