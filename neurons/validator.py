@@ -12,6 +12,7 @@ import logging
 from huggingface_hub import HfApi
 from typing import List, Dict, Optional
 from neurons.utils.HFManager import fetch_training_metrics_commits
+from nuerons.utils.Helper import fetch_open_jobs, update_job_status
 import sys
 
 # Add the parent directory to the Python path
@@ -36,11 +37,14 @@ class TrainingValidator(BaseValidatorNeuron):
     def group_commits(self, commits):
         """Group commits by job."""
         job_groups = {}
+        loop = asyncio.get_event_loop()
+        result = loop.run_until_complete(fetch_open_jobs())
         for commit in commits:
             job_id = commit["metrics"]["job_id"]
-            if job_id not in job_groups:
-                job_groups[job_id] = []
-            job_groups[job_id].append(commit)
+            if job_id in result:
+                if job_id not in job_groups:
+                    job_groups[job_id] = []
+                job_groups[job_id].append(commit)
         return job_groups
 
     def load_and_evaluate(self, job_groups):
@@ -53,6 +57,7 @@ class TrainingValidator(BaseValidatorNeuron):
                 results = self.score_miners(metrics_list)
                 for miner_uid, score in results['rewards'].items():
                     self.update_scores(score, miner_uid)
+            self.mark_job_as_done(job_id)
 
     def extract_metrics_by_job_id(self, job_id, commits):
         # Initialize an empty list to store the results
@@ -122,12 +127,8 @@ class TrainingValidator(BaseValidatorNeuron):
 
     def mark_job_as_done(self, job_id):
         """Mark the evaluated job as complete."""
-        self.update_job_status(job_id, status="done")
+        self.update_job_status(job_id)
 
-    def filter_jobs(self, job_groups):
-        """Filter and process only unscored jobs."""
-        unscored_jobs = {job_id: commits for job_id, commits in job_groups.items() if not self.is_job_scored(job_id)}
-        return unscored_jobs
 
     async def forward(self):
         """Main execution method."""

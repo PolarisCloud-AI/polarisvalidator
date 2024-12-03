@@ -1,6 +1,7 @@
 import asyncio
 import json
 import os
+import websockets
 import sys
 import time
 import aiohttp
@@ -8,42 +9,57 @@ import requests
 from dotenv import load_dotenv
 load_dotenv()
 BASE_URL = os.getenv("BASE_URL")
-TOKEN = os.getenv("TOKEN")
              
-async def update_job_status(job_id, status):
-    url = f"{BASE_URL}/update-status/{job_id}"
-    async with aiohttp.ClientSession() as session:
-        headers = {'Authorization': f'Bearer {TOKEN}', 'Content-Type': 'application/json'}
-        async with session.patch(url, json={'status': status}, headers=headers) as response:
-            try:
-                if response.status == 200:
-                    print(f"Status updated to {status} for job {job_id}")
+async def fetch_open_jobs():
+    """
+    Connect to the WebSocket endpoint and fetch open jobs in a list format.
+
+    Args:
+        websocket_url (str): The URL of the WebSocket endpoint.
+
+    Returns:
+        list: A list of open jobs.
+    """
+    websocket_url = f"{BASE_URL}/ws/jobs/open"
+    open_jobs_list = []
+
+    try:
+        async with websockets.connect(websocket_url) as websocket:
+            print("Connected to WebSocket")
+            while True:
+                message = await websocket.recv()  # Receive message from WebSocket
+                data = json.loads(message)
+                
+                if "open_jobs" in data:
+                    open_jobs = data["open_jobs"]
+                    open_jobs_list = [job["job_id"] for job in open_jobs if job.get("status") == "open"]
+                elif "error" in data:
+                    print(f"Error from WebSocket: {data['error']}")
+                    break  # Exit the loop on error
                 else:
-                    response.raise_for_status()
-            except aiohttp.ClientResponseError as err:
-                print(f"Failed to update status for job {job_id}: {err}")
-            except Exception as e:
-                print(f"An error occurred: {e}")
-                                
-async def register_completed_job(job_id, huggingFaceRepoId, loss, accuracy, total_pipeline_time,miner_uid):
-    url = f"{BASE_URL}/complete-training"
-    async with aiohttp.ClientSession() as session:
-        headers = {'Authorization': f'Bearer {TOKEN}', 'Content-Type': 'application/json'}
-        payload = {
-            'jobId': job_id,
-            'huggingFaceRepoId': huggingFaceRepoId,
-            'loss': loss,
-            "accuracy": accuracy,
-            'minerId': miner_uid,
-            'totalPipelineTime': total_pipeline_time
-        }
-        async with session.post(url, json=payload, headers=headers) as response:
-            try:
-                if response.status == 200:
-                    print(f"Completed job registered successfully for job {job_id}")
-                else:
-                    response.raise_for_status()
-            except aiohttp.ClientResponseError as err:
-                print(f"Failed to register completed job {job_id}: {err}")
-            except Exception as e:
-                print(f"An error occurred: {e}")
+                    print("Unexpected message format")
+                
+                # Break the loop if you only want to fetch once
+                break
+
+    except websockets.exceptions.ConnectionClosed as e:
+        print(f"WebSocket connection closed: {e}")
+
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+    return open_jobs_list
+
+
+
+def update_job_status(job_id: str):
+    new_status ="Closed"
+    Base_URL_1="https://a9labsapi-1048667232204.us-central1.run.app"
+    url = f"{Base_URL_1}/jobs/{job_id}"
+    try:
+        response = requests.put(url, data={"status": new_status})
+        response.raise_for_status()  # Raise HTTPError for bad responses (4xx, 5xx)
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        return {"error": str(e)}
+result = update_job_status(job_id)
