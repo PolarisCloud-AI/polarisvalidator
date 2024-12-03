@@ -11,10 +11,10 @@ from dotenv import load_dotenv
 import logging
 from huggingface_hub import HfApi
 from typing import List, Dict, Optional
-from neurons.utils.HFManager import fetch_training_metrics_commits
-from neurons.utils.Helper import fetch_open_jobs,update_job_status
+from utils.HFManager import fetch_training_metrics_commits
+from utils.Helper import fetch_open_jobs,update_job_status
 import sys
-
+import websockets
 # Add the parent directory to the Python path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
@@ -34,12 +34,11 @@ class TrainingValidator(BaseValidatorNeuron):
         commits = fetch_training_metrics_commits(repo_id=self.repo_name)
         return commits
 
-    def group_commits(self, commits):
+    async def group_commits(self, commits):
         """Group commits by job."""
         job_groups = {}
-        loop = asyncio.get_event_loop()
-        result = loop.run_until_complete(fetch_open_jobs())
-        print(result)
+        result = await fetch_open_jobs()
+        print(f"available jobs {result}")
         for commit in commits:
             job_id = commit["metrics"]["job_id"]
             if job_id in result:
@@ -56,9 +55,10 @@ class TrainingValidator(BaseValidatorNeuron):
             if metrics_list:
                 print(f"rewarding and scoring miners for jobid {job_id}")
                 results = self.score_miners(metrics_list)
+                print(f"job results {results}")
                 for miner_uid, score in results['rewards'].items():
                     self.update_scores(score, miner_uid)
-            self.mark_job_as_done(job_id)
+            update_job_status(job_id)
 
     def extract_metrics_by_job_id(self, job_id, commits):
         # Initialize an empty list to store the results
@@ -126,9 +126,6 @@ class TrainingValidator(BaseValidatorNeuron):
             'rewards': rewards
         }
 
-    def mark_job_as_done(self, job_id):
-        """Mark the evaluated job as complete."""
-        self.update_job_status(job_id)
 
 
     async def forward(self):
@@ -137,7 +134,7 @@ class TrainingValidator(BaseValidatorNeuron):
             logging.info("Fetching commits...")
             commits = self.read_commits()
             logging.info("Grouping jobs ...")
-            job_groups = self.group_commits(commits)
+            job_groups = await self.group_commits(commits)
             self.load_and_evaluate(job_groups)
         except Exception as e:
             logging.error(f"Error in forward: {str(e)}")
@@ -164,6 +161,6 @@ if __name__ == "__main__":
             while True:
                 bt.logging.info(f"Validator running... {time.time()}")
                 await validator.forward()
-                await asyncio.sleep(5) 
+                await asyncio.sleep(300) 
 
     asyncio.run(main())
