@@ -10,57 +10,24 @@ from typing import List, Dict, Optional
 from dotenv import load_dotenv    
 
 
-async def fetch_open_jobs() -> List[str]:
-    """
-    Fetch open jobs via WebSocket connection with proper error handling and timeouts.
-    
-    Returns:
-        List[str]: List of open job IDs
-    """
-    load_dotenv()
-    base_url = os.getenv('BASE_URL')
-    if not base_url:
-        print("BASE_URL not set in environment")
-        return []
-
-    websocket_url = f"{base_url}/ws/jobs/open"
+async def fetch_open_jobs()->List[str]:
     open_jobs_list = []
-    
     try:
-        async with websockets.connect(
-            websocket_url,
-            ping_timeout=30,
-            close_timeout=10,
-            max_size=10_485_760  # 10MB max message size
-        ) as websocket:
-            try:
-                # Use asyncio.wait_for to set a timeout
-                message = await asyncio.wait_for(websocket.recv(), timeout=5)
-                data = json.loads(message)
-                
-                if "open_jobs" in data:
-                    open_jobs = data["open_jobs"]
-                    open_jobs_list = [
-                        job["job_id"] 
-                        for job in open_jobs 
-                        if job.get("status") == "open"
-                    ]
-                elif "error" in data:
-                    print(f"Server error: {data['error']}")
-                else:
-                    print(f"Unexpected message format: {data}")
-                        
-            except asyncio.TimeoutError:
-                print("Timeout waiting for server response")
-                
-    except websockets.exceptions.InvalidURI:
-        print(f"Invalid WebSocket URL: {websocket_url}")
-    except websockets.exceptions.ConnectionClosed as e:
-        print(f"WebSocket connection closed: {e}")
-    except Exception as e:
-        print(f"Connection error: {str(e)}")
-        
-    return open_jobs_list
+        base_url = os.getenv('BASE_URL')
+        url = f"{base_url_mode}/jobs/open"
+        response = requests.post(url)
+        data=response.json()
+        if "open_jobs" in data:
+            open_jobs = data["open_jobs"]
+            open_jobs_list = [job["job_id"] for job in open_jobs  if job.get("status") == "open"]
+        elif "error" in data:
+            print(f"Server error: {data['error']}")
+        else:
+            print(f"Unexpected message format: {data}")
+        return open_jobs_list
+    except:
+        print(f"Failed to update job status: {str(e)}")
+        open_jobs_list = []
 
 def update_job_status(job_id: str):
     """
@@ -73,8 +40,8 @@ def update_job_status(job_id: str):
         dict: Response JSON or error details.
     """
     new_status = "Closed"
-    base_url_mode = "https://a9labsapi-1048667232204.us-central1.run.app"
-    url = f"{base_url_mode}/jobs/update"
+    base_url = os.getenv('BASE_URL')
+    url = f"{base_url}/jobs/update"
 
     try:
         response = requests.post(url, data={"status": new_status,"job_id":job_id})
