@@ -188,7 +188,7 @@ class PolarisNode(BaseValidatorNeuron):
                         # If containers are processed, calculate the final score
                         if rewarded_containers > 0:
                             average_score = total_score / rewarded_containers
-                            final_score = average_score + total_termination_time + compute_score[0]
+                            final_score = (average_score + total_termination_time )*compute_score[0]
                             results.append({
                                 'miner_uid': miner,
                                 'final_score': final_score
