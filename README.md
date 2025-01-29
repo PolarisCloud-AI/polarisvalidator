@@ -28,69 +28,69 @@ Follow the steps below to join and contribute to the **Polaris Compute Subnet** 
 ### **Step 1: Clone the Repository**
 Open a terminal and run the following commands:
 
-\`\`\`sh
+```bash
 # Clone the Polaris Bittensor repository
 git clone https://github.com/tobiusaolo/Polaris_bittensor.git
 
 # Navigate into the project directory
 cd Polaris_bittensor
-\`\`\`
+```
 
 ### **Step 2: Install Requirements**
 Ensure you have **Python 3.8+** installed, then run:
 
-\`\`\`sh
+```bash
 pip install -r requirements.txt
-\`\`\`
+```
 
 ---
 
 ### **Step 3: Create Wallets**
 Create a **coldkey** and **hotkey** for the **subnet validator wallet**:
 
-\`\`\`sh
+```bash
 btcli wallet new_coldkey --wallet.name validator
-\`\`\`
+```
 
-\`\`\`sh
+```bash
 btcli wallet new_hotkey --wallet.name validator --wallet.hotkey default
-\`\`\`
+```
 
 ---
 
 ### **Step 4: Register Keys**
 This step registers your **subnet validator key** to the subnet:
 
-\`\`\`sh
+```bash
 btcli subnet recycle_register --netuid 12 --subtensor.network finney --wallet.name validator --wallet.hotkey default
-\`\`\`
+```
 
 ---
 
 ### **Step 5: Verify Wallet Registration**
 Check that your key has been successfully registered by running:
 
-\`\`\`sh
+```bash
 btcli wallet overview --wallet.name validator
-\`\`\`
+```
 
 ---
 
 ### **Step 6: Start the Subnet Validator**
 Run the **Polaris Compute Subnet validator** using the following command:
 
-\`\`\`bash
+```bash
 python neurons/validator.py --netuid 12 --wallet.name validator --wallet.hotkey default --logging.debug
-\`\`\`
+```
 
 ---
 
 ### **Step 7: Stop the Validator Node**
 To stop your running validator node, press:
 
-\`\`\`sh
+```bash
 CTRL + C
-\`\`\`
+```
 
 ---
 
