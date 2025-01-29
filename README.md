@@ -30,7 +30,7 @@ Open a terminal and run the following commands:
 
 ```bash
 # Clone the Polaris Bittensor repository
-git clone https://github.com/tobiusaolo/Polaris_bittensor.git
+git clone https://github.com/bigideainc/Polaris_bittensor.git
 
 # Navigate into the project directory
 cd Polaris_bittensor
