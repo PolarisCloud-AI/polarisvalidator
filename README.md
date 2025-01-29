@@ -79,8 +79,7 @@ btcli wallet overview --wallet.name validator
 ### **Step 6: Start the Subnet Validator**
 Run the **Polaris Compute Subnet validator** using the following command:
 
-\`\`\`
-sh
+\`\`\`bash
 python neurons/validator.py --netuid 12 --wallet.name validator --wallet.hotkey default --logging.debug
 \`\`\`
 
