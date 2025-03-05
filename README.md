@@ -1,4 +1,4 @@
-# **Polaris Bittensor Validator (NETUID 12)**
+# **Polaris Bittensor Validator (NETUID 49)**
 ---
 ## **Polaris Compute Subnet Repository**
 Welcome to the **Polaris Compute Bittensor Subnet** repository. This project contributes to a decentralized AI ecosystem where **miners** provide compute resources to remote users, and **validators** ensure the integrity of the network.
