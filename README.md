@@ -1,10 +1,10 @@
-# **Polaris Bittensor Validator (NETUID 12)**
+# **Polaris Cloud Validator (NETUID 49)**
 ---
-## **Polaris Compute Subnet Repository**
-Welcome to the **Polaris Compute Bittensor Subnet** repository. This project contributes to a decentralized AI ecosystem where **miners** provide compute resources to remote users, and **validators** ensure the integrity of the network.
+## **Polaris Cloud Subnet Repository**
+Welcome to the **Polaris Cloud Subnet** repository. This project contributes to a decentralized AI ecosystem where **miners** provide compute resources to remote users, and **validators** ensure the integrity of the network.
 
-## **About the Polaris Compute Subnet**
-The **Polaris Compute Subnet** (NetUID 12) provides an efficient, secure, and decentralized platform for both **miners** and **validators**:
+## **About the Polaris Cloud Subnet**
+The **Polaris Cloud Subnet** (NetUID 49) provides an efficient, secure, and decentralized platform for both **miners** and **validators**:
 - **Miners** contribute compute resources, which are **tracked and scored** based on quality and duration.
 - **Validators** ensure **network security and reliability** by maintaining ledger integrity and rewarding miners based on their contributions.
 
@@ -18,12 +18,11 @@ Before setting up your validator node, ensure that you meet the following requir
 ✅ A system running **Windows** or **Linux** (no specific hardware requirements).  
 ✅ Basic familiarity with **command-line operations**.  
 ✅ **TAO tokens** for registration:  
-   - **Validators**: At least **1 TAO token** (0.0001 TAO burned during registration).  
-
+   - **Validators**: At least **1 TAO token** (0.0005 TAO burned during registration).  
 ---
 
 ## **Installation & Setup Guide**
-Follow the steps below to join and contribute to the **Polaris Compute Subnet** (NetUID 12) as a **Validator**.
+Follow the steps below to join and contribute to the **Polaris Cloud Subnet** (NetUID 49) as a **Validator**.
 
 ### **Step 1: Clone the Repository**
 Open a terminal and run the following commands:
@@ -62,7 +61,7 @@ btcli wallet new_hotkey --wallet.name validator --wallet.hotkey default
 This step registers your **subnet validator key** to the subnet:
 
 ```bash
-btcli subnet recycle_register --netuid 12 --subtensor.network finney --wallet.name validator --wallet.hotkey default
+btcli subnet recycle_register --netuid 49 --subtensor.network finney --wallet.name validator --wallet.hotkey default
 ```
 
 ---
@@ -80,7 +79,7 @@ btcli wallet overview --wallet.name validator
 Run the **Polaris Compute Subnet validator** using the following command:
 
 ```bash
-python neurons/validator.py --netuid 12 --wallet.name validator --wallet.hotkey default --logging.debug
+python neurons/validator.py --netuid 49 --wallet.name validator --wallet.hotkey default --logging.debug
 ```
 
 ---

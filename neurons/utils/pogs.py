@@ -2,6 +2,7 @@ import paramiko
 import json
 import re
 import logging
+from datetime import datetime, timedelta
 
 logger = logging.getLogger("remote_access")
 
@@ -241,6 +242,8 @@ def compute_resource_score(resource):
     Returns:
     float or list: A score representing the performance of the resource, or a list of scores if a list is provided.
     """
+
+    print(f"Resources computed {resource}")
     if isinstance(resource, list):
         # If the input is a list, calculate the score for each resource
         return [compute_resource_score(item) for item in resource]
@@ -338,3 +341,29 @@ def compute_resource_score(resource):
     return round(score, 3)
 
 
+def time_calculation(start_time, expiry_time):
+    logger.info(f"start_time {start_time}")
+    logger.info(f"expiry_time {expiry_time}")
+    expires_dt = datetime.strptime(expiry_time, "%Y-%m-%dT%H:%M:%S.%f")
+    created_dt = datetime.strptime(start_time, "%Y-%m-%dT%H:%M:%S.%f")
+
+    # Calculate the difference
+    time_diff = expires_dt - created_dt
+
+    # Convert the difference to hours
+    hours_diff = time_diff.total_seconds() / 3600
+    logger.info(f"hours_diff {hours_diff}")
+    return hours_diff
+
+def has_expired(expires_at):
+    # Parse the expires_at timestamp into a datetime object
+    expires_dt = datetime.strptime(expires_at, "%Y-%m-%dT%H:%M:%S.%f")
+    
+    # Get the current time
+    now_dt = datetime.now()
+    
+    # Compare the two times
+    if expires_dt < now_dt:
+        return True  # The time span has expired
+    else:
+        return True  # The time span has not expired

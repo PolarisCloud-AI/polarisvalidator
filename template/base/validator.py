@@ -46,28 +46,43 @@ class BaseValidatorNeuron(BaseNeuron):
             bt.logging.error(f"Failed to serve Axon: {e}")
     
     async def get_subnet_prices(self):
-        async with bt.subtensor.async_get(self.config.subtensor.network) as sub:
-            return {netuid: (await sub.subnet(netuid)).price for netuid in self.metagraph.uids}
+        try:
+            async with bt.AsyncSubtensor(network=self.config.subtensor.network) as sub:
+                # Use the 'sub' object to fetch subnet prices
+                subnet_prices = {int(netuid): float((await sub.subnet(netuid)).price) for netuid in self.metagraph.uids}
+                return subnet_prices
+        except Exception as e:
+            bt.logging.error(f"Error in get_subnet_prices: {e}")
+            return {}  # Or return None, depending on how you want to handle the error
+
     
     async def update_validator_weights(self):
-        subnet_prices = await self.get_subnet_prices()
-        while not self.miner_score_queue.empty():
-            uid, score = await self.miner_score_queue.get()
-            self.scores[uid] = score
-        
-        norm = np.linalg.norm(self.scores, ord=1) or 1.0
-        raw_weights = self.scores / norm
-        processed_uids, processed_weights = process_weights_for_netuid(
-            self.metagraph.uids, raw_weights, self.config.netuid, self.subtensor, self.metagraph
-        )
-        uint_uids, uint_weights = convert_weights_and_uids_for_emit(processed_uids, processed_weights)
-        result, msg = await self.subtensor.set_weights(
-            wallet=self.wallet, netuid=self.config.netuid, uids=uint_uids, weights=uint_weights, wait_for_finalization=False
-        )
-        if result:
-            bt.logging.info("Successfully set weights on chain.")
-        else:
-            bt.logging.error(f"Failed to set weights: {msg}")
+        logger.info("Updating validator weights...")
+        try:
+            subnet_prices = await asyncio.wait_for(self.get_subnet_prices(), timeout=30)
+            logger.info(f"Subnet prices: {subnet_prices}")
+            total_weight = sum(subnet_prices.values())
+            logger.info(f"Total weight: {total_weight}")
+            normalized_prices = {uid: price / total_weight for uid, price in subnet_prices.items() if total_weight > 0}
+            logger.info(f"Normalized prices: {normalized_prices}")
+            while not self.miner_score_queue.empty():
+                logger.info("Processing miner scores...")
+                try:
+                    uid, score = await self.miner_score_queue.get()
+                    logger.info(f"UID: {uid}, Score: {score}")
+                    uid = int(uid)  # Ensure UID is integer
+                    self.scores[uid] = float(score) * normalized_prices.get(uid, 0)
+                except Exception as e:
+                    bt.logging.error(f"Error processing score: {e}")
+                    continue
+            logger.info("Converting weights and uids...")
+            weights, uids = convert_weights_and_uids_for_emit(self.scores) # Remove scores=
+            weights = [float(w) for w in weights]  # Convert weights to Python floats
+            process_weights_for_netuid(weights, uids, self.config.netuid, self.subtensor)
+            logger.info("Weights updated successfully.")
+        except Exception as e:
+            logger.error(f"Exception in update_validator_weights: {e}")
+
     
     async def check_validator_state(self):
         while True:
