@@ -115,13 +115,3 @@ We welcome contributions to the **Polaris Compute Subnet**. If you encounter iss
 For further inquiries, reach out to the **Polaris Compute Subnet** community.
 
 ---
-
-## **Why Join Polaris Cloud Subnet?**
-By joining the **Polaris Cloud Subnet**, you contribute to a decentralized AI ecosystem that:
-- Promotes fairness and transparency in resource allocation.
-- Rewards miners for their contributions based on performance and reliability.
-- Ensures the integrity and security of the network through validator nodes.
-
----
-
-This README file now provides clear instructions, a professional look, and all necessary details for setting up and running a validator node on the **Polaris Cloud Subnet**.
