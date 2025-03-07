@@ -34,10 +34,10 @@ Open a terminal and run the following commands:
 
 ```bash
 # Clone the Polaris Bittensor repository
-git clone https://github.com/bigideainc/Polaris_bittensor.git
+git clone https://github.com/bigideaafrica/polarisvalidator.git
 
 # Navigate into the project directory
-cd Polaris_bittensor
+cd polarisvalidator
 ```
 
 ---
@@ -77,7 +77,7 @@ btcli wallet new_hotkey --wallet.name <validator-name> --wallet.hotkey default
 Register your **subnet validator key** to the subnet:
 
 ```bash
-btcli subnet register --netuid 49 --subtensor.network finney --wallet.name validator --wallet.hotkey default
+btcli subnet register --netuid 49 --subtensor.network finney --wallet.name <validator-name> --wallet.hotkey default
 ```
 
 ---
