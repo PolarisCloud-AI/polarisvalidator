@@ -33,30 +33,40 @@
 #print(f"The difference is {hours_diff} hours.")
 
 import bittensor as bt
-def get_uid_from_signature(signature, message, netuidge: str, netuid: int):
+
+def get_uid_from_hotkey(hotkey: str, netuid: int):
+    """
+    Retrieve the UID for a wallet registered on a subnet using its hotkey.
+
+    Args:
+        hotkey (str): The public key (hotkey) of the wallet.
+        netuid (int): The subnet ID.
+
+    Returns:
+        int: The UID of the wallet, or None if not found.
+    """
     # Connect to the subtensor network
-    sub = bt.subtensor('finney')
-    
-    # Recover the hotkey from the signature
-    recovered_hotkey = bt.Keypair.verify(message, signature)
-    print(f"Recovered Hotkey: {recovered_hotkey}")
-    
+    sub = bt.subtensor('test')  # Replace 'finney' with the desired network
+
     # Get the metagraph for the subnet
     meta = sub.metagraph(netuid)
-    
-    # Find the UID for the recovered hotkey
-    uid = next((uid for uid, hotkey in zip(meta.uids, meta.hotkeys) if hotkey == recovered_hotkey), None)
-    
+
+    # Find the UID for the given hotkey
+    uid = next((uid for uid, registered_hotkey in zip(meta.uids, meta.hotkeys) if registered_hotkey == hotkey), None)
+
     if uid is not None:
         print(f"Miner UID: {uid}")
     else:
         print("Hotkey not found in the subnet")
-    
+
     return uid
 
 # Example Usage
-message = "Sign this message to verify identity"
-signature = "0xabcdef123456789..."  # Replace with actual signature
-netuid = 100  # Replace with the correct subnet ID
+if __name__ == "__main__":
+    # Specify the hotkey and subnet ID
+    hotkey = "5F3wi4rawjQkiXiGxYm2GSoLHPZXfafJHJP6yYRF6pK3Wau6"  # Replace with the actual hotkey
+    netuid = 100  # Replace with the correct subnet ID
 
-get_uid_from_signature(signature, message, netuid)
+    # Retrieve the UID
+    uid = get_uid_from_hotkey(hotkey, netuid)
+    print(f"UID: {uid}")

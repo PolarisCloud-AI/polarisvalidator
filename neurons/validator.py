@@ -270,8 +270,6 @@ class PolarisNode(BaseValidatorNeuron):
                 logger.debug(f"Miner {miner_uid} is not active. Skipping...")
                 continue
             
-            logger.info(f"Processing miner: {miner_uid}")
-            
             # Get the associated miner_id from the subnet_uid
             miner_id = subnet_to_miner_map.get(miner_uid)
             if not miner_id:
@@ -519,7 +517,6 @@ class PolarisNode(BaseValidatorNeuron):
             # Convert weights and UIDs for emitting
             logger.info("Converting weights and UIDs...")
             weights, uids = convert_weights_and_uids_for_emit(weights.tolist(), uids.tolist())  # Convert to lists for compatibility
-
             # Convert weights and UIDs back to NumPy arrays for process_weights_for_netuid
             weights = np.array(weights, dtype=np.float32)
             uids = np.array(uids, dtype=np.uint16)
