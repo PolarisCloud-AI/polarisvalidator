@@ -243,7 +243,6 @@ def compute_resource_score(resource):
     float or list: A score representing the performance of the resource, or a list of scores if a list is provided.
     """
 
-    print(f"Resources computed {resource}")
     if isinstance(resource, list):
         # If the input is a list, calculate the score for each resource
         return [compute_resource_score(item) for item in resource]

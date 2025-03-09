@@ -3,6 +3,7 @@ from typing import Tuple, List, Union, Any
 import bittensor
 from numpy import ndarray, dtype, floating, complexfloating
 import bittensor as bt
+import torch
 
 U32_MAX = 4294967295
 U16_MAX = 65535
