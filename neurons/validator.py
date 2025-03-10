@@ -10,12 +10,21 @@ import copy
 from loguru import logger
 from typing import List, Dict
 import numpy as np
+import sys
 from template.base.utils.weight_utils import (
     process_weights_for_netuid,
     convert_weights_and_uids_for_emit,
 )
 from utils.pogs import fetch_compute_specs, compare_compute_resources, compute_resource_score,time_calculation,has_expired
-
+logger.add(
+    sys.stdout,
+    format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | "
+           "<level>{level: <8}</level> | "
+           "<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - "
+           "<level>{message}</level>",
+    level="INFO",
+    colorize=True,
+)
 class PolarisNode(BaseValidatorNeuron):
     def __init__(self, config=None):
         super().__init__(config=config)
@@ -23,35 +32,11 @@ class PolarisNode(BaseValidatorNeuron):
         self.hotkeys = copy.deepcopy(self.metagraph.hotkeys)
         self.dendrite = bt.dendrite(wallet=self.wallet)
         self.scores = np.zeros(self.metagraph.n, dtype=np.float32)
-        self.miner_score_queue = asyncio.Queue()
         self.lock = asyncio.Lock()
         self.loop = asyncio.get_event_loop()
         self.should_exit = False
         self.is_running = False
         self.thread = None
-
-        
-
-    async def get_subnet_prices(self):
-            try:
-                async with bt.AsyncSubtensor(network=self.config.subtensor.network) as sub:
-                    # Use the 'sub' object to fetch subnet prices
-                    subnet_prices = {int(netuid): float((await sub.subnet(netuid)).price) for netuid in self.metagraph.uids}
-                    return subnet_prices
-            except Exception as e:
-                bt.logging.error(f"Error in get_subnet_prices: {e}")
-                return {}  # Or return None, depending on how you want to handle the error
-
-    def save_state(self):
-        """Saves the current state of the validator to a file."""
-        bt.logging.info("Saving validator state.")
-        state = {
-            "step": self.step,
-            "scores": self.scores.tolist(),
-            "hotkeys": self.hotkeys
-        }
-        with open(self.config.neuron.full_path + "/state.json", "w") as f:
-            json.dump(state, f)
 
     def load_state(self):
         """Loads the saved state of the validator from a file."""
@@ -63,11 +48,11 @@ class PolarisNode(BaseValidatorNeuron):
                 self.scores = np.array(state["scores"], dtype=np.float32)
                 self.hotkeys = state["hotkeys"]
         except FileNotFoundError:
-            bt.logging.warning("No previous state found. Starting fresh.")
+            logger.warning("No previous state found. Starting fresh.")
 
     def resync_metagraph(self):
         """Resyncs the metagraph and updates the hotkeys and moving averages."""
-        bt.logging.info("Resyncing metagraph...")
+        logger.info("Resyncing metagraph...")
 
         previous_metagraph = copy.deepcopy(self.metagraph)
 
@@ -78,7 +63,7 @@ class PolarisNode(BaseValidatorNeuron):
         if previous_metagraph.axons == self.metagraph.axons:
             return
 
-        bt.logging.info("Metagraph updated, re-syncing hotkeys and moving averages.")
+        logger.info("Metagraph updated, re-syncing hotkeys and moving averages.")
         
         # Zero out hotkeys that have been replaced
         for uid, hotkey in enumerate(self.hotkeys):
@@ -105,10 +90,12 @@ class PolarisNode(BaseValidatorNeuron):
     async def verify_miners_loop(self):
         """Continuously verify miners in a separate async loop."""
         while True:
+            logger.info("Starting verify_miners_loop...")
             miners = self.get_registered_miners()
+            logger.info(f"Registered miners retrieved")
             bittensor_miners = self.get_filtered_miners(miners)
-            print(f"registered miners here {bittensor_miners}")
             await self.verify_miners(list(bittensor_miners.keys()))
+
             await asyncio.sleep(180)  # Run every 3 minutes
     
     async def process_miners_loop(self):
@@ -225,7 +212,7 @@ class PolarisNode(BaseValidatorNeuron):
             logger.info(f"Miner {miner_id} is verifed")
             return json_response.get("status", "unknown")
         except requests.exceptions.RequestException as e:
-            print(f"Error updating miner status: {e}")
+            logger.error(f"Error updating miner status: {e}")
             return None
         
     def get_containers_for_miner(self, miner_uid: str) -> List[str]:
@@ -481,55 +468,92 @@ class PolarisNode(BaseValidatorNeuron):
     async def cleanup(self):
         pass
 
-    async def update_validator_weights(self, results: Dict[int, float]):
+    async def update_validator_weights(self, results):
         """
-        Updates validator weights based on the provided results.
+        Updates validator weights using DTAO mechanics, ensuring proper normalization.
         
         Args:
-            results (Dict[int, float]): A dictionary mapping miner UIDs to their scores.
+            results (Dict[int, float]): A dictionary mapping miner UIDs to scores.
         """
-        logger.info("Updating validator weights...")
+        logger.info("Starting update_validator_weights...")
         try:
-            # Fetch subnet prices
-            subnet_prices = await asyncio.wait_for(self.get_subnet_prices(), timeout=30)
-            logger.info(f"Subnet prices: {subnet_prices}")
-
-            # Calculate total weight and normalize prices
+            if not results:
+                logger.warning("No results to process. Skipping weight update.")
+                return
+            
+            # Fetch subnet prices for DTAO weighting
+            subnet_prices = {}
+            try:
+                async with bt.AsyncSubtensor(network=self.config.subtensor.network) as sub:
+                    for netuid in self.metagraph.uids:
+                        try:
+                            # Convert NumPy int64 to Python int explicitly
+                            python_netuid = int(netuid)
+                            # Now fetch the subnet with the Python int
+                            subnet_info = await sub.subnet(python_netuid)
+                            subnet_prices[python_netuid] = float(subnet_info.price)
+                        except Exception as e:
+                            logger.warning(f"Error fetching price for subnet {netuid}: {e}")
+                            continue
+            except Exception as e:
+                logger.error(f"Error initializing AsyncSubtensor: {e}")
+                return
+            
+            if not subnet_prices:
+                logger.error("Failed to fetch any subnet prices. Cannot update weights.")
+                return
+            
+            # Normalize subnet prices
             total_weight = sum(subnet_prices.values())
-            logger.info(f"Total weight: {total_weight}")
-            normalized_prices = {uid: price / total_weight for uid, price in subnet_prices.items() if total_weight > 0}
-            logger.info(f"Normalized prices: {normalized_prices}")
-
-            # Process results directly
-            for uid, score in results.items():
-                logger.info(f"Processing UID: {uid}, Score: {score}")
-                uid = int(uid)  # Ensure UID is integer
-                self.scores[uid] = float(score) * normalized_prices.get(uid, 0)
-
-            # Normalize scores
-            norm = np.linalg.norm(self.scores, ord=1) or 1.0
-            raw_weights = self.scores / norm
-
-            # Extract weights and UIDs
-            weights = raw_weights  # Keep as NumPy array
-            uids = np.arange(len(raw_weights))  # Generate UIDs as NumPy array
-
-            # Convert weights and UIDs for emitting
-            logger.info("Converting weights and UIDs...")
-            weights, uids = convert_weights_and_uids_for_emit(weights.tolist(), uids.tolist())  # Convert to lists for compatibility
-            # Convert weights and UIDs back to NumPy arrays for process_weights_for_netuid
-            weights = np.array(weights, dtype=np.float32)
-            uids = np.array(uids, dtype=np.uint16)
-
-            # Process weights for the netuid
-            success = process_weights_for_netuid(weights, uids, self.config.netuid, self.subtensor)
-            if success:
-                logger.info("Weights updated successfully.")
+            if total_weight == 0:
+                logger.error("Total subnet price weight is zero. Cannot normalize.")
+                return
+            normalized_prices = {uid: price / total_weight for uid, price in subnet_prices.items()}
+            
+            # Compute final scores by weighting results with subnet prices
+            weighted_scores = {}
+            for uid in results:
+                python_uid = int(uid)  # Convert to Python int if it's a NumPy type
+                normalized_price = normalized_prices.get(python_uid, 0)
+                score = results.get(python_uid, 0)
+                weighted_scores[python_uid] = score * normalized_price
+            
+            if not weighted_scores:
+                logger.warning("No weighted scores calculated. Skipping weight update.")
+                return
+            logger.info(f"Weighted scores: {weighted_scores}")
+            weights, uids = convert_weights_and_uids_for_emit(weighted_scores)
+            
+            # Convert to NumPy arrays for processing
+        
+            # Normalize weights to sum to 1
+            norm = np.linalg.norm(weights, ord=1)
+            if norm > 0:
+                weights /= norm
             else:
-                logger.error("Failed to update weights.")
-
+                logger.warning("Weights sum to zero, using uniform distribution instead.")
+                weights = np.ones_like(weights) / len(weights) if len(weights) > 0 else weights
+            
+            logger.info(f"Final processed weights: {weights}")
+            logger.info(f"Final processed UIDs: {uids}")
+            
+            # Set weights using DTAO mechanism
+            success = process_weights_for_netuid(
+                weights=weights.tolist(),
+                uids=uids, 
+                netuid=self.config.netuid, 
+                subtensor=self.subtensor,
+                wallet=self.wallet
+            )
+            
+            if success:
+                logger.info("Validator weights updated successfully.")
+            else:
+                logger.error("Failed to update validator weights.")
         except Exception as e:
             logger.error(f"Exception in update_validator_weights: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
 
     async def forward(self):
         try:

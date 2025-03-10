@@ -1,10 +1,21 @@
 import numpy as np
-from typing import Tuple, List, Union, Any
-import bittensor
-from numpy import ndarray, dtype, floating, complexfloating
 import bittensor as bt
 import torch
+from typing import List
+import sys
+from loguru import logger
 
+# Configure loguru for world-class logging
+logger.remove()  # Remove default logger
+logger.add(
+    sys.stdout,
+    format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | "
+           "<level>{level: <8}</level> | "
+           "<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - "
+           "<level>{message}</level>",
+    level="INFO",
+    colorize=True,
+)
 U32_MAX = 4294967295
 U16_MAX = 65535
 
@@ -58,18 +69,19 @@ def normalize_max_weight(x: np.ndarray, limit: float = 0.1) -> np.ndarray:
         return y
 
 
-def convert_weights_and_uids_for_emit(scores: dict):
+def convert_weights_and_uids_for_emit(weighted_scores):
     """
-    Convert scores to weights and uids for emitting to the chain.
+    Convert weighted scores to weights and uids for emitting to the chain.
 
     Args:
-        scores (dict): A dictionary of scores for each uid.
+        weighted_scores (dict): A dictionary of scores for each uid.
 
     Returns:
         tuple (List[float], List[int]): A tuple containing the weights and uids.
     """
     # Sort the scores in descending order based on values
-    sorted_scores = sorted(scores.items(), key=lambda x: x[1], reverse=True)
+    logger.info(f"Weighted scores: {weighted_scores}")
+    sorted_scores = sorted(weighted_scores.items(), key=lambda x: x[1], reverse=True)
 
     # Extract uids and scores from the sorted list
     uids = [int(item[0]) for item in sorted_scores]
@@ -83,6 +95,7 @@ def process_weights_for_netuid(
     uids: List[int],
     netuid: int,
     subtensor: bt.subtensor,
+    wallet: bt.wallet
 ) -> bool:
     """
     Process and set weights on the Bittensor network for a given netuid.
@@ -99,7 +112,7 @@ def process_weights_for_netuid(
     try:
         # Check if weights contains any NaN values
         if any(np.isnan(weights)):
-            bt.logging.warning("Weights contain NaN values. Skipping weight setting.")
+            logger.warning("Weights contain NaN values. Skipping weight setting.")
             return False
 
         # Convert weights to torch tensor
@@ -120,23 +133,24 @@ def process_weights_for_netuid(
         ]  # Convert weights to Python floats
 
         # Log the filtered weights and uids
-        bt.logging.info(
+        logger.info(
             f"Setting weights: UIDs: {filtered_uids}, Weights: {filtered_weights}"
         )
 
         # Set weights on the Bittensor network
         result = subtensor.set_weights(
             netuid=netuid,
-            uids=torch.tensor(filtered_uids, dtype=torch.uint16), # Ensure uids are torch.uint16
+            uids=torch.tensor(filtered_uids, dtype=torch.int64),
             weights=torch.tensor(filtered_weights, dtype=torch.float32),
             wait_for_inclusion=False,
+            wallet=wallet
         )
 
         # Log the result of the weight setting
-        bt.logging.success(f"Successfully set weights on netuid {netuid}: {result}")
+        logger.success(f"Successfully set weights on netuid {netuid}: {result}")
 
         return True
 
     except Exception as e:
-        bt.logging.error(f"Error setting weights on netuid {netuid}: {e}")
+        logger.error(f"Error setting weights on netuid {netuid}: {e}")
         return False

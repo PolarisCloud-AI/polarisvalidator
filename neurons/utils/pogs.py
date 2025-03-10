@@ -299,7 +299,7 @@ def compute_resource_score(resource):
             threads_score * weights["cpu"]["threads_per_core"] +
             clock_speed_score * weights["cpu"]["max_clock_speed"] +
             ram_score * weights["cpu"]["ram"] +
-            storage_score * weights["cpu"]["storage_speed"]
+            storage_score * weights["cpu"]["storage_speed"] 
         )
 
     elif resource["resource_type"] == "GPU":
