@@ -439,7 +439,7 @@ class PolarisNode(BaseValidatorNeuron):
                 logger.debug(f"Miner {miner} is not in pending verification. Skipping...")
                 continue
             miner_resources = compute_resources[miner]
-            logger.info(f"{miner} resources {miner_resources} ")
+            #logger.info(f"{miner} resources {miner_resources} ")
             ssh_info = self.extract_ssh_and_password(miner_resources)
             if "error" not in ssh_info:
                 ssh_string = ssh_info["ssh_string"]
