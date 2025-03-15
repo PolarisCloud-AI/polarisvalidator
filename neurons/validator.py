@@ -205,8 +205,7 @@ class PolarisNode(BaseValidatorNeuron):
             "Content-Type": "application/json"
         }
         payload = {
-            "status": status,
-            "percentage": percentage
+            "status": status
         }
 
         try:
@@ -450,16 +449,21 @@ class PolarisNode(BaseValidatorNeuron):
                 ssh_string = ssh_info["ssh_string"]
                 password = ssh_info["password"]
                 result = fetch_compute_specs(ssh_string, password)
-                miner_resource = miner_resources[0]
-                pog_score = compare_compute_resources(result, miner_resource)
-                logger.info(f"{miner} pog_score {pog_score} ")
-                if pog_score["percentage"] >= 95:
-                    logger.info(f"{miner} is verified")
-                    self.update_miner_status(miner, "verified", pog_score["percentage"])
+                if result:
+                    miner_resource = miner_resources[0]
+                    pog_score = compare_compute_resources(result, miner_resource)
+                    logger.info(f"{miner} pog_score {pog_score} ")
+                    if pog_score["percentage"] >= 95:
+                        logger.info(f"{miner} is verified")
+                        self.update_miner_status(miner, "verified", pog_score["percentage"])
+                    else:
+                        self.update_miner_status(miner, "rejected", pog_score["percentage"])
+                        logger.info(f"{miner} is not verified")
                 else:
-                    self.update_miner_status(miner, "not_verified", pog_score["percentage"])
-                    logger.info(f"{miner} is not verified")
+                    self.update_miner_status(miner, "rejected", 0.0)
+                    logger.info(f"Miner {miner} is unverified")
             else:
+                self.update_miner_status(miner, "rejected", 0.0)
                 logger.info(f"Miner {miner} is unverified")
     
     async def __aenter__(self):
