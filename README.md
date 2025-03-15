@@ -64,6 +64,9 @@ pip install -e .
 Create a **coldkey** and **hotkey** for the **subnet validator wallet**:
 
 ```bash
+#Install bittensor cli
+pip install bittensor-cli==9.1.0 # Use latest or desired version
+
 # Create a coldkey for the validator
 btcli wallet new_coldkey --wallet.name <validator-name>
 
