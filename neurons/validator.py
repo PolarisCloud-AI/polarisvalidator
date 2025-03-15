@@ -92,8 +92,11 @@ class PolarisNode(BaseValidatorNeuron):
         while True:
             logger.info("Starting verify_miners_loop...")
             miners = self.get_registered_miners()
-            logger.info(f"Registered miners retrieved")
+
+            logger.info(f"Registered miners retrieved {len(miners)}")
             bittensor_miners = self.get_filtered_miners(miners)
+            logger.info(f"Bittensor miners retrieved {len(bittensor_miners)}")
+            logger.info(f"Bittensor miners: {bittensor_miners}")
             await self.verify_miners(list(bittensor_miners.keys()))
 
             await asyncio.sleep(180)  # Run every 3 minutes
@@ -187,7 +190,7 @@ class PolarisNode(BaseValidatorNeuron):
         return {}
 
     
-    def update_miner_status(self,miner_id):
+    def update_miner_status(self,miner_id,status,percentage):
         """
         Updates the status of a miner to 'verified' using a PATCH request.
 
@@ -202,7 +205,8 @@ class PolarisNode(BaseValidatorNeuron):
             "Content-Type": "application/json"
         }
         payload = {
-            "status": "verified"
+            "status": status,
+            "percentage": percentage
         }
 
         try:
@@ -433,23 +437,28 @@ class PolarisNode(BaseValidatorNeuron):
         }
 
     async def verify_miners(self, miners):
+        logger.info(f"Verifying miners: {miners}")
         for miner in miners:
             compute_resources = self.get_unverified_miners()
             if miner not in compute_resources:
                 logger.debug(f"Miner {miner} is not in pending verification. Skipping...")
                 continue
             miner_resources = compute_resources[miner]
-            #logger.info(f"{miner} resources {miner_resources} ")
             ssh_info = self.extract_ssh_and_password(miner_resources)
             if "error" not in ssh_info:
+                logger.info(f"Accessing compute specs for {miner} ")
                 ssh_string = ssh_info["ssh_string"]
                 password = ssh_info["password"]
                 result = fetch_compute_specs(ssh_string, password)
-                pog_score = compare_compute_resources(result, miner_resources[0])
-                if pog_score["score"] >= 15:
-                    logger.info(f"{miner} current resources  {result} ")
-                    logger.info(f"{miner} scores {pog_score} ")
-                    self.update_miner_status(miner)
+                miner_resource = miner_resources[0]
+                pog_score = compare_compute_resources(result, miner_resource)
+                logger.info(f"{miner} pog_score {pog_score} ")
+                if pog_score["percentage"] >= 95:
+                    logger.info(f"{miner} is verified")
+                    self.update_miner_status(miner, "verified", pog_score["percentage"])
+                else:
+                    self.update_miner_status(miner, "not_verified", pog_score["percentage"])
+                    logger.info(f"{miner} is not verified")
             else:
                 logger.info(f"Miner {miner} is unverified")
     
