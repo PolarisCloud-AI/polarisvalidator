@@ -1,12 +1,10 @@
-bittensor==7.4.0
+bittensor
 loguru==0.7.2
-numpy==1.17.4
-paramiko==3.4.0
-paramiko==2.6.0
+numpy
+paramiko
 pydantic==2.10.5
 pytest==8.1.1
 Requests==2.32.3
 rich==13.9.4
-setuptools==70.0.0
-setuptools==45.2.0
-torch==2.1.2+cu118
+setuptools
+torch
