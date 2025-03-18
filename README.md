@@ -1,20 +1,20 @@
-# **Polaris Cloud Validator (NETUID 49)**
+# **Polaris Compute Subnet Validator (NETUID 49)**
 
-Welcome to the **Polaris Cloud Subnet** repository! This project is part of the decentralized AI ecosystem powered by **Bittensor**, where **miners** provide compute resources and **validators** ensure the integrity and reliability of the network.
+Welcome to the **Polaris Compute Subnet** repository! This project is part of the decentralized AI ecosystem powered by **Bittensor**, where **miners** provide compute resources and **validators** ensure the integrity and reliability of the network.
 
 ---
 
-## **About Polaris Cloud Subnet**
-The **Polaris Cloud Subnet** (NetUID 49) is designed to provide an efficient, secure, and decentralized platform for both **miners** and **validators**:
-- **Miners** contribute compute resources, which are tracked and scored based on quality and duration.
-- **Validators** ensure network security and reliability by maintaining ledger integrity and rewarding miners based on their contributions.
+## **About the Polaris Compute Subnet**
+The **Polaris Compute Subnet** (NetUID 49) provides an efficient, secure, and decentralized platform for both **miners** and **validators**:
+- **Miners** contribute compute resources, which are **tracked and scored** based on quality and duration.
+- **Validators** ensure **network security and reliability** by maintaining ledger integrity and rewarding miners based on their contributions.
 
 > **Note**: This guide assumes basic familiarity with **Bittensor subnets** and blockchain-based systems.
 
 ---
 
 ## **System Requirements**
-To run a validator node on the **Polaris Cloud Subnet**, ensure your system meets the following requirements:
+To run a validator node on the **Polaris Compute Subnet**, ensure your system meets the following requirements:
 
 - **Operating System**: Windows or Linux
 - **RAM**: Minimum 8 GB
@@ -25,9 +25,7 @@ To run a validator node on the **Polaris Cloud Subnet**, ensure your system meet
 ---
 
 ## **Installation & Setup Guide**
-Follow the steps below to join and contribute to the **Polaris Cloud Subnet** (NetUID 49) as a **Validator**.
-
----
+Follow the steps below to join and contribute to the **Polaris Compute Subnet** (NetUID 49) as a **Validator**.
 
 ### **Step 1: Clone the Repository**
 Open a terminal and run the following commands:
@@ -64,7 +62,7 @@ pip install -e .
 Create a **coldkey** and **hotkey** for the **subnet validator wallet**:
 
 ```bash
-#Install bittensor cli
+# Install bittensor CLI
 pip install bittensor-cli==9.1.0 # Use latest or desired version
 
 # Create a coldkey for the validator
@@ -113,8 +111,6 @@ CTRL + C
 ---
 
 ## **Support & Contributions**
-We welcome contributions to the **Polaris Compute Subnet**. If you encounter issues or have suggestions for improvements, feel free to open an **Issue** or a **Pull Request** on our [GitHub repository](https://github.com/tobiusaolo/Polaris_bittensor).
-
-For further inquiries, reach out to the **Polaris Compute Subnet** community.
+We welcome contributions to the **Polaris Compute Subnet**. If you encounter issues or have suggestions for improvements, feel free to open an **Issue** or a **Pull Request** on our [GitHub repository](https://github.com/bigideaafrica/polarisvalidator).
 
 ---
