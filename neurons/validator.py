@@ -5,6 +5,7 @@ import torch
 import bittensor as bt
 from template.base.validator import BaseValidatorNeuron
 import asyncio
+import uuid
 import os
 import copy
 from loguru import logger
@@ -371,8 +372,6 @@ class PolarisNode(BaseValidatorNeuron):
         logger.info(f"Final results for all miners: {results}")
         return results
 
-
-        
     
     def update_container_payment_status(self, container_id: str) -> bool:
         """
@@ -480,6 +479,46 @@ class PolarisNode(BaseValidatorNeuron):
     
     async def cleanup(self):
         pass
+    
+    def track_tokens(miner_uid: str, tokens: float, validator: str, platform: str):
+        """
+        Sends a POST request to the scores/add API to track tokens rewarded to miners.
+
+        Args:
+            miner_uid (str): The UID of the miner being rewarded.
+            tokens (float): The number of tokens rewarded.
+            validator (str): The validator issuing the reward.
+            platform (str): The platform associated with the reward.
+
+        Returns:
+            bool: True if the request was successful, False otherwise.
+        """
+        url = "https://orchestrator-gekh.onrender.com/api/v1/scores/add"
+        headers = {
+            "Content-Type": "application/json"
+        }
+        payload = {
+            "id": str(uuid.uuid4()),  # Generate a unique ID
+            "miner_uid": miner_uid,
+            "tokens": tokens,
+            "date_received": time.strftime("%Y-%m-%dT%H:%M:%S", time.gmtime()),  # Current UTC time
+            "validator": validator,
+            "platform": platform,
+            "created_at": time.strftime("%Y-%m-%dT%H:%M:%S", time.gmtime())  # Current UTC time
+        }
+
+        try:
+            response = requests.post(url, json=payload, headers=headers)
+            if response.status_code == 200:
+                logger.info(f"Successfully tracked tokens for miner {miner_uid}.")
+                return True
+            else:
+                logger.error(f"Failed to track tokens for miner {miner_uid}. "
+                            f"Status code: {response.status_code}, Response: {response.text}")
+                return False
+        except Exception as e:
+            logger.error(f"Error while tracking tokens for miner {miner_uid}: {e}")
+            return False
 
     async def update_validator_weights(self, results):
         """
@@ -561,6 +600,16 @@ class PolarisNode(BaseValidatorNeuron):
             
             if success:
                 logger.info("Validator weights updated successfully.")
+                # Track tokens for rewarded miners
+            for uid, weight in zip(uids, weights):
+                if weight > 0:  # Only track tokens for miners with non-zero weights
+                    miner_uid = str(uid)
+                    tokens = weight
+                    validator = self.wallet
+                    platform = "Bittensor"
+                    track_success = self.track_tokens(miner_uid, tokens, validator, platform)
+                    if not track_success:
+                        logger.warning(f"Failed to track tokens for miner {miner_uid}.")
             else:
                 logger.error("Failed to update validator weights.")
         except Exception as e:
@@ -573,6 +622,8 @@ class PolarisNode(BaseValidatorNeuron):
             await self.update_validator_weights()
         except Exception as e:
             bt.logging.error(f"Error in forward loop: {e}")
+    
+
     def run(self):
         try:
             while not self.should_exit:
@@ -582,6 +633,7 @@ class PolarisNode(BaseValidatorNeuron):
             bt.logging.success("Validator killed by keyboard interrupt.")
         except Exception as e:
             bt.logging.error(f"Error during validation: {e}")
+    
 
 if __name__ == "__main__":
     async def main():
