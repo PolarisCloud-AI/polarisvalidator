@@ -83,18 +83,62 @@ def get_remote_cpu_info(client, os_type):
         }
     return {}
 
+def get_gpu_memory(gpu_specs):
+    """
+    Extract GPU memory from GPU specs, handling different key naming conventions.
+    Returns memory as string or empty string if not found.
+    """
+    if not gpu_specs or not isinstance(gpu_specs, dict):
+        return ""
+    
+    # Try different possible keys for GPU memory
+    memory_keys = ["memory_total", "memory_size", "vram", "memory"]
+    
+    for key in memory_keys:
+        if key in gpu_specs and gpu_specs[key]:
+            # Ensure we have a string
+            memory_val = str(gpu_specs[key])
+            # Log the value we found to help with debugging
+            logger.debug(f"Found GPU memory value: {memory_val} with key {key}")
+            return memory_val
+    
+    return ""
+
 def get_remote_gpu_info(client, os_type):
     """Fetches GPU info from the remote machine."""
     if os_type == "Linux":
+        # Query GPU details with proper formatting
         cmd = "nvidia-smi --query-gpu=name,memory.total --format=csv,noheader"
-        stdout, _ = execute_remote_command(client, cmd)
+        stdout, stderr = execute_remote_command(client, cmd)
+        
+        # Log the raw output for debugging
+        logger.debug(f"Raw nvidia-smi output: {stdout}")
+        
+        if stderr:
+            logger.warn(f"nvidia-smi error: {stderr}")
+        
         gpu_info = []
         for line in stdout.splitlines():
-            name, memory = line.split(",")
-            gpu_info.append({
-                "gpu_name": name.strip(),
-                "memory_total": f"{float(memory.strip()) / 1024:.2f} GB",
-            })
+            try:
+                if "," in line:
+                    name, memory = line.split(",", 1)  # Split on first comma only
+                    
+                    # Clean up values
+                    name = name.strip()
+                    memory = memory.strip()
+                    
+                    # Log for debugging
+                    logger.debug(f"Parsed GPU: name='{name}', memory='{memory}'")
+                    
+                    gpu_info.append({
+                        "gpu_name": name,
+                        "memory_total": memory,  # Store raw string, normalize later
+                    })
+                else:
+                    logger.warn(f"Unexpected nvidia-smi output format: {line}")
+            except Exception as e:
+                logger.error(f"Error parsing GPU info line '{line}': {e}")
+        
         return gpu_info
     elif os_type == "Windows":
         cmd = """powershell -Command "Get-CimInstance Win32_VideoController | Select-Object Name,AdapterRAM | ConvertTo-Json" """
@@ -552,7 +596,8 @@ def compare_compute_resources(new_resource, existing_resource):
 def normalize_memory_value(memory_str):
     """
     Convert memory string to GB as float for comparison.
-    Handles various formats like '16GB', '16G', '16 GB', '16Gi', '16384MB', etc.
+    Handles various formats like '16GB', '16G', '16 GB', '16Gi', '16384MB', 
+    '49140 MiB', etc.
     """
     if not memory_str:
         return 0.0
@@ -575,6 +620,8 @@ def normalize_memory_value(memory_str):
             return value * 1024  # TB to GB
         elif any(x in unit for x in ['gb', 'gi', 'g']):
             return value  # Already in GB
+        elif any(x in unit for x in ['mib']):
+            return value / 1024 * 1.048576  # MiB to GB (1 MiB = 1.048576 MB)
         elif any(x in unit for x in ['mb', 'mi', 'm']):
             return value / 1024  # MB to GB
         elif any(x in unit for x in ['kb', 'ki', 'k']):
@@ -667,6 +714,7 @@ def get_gpu_memory(gpu_specs):
             return str(gpu_specs[key])
     
     return ""
+
 def verify_compute_resources(new_resource, existing_resources, min_match_threshold=70.0):
     """
     Verify if a newly detected compute resource matches any in the existing collection.

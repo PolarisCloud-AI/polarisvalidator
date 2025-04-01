@@ -97,7 +97,6 @@ class PolarisNode(BaseValidatorNeuron):
             logger.info(f"Registered miners retrieved {len(miners)}")
             bittensor_miners = self.get_filtered_miners(miners)
             logger.info(f"Bittensor miners retrieved {len(bittensor_miners)}")
-            logger.info(f"Bittensor miners: {bittensor_miners}")
             await self.verify_miners(list(bittensor_miners.keys()))
 
             await asyncio.sleep(180)  # Run every 3 minutes
@@ -452,7 +451,7 @@ class PolarisNode(BaseValidatorNeuron):
                     miner_resource = miner_resources[0]
                     pog_score = compare_compute_resources(result, miner_resource)
                     logger.info(f"{miner} pog_score {pog_score} ")
-                    if pog_score["percentage"] >= 95:
+                    if pog_score["percentage"] >= 70:
                         logger.info(f"{miner} is verified")
                         self.update_miner_status(miner, "verified", pog_score["percentage"])
                     else:
