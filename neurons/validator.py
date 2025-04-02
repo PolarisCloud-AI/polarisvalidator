@@ -16,7 +16,8 @@ from template.base.utils.weight_utils import (
     process_weights_for_netuid,
     convert_weights_and_uids_for_emit,
 )
-from utils.pogs import fetch_compute_specs, compare_compute_resources, compute_resource_score,time_calculation,has_expired
+from utils.pogs import fetch_compute_specs, compare_compute_resources, compute_resource_score,time_calculation
+from utils.uptimedata import calculate_miner_rewards,send_reward_log
 logger.add(
     sys.stdout,
     format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | "
@@ -268,6 +269,7 @@ class PolarisNode(BaseValidatorNeuron):
                 
             # Get miner's compute resource info
             miner_info = miner_resources.get(miner_id)
+            
             if not miner_info:
                 logger.warning(f"No resource info found for miner_id {miner_id}")
                 continue
@@ -276,8 +278,15 @@ class PolarisNode(BaseValidatorNeuron):
             try:
                 compute_score = compute_resource_score(miner_info["compute_resources"][0])
                 logger.info(f"Compute score for miner {miner_uid}: {compute_score}")
+
             except (KeyError, IndexError, Exception) as e:
                 logger.error(f"Error calculating compute score for miner {miner_uid}: {e}")
+                continue
+            try:
+                uptime_rewards= calculate_miner_rewards(miner_id,compute_score)
+                logger.info(f"miner {miner_id} uptime reward {uptime_rewards["reward_amount"]}")
+            except (KeyError, IndexError, Exception) as e:
+                logger.error(f"Error calculating uptime rewards for miner {miner_uid}: {e}")
                 continue
             
             # Get all containers for this miner
@@ -335,7 +344,7 @@ class PolarisNode(BaseValidatorNeuron):
                     average_time = total_termination_time / rewarded_containers
                     
                     # Calculate final score using formula: (avg_time + total_time) * compute_score
-                    final_score = (average_time + total_termination_time) * compute_score
+                    final_score = ((average_time + total_termination_time) * compute_score) + uptime_rewards["reward_amount"]
                     
                     logger.info(f"Final score calculation for miner {miner_uid}:")
                     logger.info(f"  - Average time: {average_time}")
@@ -358,6 +367,7 @@ class PolarisNode(BaseValidatorNeuron):
                     failed_updates = [container_id for container_id, success in update_results if not success]
                     
                     if successful_updates:
+                        send_reward_log(uptime_rewards)
                         logger.info(f"Successfully updated payment status for containers: {successful_updates}")
                     if failed_updates:
                         logger.warning(f"Failed to update payment status for containers: {failed_updates}")
@@ -365,7 +375,12 @@ class PolarisNode(BaseValidatorNeuron):
                 except Exception as e:
                     logger.error(f"Error calculating final score for miner {miner_uid}: {e}")
             else:
-                logger.info(f"No rewarded containers for miner {miner_uid}, skipping score calculation")
+                if uptime_rewards["reward_amount"]>0:
+                    results[miner_uid] = uptime_rewards["reward_amount"]
+                    send_reward_log(uptime_rewards)
+
+                else:
+                    logger.info(f"No rewarded containers for miner {miner_uid}, skipping score calculation")
         
         # Log final results before returning
         logger.info(f"Final results for all miners: {results}")
@@ -479,7 +494,7 @@ class PolarisNode(BaseValidatorNeuron):
     async def cleanup(self):
         pass
     
-    def track_tokens(miner_uid: str, tokens: float, validator: str, platform: str):
+    def track_tokens(self,miner_uid: str, tokens: float, validator: str, platform: str):
         """
         Sends a POST request to the scores/add API to track tokens rewarded to miners.
 
@@ -499,7 +514,7 @@ class PolarisNode(BaseValidatorNeuron):
         payload = {
             "id": str(uuid.uuid4()),  # Generate a unique ID
             "miner_uid": miner_uid,
-            "tokens": tokens,
+            "tokens": float(tokens),
             "date_received": time.strftime("%Y-%m-%dT%H:%M:%S", time.gmtime()),  # Current UTC time
             "validator": validator,
             "platform": platform,
@@ -520,54 +535,28 @@ class PolarisNode(BaseValidatorNeuron):
             return False
 
     async def update_validator_weights(self, results):
-        """
-        Updates validator weights using DTAO mechanics, ensuring proper normalization.
-        
-        Args:
-            results (Dict[int, float]): A dictionary mapping miner UIDs to scores.
-        """
         logger.info("Starting update_validator_weights...")
         try:
             if not results:
                 logger.warning("No results to process. Skipping weight update.")
                 return
             
-            # Fetch subnet prices for DTAO weighting
-            subnet_prices = {}
+            # Fetch the subnet price for the validator's subnet
+            subnet_price = 0.0
             try:
                 async with bt.AsyncSubtensor(network=self.config.subtensor.network) as sub:
-                    for netuid in self.metagraph.uids:
-                        try:
-                            # Convert NumPy int64 to Python int explicitly
-                            python_netuid = int(netuid)
-                            # Now fetch the subnet with the Python int
-                            subnet_info = await sub.subnet(python_netuid)
-                            subnet_prices[python_netuid] = float(subnet_info.price)
-                        except Exception as e:
-                            logger.warning(f"Error fetching price for subnet {netuid}: {e}")
-                            continue
+                    subnet_info = await sub.subnet(self.config.netuid)
+                    subnet_price = float(subnet_info.price) if subnet_info else 0.0
             except Exception as e:
-                logger.error(f"Error initializing AsyncSubtensor: {e}")
+                logger.error(f"Error fetching price for netuid {self.config.netuid}: {e}")
                 return
             
-            if not subnet_prices:
-                logger.error("Failed to fetch any subnet prices. Cannot update weights.")
-                return
-            
-            # Normalize subnet prices
-            total_weight = sum(subnet_prices.values())
-            if total_weight == 0:
-                logger.error("Total subnet price weight is zero. Cannot normalize.")
-                return
-            normalized_prices = {uid: price / total_weight for uid, price in subnet_prices.items()}
-            
-            # Compute final scores by weighting results with subnet prices
-            weighted_scores = {}
-            for uid in results:
-                python_uid = int(uid)  # Convert to Python int if it's a NumPy type
-                normalized_price = normalized_prices.get(python_uid, 0)
-                score = results.get(python_uid, 0)
-                weighted_scores[python_uid] = score * normalized_price
+            if subnet_price <= 0:
+                logger.warning(f"Subnet price for netuid {self.config.netuid} is zero or invalid. Using scores directly.")
+                weighted_scores = {int(uid): float(score) for uid, score in results.items()}
+            else:
+                # Weight scores by the subnet price (optional, since normalization may make this redundant)
+                weighted_scores = {int(uid): float(score) * subnet_price for uid, score in results.items()}
             
             if not weighted_scores:
                 logger.warning("No weighted scores calculated. Skipping weight update.")
@@ -575,9 +564,8 @@ class PolarisNode(BaseValidatorNeuron):
             logger.info(f"Weighted scores: {weighted_scores}")
             weights, uids = convert_weights_and_uids_for_emit(weighted_scores)
             
-            # Convert to NumPy arrays for processing
-        
             # Normalize weights to sum to 1
+            weights = np.array(weights, dtype=np.float32)
             norm = np.linalg.norm(weights, ord=1)
             if norm > 0:
                 weights /= norm
@@ -588,7 +576,7 @@ class PolarisNode(BaseValidatorNeuron):
             logger.info(f"Final processed weights: {weights}")
             logger.info(f"Final processed UIDs: {uids}")
             
-            # Set weights using DTAO mechanism
+            # Set weights
             success = process_weights_for_netuid(
                 weights=weights.tolist(),
                 uids=uids, 
@@ -599,22 +587,16 @@ class PolarisNode(BaseValidatorNeuron):
             
             if success:
                 logger.info("Validator weights updated successfully.")
-                # Track tokens for rewarded miners
-            for uid, weight in zip(uids, weights):
-                if weight > 0:  # Only track tokens for miners with non-zero weights
-                    miner_uid = str(uid)
-                    tokens = weight
-                    validator = self.wallet
-                    platform = "Bittensor"
-                    track_success = self.track_tokens(miner_uid, tokens, validator, platform)
-                    if not track_success:
-                        logger.warning(f"Failed to track tokens for miner {miner_uid}.")
+                # Track tokens as before
+                for uid, weight in zip(uids, weights):
+                    if weight > 0:
+                        track_success = self.track_tokens(str(uid), weight, self.wallet.hotkey_str, "Bittensor")
+                        if not track_success:
+                            logger.warning(f"Failed to track tokens for miner {uid}.")
             else:
                 logger.error("Failed to update validator weights.")
         except Exception as e:
             logger.error(f"Exception in update_validator_weights: {e}")
-            import traceback
-            logger.error(traceback.format_exc())
 
     async def forward(self):
         try:
