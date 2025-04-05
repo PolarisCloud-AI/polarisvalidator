@@ -297,7 +297,7 @@ class PolarisNode(BaseValidatorNeuron):
                 continue
             try:
                 uptime_rewards= calculate_miner_rewards(miner_id,compute_score)
-                logger.info(f"miner {miner_id} uptime reward {uptime_rewards["reward_amount"]}")
+                logger.info(f"miner {miner_id} uptime reward")
             except (KeyError, IndexError, Exception) as e:
                 logger.error(f"Error calculating uptime rewards for miner {miner_uid}: {e}")
                 continue
