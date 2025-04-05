@@ -1,9 +1,11 @@
 # Polaris Cloud Validator (NETUID 49)
 
 Welcome to the **Polaris Cloud Subnet** repository! This project is part of the decentralized AI ecosystem powered by **Bittensor**, where **miners** provide compute resources and **validators** ensure the integrity and reliability of the network.
-![subentflow](https://github.com/user-attachments/assets/0f009ad7-2e41-4e0b-ab3c-64d0c146fdc7)
+
 
 ## About Polaris Cloud Subnet
+
+![subentflow](https://github.com/user-attachments/assets/0f009ad7-2e41-4e0b-ab3c-64d0c146fdc7)
 
 The **Polaris Cloud Subnet** (NetUID 49) is designed to provide an efficient, secure, and decentralized platform for both **miners** and **validators**:
 - **Miners** contribute compute resources, which are tracked and scored based on the number of compute hours provided and uptime.
