@@ -16,7 +16,7 @@ from template.base.utils.weight_utils import (
     process_weights_for_netuid,
     convert_weights_and_uids_for_emit,
 )
-from utils.pogs import fetch_compute_specs, compare_compute_resources, compute_resource_score,time_calculation
+from utils.pogs import execute_ssh_tasks, compare_compute_resources, compute_resource_score,time_calculation
 from utils.uptimedata import calculate_miner_rewards,send_reward_log
 logger.add(
     sys.stdout,
@@ -43,7 +43,7 @@ class PolarisNode(BaseValidatorNeuron):
     def load_state(self):
         """Loads the saved state of the validator from a file."""
         try:
-            bt.logging.info("Loading validator state.")
+            logger.info("Loading validator state.")
             with open(self.config.neuron.full_path + "/state.json", "r") as f:
                 state = json.load(f)
                 self.step = state["step"]
@@ -51,6 +51,21 @@ class PolarisNode(BaseValidatorNeuron):
                 self.hotkeys = state["hotkeys"]
         except FileNotFoundError:
             logger.warning("No previous state found. Starting fresh.")
+    
+    def save_state(self):
+        """Saves the current state of the validator to a file."""
+        try:
+            logger.info("Saving validator state.")
+            state = {
+                "step": getattr(self, "step", 0),
+                "scores": self.scores.tolist(),
+                "hotkeys": self.hotkeys
+            }
+            os.makedirs(self.config.neuron.full_path, exist_ok=True)
+            with open(self.config.neuron.full_path + "/state.json", "w") as f:
+                json.dump(state, f)
+        except Exception as e:
+            logger.error(f"Failed to save state: {e}")
 
     def resync_metagraph(self):
         """Resyncs the metagraph and updates the hotkeys and moving averages."""
@@ -143,8 +158,8 @@ class PolarisNode(BaseValidatorNeuron):
             if response.status_code == 200:
                 miners_data = response.json()
                 return {
-                    miner["miner_id"]: miner["network_info"]["subnet_uid"]
-                    for miner in miners_data if int(miner["network_info"]["subnet_uid"]) in allowed_uids
+                    miner["miner_id"]: miner["miner_uid"]
+                    for miner in miners_data if int(miner["miner_uid"]) in allowed_uids
                 }
         except Exception as e:
             logger.error(f"Error fetching filtered miners: {e}")
@@ -158,7 +173,7 @@ class PolarisNode(BaseValidatorNeuron):
                     return {
                         miner["id"]: {
                             "compute_resources": miner["compute_resources"],
-                            "subnet_uid": miner_commune_map.get(miner["id"])
+                            "miner_uid": miner_commune_map.get(miner["id"])
                         }
                         for miner in miners_data
                         if miner["status"] == "verified" and miner["id"] in miner_commune_map
@@ -168,28 +183,27 @@ class PolarisNode(BaseValidatorNeuron):
             except Exception as e:
                 logger.error(f"Error fetching miner list with resources: {e}")
             return {}
-    def get_unverified_miners(self) -> Dict:
+    def get_unverified_miners(self) -> Dict[str, Dict]:
         """
-        Fetch verified miners from the network along with their compute resources.
-        Returns a dictionary containing miner IDs and their compute resources.
+        Fetch unverified miners from the orchestrator API.
+        Returns a dictionary where keys are miner IDs and values are their compute resources.
+        Only includes miners with status 'pending_verification'.
         """
-        unverified_miners={}
         try:
             response = requests.get("https://orchestrator-gekh.onrender.com/api/v1/miners")
             if response.status_code == 200:
                 miners_data = response.json()
-                unverified_miners = {
-                    miner["id"]: miner["compute_resources"]
+                return {
+                    miner["id"]: miner.get("compute_resources", {})
                     for miner in miners_data
-                    if miner["status"] == "pending_verification"
+                    if miner.get("status") == "pending_verification"
                 }
-                return unverified_miners
             else:
-                print(f"Failed to fetch miners. Status code: {response.status_code}")
+                print(f"[ERROR] Failed to fetch miners. Status code: {response.status_code}")
         except Exception as e:
-            print(f"Error fetching miner list: {e}")
+            print(f"[EXCEPTION] Error fetching miner list: {e}")
+        
         return {}
-
     
     def update_miner_status(self,miner_id,status,percentage):
         """
@@ -243,16 +257,16 @@ class PolarisNode(BaseValidatorNeuron):
             Dictionary mapping miner UIDs to their calculated scores
         """
         results = {}
-        # Create a mapping of subnet_uid to miner_id for easier lookup
+        # Create a mapping of miner_uid to miner_id for easier lookup
         subnet_to_miner_map = {}
         
-        # Build a map of subnet_uid to miner_id for quick reference
+        # Build a map of miner_uid to miner_id for quick reference
         for miner_id, info in miner_resources.items():
-            subnet_uid = int(info["subnet_uid"])
-            subnet_to_miner_map[subnet_uid] = miner_id
+            miner_uid = int(info["miner_uid"])
+            subnet_to_miner_map[miner_uid] = miner_id
         
         # Get the list of active miners (those with resources)
-        active_miners = [int(info["subnet_uid"]) for info in miner_resources.values()]
+        active_miners = [int(info["miner_uid"]) for info in miner_resources.values()]
         
         # Process each miner in the list
         for miner_uid in miners:
@@ -261,15 +275,14 @@ class PolarisNode(BaseValidatorNeuron):
                 logger.debug(f"Miner {miner_uid} is not active. Skipping...")
                 continue
             
-            # Get the associated miner_id from the subnet_uid
+            # Get the associated miner_id from the miner_uid
             miner_id = subnet_to_miner_map.get(miner_uid)
             if not miner_id:
-                logger.warning(f"No miner_id found for subnet_uid {miner_uid}")
+                logger.warning(f"No miner_id found for miner_uid {miner_uid}")
                 continue
                 
             # Get miner's compute resource info
             miner_info = miner_resources.get(miner_id)
-            
             if not miner_info:
                 logger.warning(f"No resource info found for miner_id {miner_id}")
                 continue
@@ -428,56 +441,58 @@ class PolarisNode(BaseValidatorNeuron):
             logger.error(f"Error while updating payment status for container {container_id}: {e}")
             return False
 
-    def extract_ssh_and_password(self,miner_resources):
-        
-        if not miner_resources:
-            return {"error": "No compute resources available for the miner."}
-
-        # Extract the first compute resource (assuming SSH and password are in the network field)
-        compute_resource = miner_resources[0]
-        network_info = compute_resource.get("network", {})
-
-        ssh_string = network_info.get("ssh", "").replace("ssh://", "ssh ").replace(":", " -p ")
-        password = network_info.get("password", "")
-
-        if not ssh_string or not password:
-            return {"error": "SSH or password information is missing."}
-
-        return {
-            "ssh_string": ssh_string,
-            "password": password
-        }
-
     async def verify_miners(self, miners):
-        logger.info(f"Verifying miners: {miners}")
+        logger.info(f"Verifying miners........")
+        
+        # Fetch unverified miners once before the loop
+        all_unverified_miners = self.get_unverified_miners()
+        logger.info(f"Fetched all unverified miners' compute resources.")
+
         for miner in miners:
-            compute_resources = self.get_unverified_miners()
-            if miner not in compute_resources:
-                logger.debug(f"Miner {miner} is not in pending verification. Skipping...")
-                continue
-            miner_resources = compute_resources[miner]
-            ssh_info = self.extract_ssh_and_password(miner_resources)
-            if "error" not in ssh_info:
-                logger.info(f"Accessing compute specs for {miner} ")
-                ssh_string = ssh_info["ssh_string"]
-                password = ssh_info["password"]
-                result = fetch_compute_specs(ssh_string, password)
-                if result:
-                    miner_resource = miner_resources[0]
-                    pog_score = compare_compute_resources(result, miner_resource)
-                    logger.info(f"{miner} pog_score {pog_score} ")
-                    if pog_score["percentage"] >= 70:
-                        logger.info(f"{miner} is verified")
+            logger.info(f"Processing miner {miner}")
+            try:
+                # Get compute resources for this specific miner
+                miner_resources = all_unverified_miners.get(miner)
+
+                if miner_resources is None:
+                    logger.debug(f"Miner {miner} is not in pending verification. Skipping...")
+                    continue
+
+                logger.info(f"Found resources for miner {miner}: {miner_resources}")
+                
+                if not miner_resources:
+                    logger.warning(f"No resources found for miner {miner}. Skipping...")
+                    continue
+
+                # Execute SSH tasks to verify the miner
+                result = execute_ssh_tasks(miner)
+                logger.info(f"{result}")
+                
+                if result and "task_results" in result:
+                    specs = result["task_results"]
+                    logger.info(f"SSH task results for miner {miner}: {specs}")
+                    
+                    # Compare claimed vs. actual resources
+                    pog_score = compare_compute_resources(specs, miner_resources[0])
+                    logger.info(f"Miner {miner} pog_score: {pog_score}")
+                    
+                    if pog_score["percentage"] >= 30:
+                        logger.info(f"Miner {miner} is verified with score {pog_score['percentage']}%")
                         self.update_miner_status(miner, "verified", pog_score["percentage"])
                     else:
+                        logger.info(f"Miner {miner} failed verification with score {pog_score['percentage']}%")
                         self.update_miner_status(miner, "rejected", pog_score["percentage"])
-                        logger.info(f"{miner} is not verified")
                 else:
+                    logger.warning(f"Failed to execute SSH tasks for miner {miner}")
                     self.update_miner_status(miner, "rejected", 0.0)
-                    logger.info(f"Miner {miner} is unverified")
-            else:
-                self.update_miner_status(miner, "rejected", 0.0)
-                logger.info(f"Miner {miner} is unverified")
+            except Exception as e:
+                logger.error(f"Error processing miner {miner}: {e}")
+                try:
+                    self.update_miner_status(miner, "rejected", 0.0)
+                except Exception as update_error:
+                    logger.error(f"Failed to update status for miner {miner}: {update_error}")
+
+
     
     async def __aenter__(self):
         await self.setup()
@@ -588,6 +603,7 @@ class PolarisNode(BaseValidatorNeuron):
             if success:
                 logger.info("Validator weights updated successfully.")
                 # Track tokens as before
+                self.save_state()
                 for uid, weight in zip(uids, weights):
                     if weight > 0:
                         track_success = self.track_tokens(str(uid), weight, self.wallet.hotkey_str, "Bittensor")
@@ -602,7 +618,7 @@ class PolarisNode(BaseValidatorNeuron):
         try:
             await self.update_validator_weights()
         except Exception as e:
-            bt.logging.error(f"Error in forward loop: {e}")
+            logger.error(f"Error in forward loop: {e}")
     
 
     def run(self):
@@ -611,9 +627,9 @@ class PolarisNode(BaseValidatorNeuron):
                 self.loop.run_until_complete(self.forward())
                 asyncio.sleep(300)
         except KeyboardInterrupt:
-            bt.logging.success("Validator killed by keyboard interrupt.")
+            logger.success("Validator killed by keyboard interrupt.")
         except Exception as e:
-            bt.logging.error(f"Error during validation: {e}")
+            logger.error(f"Error during validation: {e}")
     
 
 if __name__ == "__main__":

@@ -4,6 +4,8 @@ import asyncio
 import argparse
 import threading
 import bittensor as bt
+from loguru import logger
+import sys
 from typing import List, Union
 from traceback import print_exception
 from template.base.neuron import BaseNeuron
@@ -13,7 +15,15 @@ from template.base.utils.weight_utils import (
 )
 from template.mock import MockDendrite
 from template.utils.config import add_validator_args
-
+logger.add(
+    sys.stdout,
+    format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | "
+           "<level>{level: <8}</level> | "
+           "<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - "
+           "<level>{message}</level>",
+    level="INFO",
+    colorize=True,
+)
 class BaseValidatorNeuron(BaseNeuron):
     neuron_type: str = "ValidatorNeuron"
 

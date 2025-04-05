@@ -147,10 +147,10 @@ def process_weights_for_netuid(
         )
 
         # Log the result of the weight setting
-        logger.success(f"Successfully set weights on netuid {netuid}: {result}")
+        logger.success(f"Successfully set weights: {result}")
 
         return True
 
     except Exception as e:
-        logger.error(f"Error setting weights on netuid {netuid}: {e}")
+        logger.error(f"Error setting weights {netuid}: {e}")
         return False
