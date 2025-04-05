@@ -159,7 +159,8 @@ class PolarisNode(BaseValidatorNeuron):
                 miners_data = response.json()
                 return {
                     miner["miner_id"]: miner["miner_uid"]
-                    for miner in miners_data if int(miner["miner_uid"]) in allowed_uids
+                    for miner in miners_data 
+                    if miner["miner_uid"] is not None and int(miner["miner_uid"]) in allowed_uids
                 }
         except Exception as e:
             logger.error(f"Error fetching filtered miners: {e}")
