@@ -5,7 +5,7 @@ Welcome to the **Polaris Cloud Subnet** repository! This project is part of the 
 ## About Polaris Cloud Subnet
 
 The **Polaris Cloud Subnet** (NetUID 49) is designed to provide an efficient, secure, and decentralized platform for both **miners** and **validators**:
-- **Miners** contribute compute resources, which are tracked and scored based on quality and duration.
+- **Miners** contribute compute resources, which are tracked and scored based on the number of compute hours provided and uptime.
 - **Validators** ensure network security and reliability by maintaining ledger integrity and rewarding miners based on their contributions.
 
 > **Note**: This guide assumes basic familiarity with **Bittensor subnets** and blockchain-based systems.
