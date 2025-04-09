@@ -18,15 +18,18 @@ from template.base.utils.weight_utils import (
 )
 from utils.pogs import execute_ssh_tasks, compare_compute_resources, compute_resource_score,time_calculation
 from utils.uptimedata import calculate_miner_rewards,send_reward_log
-logger.add(
-    sys.stdout,
-    format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | "
-           "<level>{level: <8}</level> | "
-           "<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - "
-           "<level>{message}</level>",
-    level="INFO",
-    colorize=True,
-)
+
+if not logger._core.handlers:  # Prevent duplicate sinks
+    logger.add(
+        sys.stdout,
+        format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | "
+               "<level>{level: <8}</level> | "
+               "<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - "
+               "<level>{message}</level>",
+        level="INFO",
+        colorize=True,
+    )
+
 class PolarisNode(BaseValidatorNeuron):
     def __init__(self, config=None):
         super().__init__(config=config)
@@ -34,6 +37,10 @@ class PolarisNode(BaseValidatorNeuron):
         self.hotkeys = copy.deepcopy(self.metagraph.hotkeys)
         self.dendrite = bt.dendrite(wallet=self.wallet)
         self.scores = np.zeros(self.metagraph.n, dtype=np.float32)
+        balance = self.subtensor.get_balance(self.wallet.hotkey.ss58_address)
+        logger.info(f"Wallet balance: {balance}")
+        self.instance_id = str(uuid.uuid4())[:8]  # Unique ID for this instance
+        logger.info(f"Initializing PolarisNode instance {self.instance_id}")
         self.lock = asyncio.Lock()
         self.loop = asyncio.get_event_loop()
         self.should_exit = False
@@ -99,6 +106,8 @@ class PolarisNode(BaseValidatorNeuron):
     def get_registered_miners(self) -> List[int]:
         try:
             self.metagraph.sync()
+            # Check if UID 234 is valid
+            
             return [int(uid) for uid in self.metagraph.uids]
         except Exception as e:
             logger.error(f"Error fetching registered miners: {e}")
@@ -133,20 +142,19 @@ class PolarisNode(BaseValidatorNeuron):
                 miner_resources = self.get_miner_list_with_resources(bittensor_miners)
 
                 # Step 4: Process miners
-                results = await self.process_miners(miners, miner_resources)
+                results, container_updates, uptime_rewards_dict = await self.process_miners(miners, miner_resources)
                 logger.info(f"Validation results: {results}")
 
                 # Step 5: Directly update validator weights with results
                 if results:
                     logger.info("Calling update_validator_weights() with results...")
-                    await self.update_validator_weights(results)  # Pass results directly
+                    await self.update_validator_weights(results, container_updates, uptime_rewards_dict)                    
                     logger.info("Finished calling update_validator_weights()")
                 else:
                     logger.warning("No results to process. Skipping update_validator_weights.")
-
                 # Step 6: Sleep before next iteration
-                logger.info("Sleeping for 30 seconds...")
-                await asyncio.sleep(180)
+                logger.info("Sleeping for 1 hour ...")
+                await asyncio.sleep(3600)
 
             except Exception as e:
                 logger.error(f"Error in process_miners_loop: {e}")
@@ -245,65 +253,51 @@ class PolarisNode(BaseValidatorNeuron):
                 logger.error(f"Error fetching containers for miner {miner_uid}: {e}")
             return []
     
-    async def process_miners(self, miners: List[int], miner_resources: Dict) -> Dict[int, float]:
+    async def process_miners(self, miners: List[int], miner_resources: Dict) -> tuple[Dict[int, float], Dict[int, List[str]], Dict[int, Dict]]:
         """
-        Process miners and calculate their scores based on container performance and compute resources.
-        Also updates payment status for rewarded containers.
+        Process miners and calculate their scores. Collect container updates and uptime rewards without applying them yet.
         
         Args:
             miners: List of miner UIDs to process
             miner_resources: Dictionary mapping miner IDs to their resource information
             
         Returns:
-            Dictionary mapping miner UIDs to their calculated scores
+            Tuple of (results: Dict[int, float], container_updates: Dict[int, List[str]], uptime_rewards_dict: Dict[int, Dict])
+            - results: Miner UIDs to their calculated scores
+            - container_updates: Miner UIDs to lists of container IDs eligible for payment updates
+            - uptime_rewards_dict: Miner UIDs to their uptime reward data
         """
         results = {}
-        # Create a mapping of miner_uid to miner_id for easier lookup
-        subnet_to_miner_map = {}
+        container_updates = {}
+        uptime_rewards_dict = {}
+        subnet_to_miner_map = {int(info["miner_uid"]): miner_id for miner_id, info in miner_resources.items()}
+        active_miners = list(subnet_to_miner_map.keys())
         
-        # Build a map of miner_uid to miner_id for quick reference
-        for miner_id, info in miner_resources.items():
-            miner_uid = int(info["miner_uid"])
-            subnet_to_miner_map[miner_uid] = miner_id
-        
-        # Get the list of active miners (those with resources)
-        active_miners = [int(info["miner_uid"]) for info in miner_resources.values()]
-        
-        # Process each miner in the list
         for miner_uid in miners:
-            # Skip miners that aren't active
             if miner_uid not in active_miners:
                 logger.debug(f"Miner {miner_uid} is not active. Skipping...")
                 continue
-            
-            # Get the associated miner_id from the miner_uid
             miner_id = subnet_to_miner_map.get(miner_uid)
             if not miner_id:
                 logger.warning(f"No miner_id found for miner_uid {miner_uid}")
                 continue
-                
-            # Get miner's compute resource info
             miner_info = miner_resources.get(miner_id)
             if not miner_info:
                 logger.warning(f"No resource info found for miner_id {miner_id}")
                 continue
-                
-            # Calculate compute score based on resources
             try:
                 compute_score = compute_resource_score(miner_info["compute_resources"][0])
                 logger.info(f"Compute score for miner {miner_uid}: {compute_score}")
-
             except (KeyError, IndexError, Exception) as e:
                 logger.error(f"Error calculating compute score for miner {miner_uid}: {e}")
                 continue
             try:
-                uptime_rewards= calculate_miner_rewards(miner_id,compute_score)
-                logger.info(f"miner {miner_id} uptime reward")
+                uptime_rewards = calculate_miner_rewards(miner_id, compute_score)
+                logger.info(f"Miner {miner_id} uptime reward: {uptime_rewards['reward_amount']}")
+                uptime_rewards_dict[miner_uid] = uptime_rewards
             except (KeyError, IndexError, Exception) as e:
                 logger.error(f"Error calculating uptime rewards for miner {miner_uid}: {e}")
                 continue
-            
-            # Get all containers for this miner
             try:
                 containers = self.get_containers_for_miner(miner_id)
                 logger.info(f"Found {len(containers)} containers for miner {miner_id}")
@@ -311,94 +305,53 @@ class PolarisNode(BaseValidatorNeuron):
                 logger.error(f"Error fetching containers for miner {miner_id}: {e}")
                 continue
             
-            # Process container data
             total_termination_time = 0
             rewarded_containers = 0
             container_payment_updates = []
             
-            # Process each container
             for container in containers:
                 container_id = container.get("id", "unknown")
                 logger.info(f"Processing container: {container_id}")
-                
-                # Skip containers with missing required fields
                 required_fields = ["created_at", "scheduled_termination", "status", "payment_status"]
                 if not all(field in container for field in required_fields):
                     missing_fields = [field for field in required_fields if field not in container]
                     logger.warning(f"Container {container_id} missing required fields: {missing_fields}. Skipping.")
                     continue
-                    
-                # Skip if created_at or scheduled_termination is None
                 if container["created_at"] is None or container["scheduled_termination"] is None:
                     logger.warning(f"Container {container_id} has null timestamp values. Skipping.")
                     continue
-                
-                # Check if container has expired
-            # Calculate actual run time
                 try:
-                    actual_run_time = time_calculation(str(container["created_at"]),str(container["scheduled_termination"]))
+                    actual_run_time = time_calculation(str(container["created_at"]), str(container["scheduled_termination"]))
                     logger.info(f"Actual run time for container {container_id}: {actual_run_time}")
                 except Exception as e:
                     logger.error(f"Error calculating run time for container {container_id}: {e}")
                     continue
-                        
-            # Check if container is eligible for rewards
-                if (container['status'] == 'terminated' and  container['payment_status'] == 'pending'):
+                if container['status'] == 'terminated' and container['payment_status'] == 'pending':
                     total_termination_time += actual_run_time
                     rewarded_containers += 1
                     container_payment_updates.append(container_id)
-                    logger.info(f"Container {container_id} eligible for reward. Total rewarded containers: {rewarded_containers}")    
+                    logger.info(f"Container {container_id} eligible for reward. Total rewarded: {rewarded_containers}")
             
-            # Calculate final score after processing all containers for this miner
             logger.info(f"Completed container processing for miner {miner_uid}. Rewarded containers: {rewarded_containers}")
             
             if rewarded_containers > 0:
                 try:
-                    # Calculate average time across all rewarded containers
                     average_time = total_termination_time / rewarded_containers
-                    
-                    # Calculate final score using formula: (avg_time + total_time) * compute_score
                     final_score = ((average_time + total_termination_time) * compute_score) + uptime_rewards["reward_amount"]
-                    
-                    logger.info(f"Final score calculation for miner {miner_uid}:")
-                    logger.info(f"  - Average time: {average_time}")
-                    logger.info(f"  - Total time: {total_termination_time}")
-                    logger.info(f"  - Compute score: {compute_score}")
-                    logger.info(f"  - Final score: {final_score}")
-                    
-                    # Store the result
+                    logger.info(f"Final score for miner {miner_uid}: {final_score}")
                     results[miner_uid] = final_score
-                    
-                    # Update payment status for all rewarded containers
-                    update_results = []
-                    for container_id in container_payment_updates:
-                        logger.info(f"Updating payment status for container {container_id}...")
-                        success = self.update_container_payment_status(container_id)
-                        update_results.append((container_id, success))
-                    
-                    # Log the results of the updates
-                    successful_updates = [container_id for container_id, success in update_results if success]
-                    failed_updates = [container_id for container_id, success in update_results if not success]
-                    
-                    if successful_updates:
-                        send_reward_log(uptime_rewards)
-                        logger.info(f"Successfully updated payment status for containers: {successful_updates}")
-                    if failed_updates:
-                        logger.warning(f"Failed to update payment status for containers: {failed_updates}")
-                    
+                    container_updates[miner_uid] = container_payment_updates
                 except Exception as e:
                     logger.error(f"Error calculating final score for miner {miner_uid}: {e}")
             else:
-                if uptime_rewards["reward_amount"]>0:
+                if uptime_rewards["reward_amount"] > 0:
                     results[miner_uid] = uptime_rewards["reward_amount"]
-                    send_reward_log(uptime_rewards)
-
-                else:
-                    logger.info(f"No rewarded containers for miner {miner_uid}, skipping score calculation")
+                    container_updates[miner_uid] = []  # No containers to update, but include in dict
         
-        # Log final results before returning
-        logger.info(f"Final results for all miners: {results}")
-        return results
+        logger.info(f"Final results: {results}")
+        logger.info(f"Container updates collected: {container_updates}")
+        logger.info(f"Uptime rewards collected: {uptime_rewards_dict}")
+        return results, container_updates, uptime_rewards_dict
 
     
     def update_container_payment_status(self, container_id: str) -> bool:
@@ -504,8 +457,11 @@ class PolarisNode(BaseValidatorNeuron):
 
     async def setup(self):
         self.load_state()
-        asyncio.create_task(self.verify_miners_loop())
-        asyncio.create_task(self.process_miners_loop())
+        if not hasattr(self, '_tasks_scheduled'):
+            asyncio.create_task(self.verify_miners_loop())
+            asyncio.create_task(self.process_miners_loop())
+            self._tasks_scheduled = True
+        logger.info("Setup completed")
     
     async def cleanup(self):
         pass
@@ -550,14 +506,13 @@ class PolarisNode(BaseValidatorNeuron):
             logger.error(f"Error while tracking tokens for miner {miner_uid}: {e}")
             return False
 
-    async def update_validator_weights(self, results):
+    async def update_validator_weights(self, results: Dict[int, float], container_updates: Dict[int, List[str]], uptime_rewards_dict: Dict[int, Dict]):
+        """Update validator weights and apply container updates only if weights are set successfully."""
         logger.info("Starting update_validator_weights...")
         try:
             if not results:
                 logger.warning("No results to process. Skipping weight update.")
                 return
-            
-            # Fetch the subnet price for the validator's subnet
             subnet_price = 0.0
             try:
                 async with bt.AsyncSubtensor(network=self.config.subtensor.network) as sub:
@@ -566,67 +521,68 @@ class PolarisNode(BaseValidatorNeuron):
             except Exception as e:
                 logger.error(f"Error fetching price for netuid {self.config.netuid}: {e}")
                 return
-            
             if subnet_price <= 0:
-                logger.warning(f"Subnet price for netuid {self.config.netuid} is zero or invalid. Using scores directly.")
+                logger.warning(f"Subnet price for netuid {self.config.netuid} is zero or invalid.")
                 weighted_scores = {int(uid): float(score) for uid, score in results.items()}
             else:
-                # Weight scores by the subnet price (optional, since normalization may make this redundant)
                 weighted_scores = {int(uid): float(score) * subnet_price for uid, score in results.items()}
-            
             if not weighted_scores:
                 logger.warning("No weighted scores calculated. Skipping weight update.")
                 return
             logger.info(f"Weighted scores: {weighted_scores}")
             weights, uids = convert_weights_and_uids_for_emit(weighted_scores)
-            
-            # Normalize weights to sum to 1
             weights = np.array(weights, dtype=np.float32)
             norm = np.linalg.norm(weights, ord=1)
             if norm > 0:
                 weights /= norm
             else:
-                logger.warning("Weights sum to zero, using uniform distribution instead.")
+                logger.warning("Weights sum to zero, using uniform distribution.")
                 weights = np.ones_like(weights) / len(weights) if len(weights) > 0 else weights
-            
             logger.info(f"Final processed weights: {weights}")
             logger.info(f"Final processed UIDs: {uids}")
             
-            # Set weights
             success = process_weights_for_netuid(
                 weights=weights.tolist(),
-                uids=uids, 
-                netuid=self.config.netuid, 
+                uids=uids,
+                netuid=self.config.netuid,
                 subtensor=self.subtensor,
                 wallet=self.wallet
             )
             
             if success:
                 logger.info("Validator weights updated successfully.")
-                # Track tokens as before
                 self.save_state()
+                # Update container payment statuses
+                for uid in container_updates:
+                    container_ids = container_updates[uid]
+                    for container_id in container_ids:
+                        if not self.update_container_payment_status(container_id):
+                            logger.warning(f"Failed to update payment status for container {container_id}")
+                    # Send reward log if there are uptime rewards
+                    if uid in uptime_rewards_dict and uptime_rewards_dict[uid]["reward_amount"] > 0:
+                        send_reward_log(uptime_rewards_dict[uid])
+                        logger.info(f"Sent reward log for miner {uid}")
+                # Track tokens
                 for uid, weight in zip(uids, weights):
                     if weight > 0:
                         track_success = self.track_tokens(str(uid), weight, self.wallet.hotkey_str, "Bittensor")
                         if not track_success:
                             logger.warning(f"Failed to track tokens for miner {uid}.")
             else:
-                logger.error("Failed to update validator weights.")
+                logger.warning("Failed to update validator weights. Skipping container updates and reward logs.")
         except Exception as e:
             logger.error(f"Exception in update_validator_weights: {e}")
 
     async def forward(self):
         try:
-            await self.update_validator_weights()
+            await self.update_validator_weights({}, {}, {})
         except Exception as e:
             logger.error(f"Error in forward loop: {e}")
     
 
     def run(self):
         try:
-            while not self.should_exit:
-                self.loop.run_until_complete(self.forward())
-                asyncio.sleep(300)
+            self.loop.run_forever()  # Just run the event loop for tasks scheduled in setup
         except KeyboardInterrupt:
             logger.success("Validator killed by keyboard interrupt.")
         except Exception as e:

@@ -5,17 +5,10 @@ from typing import List
 import sys
 from loguru import logger
 
-# Configure loguru for world-class logging
-logger.remove()  # Remove default logger
-logger.add(
-    sys.stdout,
-    format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | "
-           "<level>{level: <8}</level> | "
-           "<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - "
-           "<level>{message}</level>",
-    level="INFO",
-    colorize=True,
-)
+__version__ = "0.3.4"
+version_split = __version__.split(".")
+__spec_version__ = (100 * int(version_split[0])) + (10 * int(version_split[1])) + (1 * int(version_split[2]))
+
 U32_MAX = 4294967295
 U16_MAX = 65535
 
@@ -136,21 +129,21 @@ def process_weights_for_netuid(
         logger.info(
             f"Setting weights: UIDs: {filtered_uids}, Weights: {filtered_weights}"
         )
-
+        logger.info(f"here is the wallet {wallet}")
         # Set weights on the Bittensor network
         result = subtensor.set_weights(
             netuid=netuid,
             uids=torch.tensor(filtered_uids, dtype=torch.int64),
             weights=torch.tensor(filtered_weights, dtype=torch.float32),
             wait_for_inclusion=False,
-            wallet=wallet
+            wallet=wallet,
+            version_key=__spec_version__
         )
-
-        # Log the result of the weight setting
-        logger.success(f"Successfully set weights: {result}")
-
-        return True
-
+        if result[0]:
+            logger.success("Weights set successfully")
+            return True
+        else:
+            logger.warning(f"Weight setting failed: {result[1]}")
     except Exception as e:
         logger.error(f"Error setting weights {netuid}: {e}")
         return False
