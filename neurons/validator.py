@@ -246,12 +246,12 @@ class PolarisNode(BaseValidatorNeuron):
                 blocks_since_last = current_block - self.last_weight_update_block
                 effective_rate_limit = max(self.tempo, self.weights_rate_limit)
                 blocks_remaining = effective_rate_limit - blocks_since_last
-                sleep_time = min(720, max(60, blocks_remaining * 12)) if blocks_remaining > 0 else 720
+                sleep_time = min(3600, max(720, blocks_remaining * 12)) if blocks_remaining > 0 else 3600
                 logger.info(f"Sleeping for {sleep_time} seconds until next weight update opportunity.")
                 await asyncio.sleep(sleep_time)
             except Exception as e:
                 logger.error(f"Error in process_miners_loop: {e}")
-                await asyncio.sleep(60)
+                await asyncio.sleep(720)
 
     async def setup(self):
         load_state(self)
