@@ -240,7 +240,8 @@ def send_reward_log(reward_data: dict):
 
         # Check response
         if response.status_code == 200:
-            print(f"✅ Successfully recorded payment: {payload}")
+            internal_miner_id=reward_data["miner_id"]
+            print(f"✅ Successfully recorded payment for internal miner id {internal_miner_id}")
         else:
             print(f"❌ Failed to record payment: {response.status_code} - {response.text}")
 
