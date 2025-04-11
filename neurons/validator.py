@@ -242,17 +242,24 @@ class PolarisNode(BaseValidatorNeuron):
                 miner_resources = get_miner_list_with_resources(bittensor_miners)
                 results, container_updates, uptime_rewards_dict = await process_miners(miners, miner_resources, get_containers_for_miner)
                 await self.update_validator_weights(results, container_updates, uptime_rewards_dict)
+                
+                # Calculate sleep time based on tempo (72 minutes = 4320 seconds)
                 current_block = self.subtensor.block
                 blocks_since_last = current_block - self.last_weight_update_block
-                effective_rate_limit = max(self.tempo, self.weights_rate_limit)
+                effective_rate_limit = max(self.tempo, self.weights_rate_limit)  # 360 blocks
                 blocks_remaining = effective_rate_limit - blocks_since_last
-                sleep_time = min(3600, max(720, blocks_remaining * 12)) if blocks_remaining > 0 else 3600
+                
+                # Convert blocks to seconds (12 seconds/block) and ensure at least 72 minutes
+                sleep_time = max(4320, blocks_remaining * 12)  # 4320 seconds = 72 minutes
                 logger.info(f"Sleeping for {sleep_time} seconds until next weight update opportunity.")
                 await asyncio.sleep(sleep_time)
+                
             except Exception as e:
                 logger.error(f"Error in process_miners_loop: {e}")
-                await asyncio.sleep(720)
-
+                # On error, still wait at least 72 minutes before retrying
+                logger.info("Sleeping for 4320 seconds (72 minutes) after error.")
+                await asyncio.sleep(4320)
+                
     async def setup(self):
         load_state(self)
         if not self._tasks_scheduled:
