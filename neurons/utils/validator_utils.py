@@ -1,11 +1,35 @@
 import asyncio
 from typing import List, Dict, Tuple
 from loguru import logger
-from utils.pogs import execute_ssh_tasks, compare_compute_resources, compute_resource_score, time_calculation
+import numpy as np
+from utils.pogs import execute_ssh_tasks, compare_compute_resources, compute_resource_score
 from utils.uptimedata import calculate_miner_rewards
 
-async def process_miners(miners: List[int], miner_resources: Dict, get_containers_func) -> Tuple[Dict[int, float], Dict[int, List[str]], Dict[int, Dict]]:
-    results = {}
+async def process_miners(
+    miners: List[int],
+    miner_resources: Dict,
+    get_containers_func,
+    tempo: int,
+    max_score: float = 500.0
+) -> Tuple[Dict[int, float], Dict[int, List[str]], Dict[int, Dict]]:
+    """
+    Processes miners to compute scores based on active containers and compute resources, with incentives for scalability,
+    fair compute score weighting, and diminishing returns on container count. Normalizes scores to max_score.
+
+    Args:
+        miners: List of miner UIDs.
+        miner_resources: Dictionary of miner resource information.
+        get_containers_func: Function to retrieve containers for a miner.
+        tempo: Subnet tempo to scale rewards.
+        max_score: Maximum score per miner (default: 500.0).
+
+    Returns:
+        Tuple of (results, container_updates, uptime_rewards_dict):
+        - results: Dict mapping miner UID to normalized score (≤ max_score).
+        - container_updates: Dict mapping miner UID to list of container IDs to update.
+        - uptime_rewards_dict: Dict mapping miner UID to uptime reward details.
+    """
+    raw_results = {}  # Store raw scores before normalization
     container_updates = {}
     uptime_rewards_dict = {}
     subnet_to_miner_map = {int(info["miner_uid"]): miner_id for miner_id, info in miner_resources.items()}
@@ -26,7 +50,9 @@ async def process_miners(miners: List[int], miner_resources: Dict, get_container
 
         try:
             compute_score = compute_resource_score(miner_info["compute_resources"][0])
-            logger.info(f"Compute score for miner {miner_uid}: {compute_score}")
+            # Logarithmic scaling for fair compute score
+            scaled_compute_score = np.log1p(compute_score) * 5  # Scales to ~35 for compute_score=1000
+            logger.info(f"Compute score for miner {miner_uid}: raw={compute_score}, scaled={scaled_compute_score:.2f}")
         except Exception as e:
             logger.error(f"Error calculating compute score for miner {miner_uid}: {e}")
             continue
@@ -40,40 +66,69 @@ async def process_miners(miners: List[int], miner_resources: Dict, get_container
             continue
 
         containers = get_containers_func(miner_id)
-        total_termination_time = 0
-        rewarded_containers = 0
+        active_container_count = 0
         container_payment_updates = []
 
         for container in containers:
             container_id = container.get("id", "unknown")
-            required_fields = ["created_at", "scheduled_termination", "status", "payment_status"]
+            required_fields = ["status"]
             if not all(field in container for field in required_fields):
-                logger.warning(f"Container {container_id} missing fields. Skipping.")
+                logger.warning(f"Container {container_id} missing status field. Skipping.")
                 continue
-            if container["created_at"] is None or container["scheduled_termination"] is None:
-                logger.warning(f"Container {container_id} has null timestamps. Skipping.")
+            if container["status"] != "running":
+                logger.debug(f"Container {container_id} is not active (status: {container['status']}). Skipping.")
                 continue
             try:
-                actual_run_time = time_calculation(str(container["created_at"]), str(container["scheduled_termination"]))
-                if container["status"] == "terminated" and container["payment_status"] == "pending":
-                    total_termination_time += actual_run_time
-                    rewarded_containers += 1
-                    container_payment_updates.append(container_id)
+                active_container_count += 1
+                container_payment_updates.append(container_id)
             except Exception as e:
                 logger.error(f"Error processing container {container_id}: {e}")
                 continue
 
-        if rewarded_containers > 0:
-            try:
-                average_time = total_termination_time / rewarded_containers
-                final_score = ((average_time + total_termination_time) * compute_score) + uptime_rewards["reward_amount"]
-                results[miner_uid] = final_score
+        try:
+            # Diminishing returns on container count
+            effective_container_count = min(active_container_count, 10) + np.log1p(max(0, active_container_count - 10))
+            # Scalability bonus
+            container_bonus = np.sqrt(active_container_count) * 3  # Scales to ~9 for 10 containers
+            # Balanced weighting: 0.5 containers, 0.5 compute
+            base_score = 0.5 * effective_container_count + 0.5 * scaled_compute_score
+            # Scale base_score to keep within reasonable bounds
+            base_score = base_score / 10
+            # Apply tempo and bonus
+            raw_score = (base_score * tempo + container_bonus) + uptime_rewards["reward_amount"]
+            
+            if raw_score > 0:
+                raw_results[miner_uid] = raw_score
                 container_updates[miner_uid] = container_payment_updates
-            except Exception as e:
-                logger.error(f"Error calculating final score for miner {miner_uid}: {e}")
-        elif uptime_rewards["reward_amount"] > 0:
-            results[miner_uid] = uptime_rewards["reward_amount"]
-            container_updates[miner_uid] = []
+                logger.info(f"Miner {miner_uid}: {active_container_count} active containers, "
+                           f"effective_count={effective_container_count:.2f}, "
+                           f"container_bonus={container_bonus:.2f}, "
+                           f"scaled_compute={scaled_compute_score:.2f}, "
+                           f"tempo={tempo}, "
+                           f"uptime_reward={uptime_rewards['reward_amount']}, "
+                           f"raw_score={(base_score * tempo):.2f} + {container_bonus:.2f} + "
+                           f"{uptime_rewards['reward_amount']} = {raw_score:.2f}")
+            else:
+                logger.debug(f"Miner {miner_uid} has no score contribution (active_containers={active_container_count}, "
+                            f"uptime_rewards={uptime_rewards['reward_amount']})")
+        except Exception as e:
+            logger.error(f"Error calculating raw score for miner {miner_uid}: {e}")
+
+    # Normalize scores to max_score
+    results = {}
+    if raw_results:
+        max_raw_score = max(raw_results.values())
+        if max_raw_score > 0:
+            normalization_factor = max_score / max_raw_score
+            for miner_uid, raw_score in raw_results.items():
+                normalized_score = raw_score * normalization_factor
+                results[miner_uid] = normalized_score
+                logger.info(f"Miner {miner_uid}: raw_score={raw_score:.2f}, "
+                           f"normalized_score={normalized_score:.2f} (factor={normalization_factor:.4f})")
+        else:
+            logger.warning("All raw scores are zero. Skipping normalization.")
+    else:
+        logger.info("No valid scores to normalize.")
 
     logger.info(f"Processed miners: {results}")
     return results, container_updates, uptime_rewards_dict
