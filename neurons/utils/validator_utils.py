@@ -75,7 +75,7 @@ async def process_miners(
             if not all(field in container for field in required_fields):
                 logger.warning(f"Container {container_id} missing status field. Skipping.")
                 continue
-            if container["status"] != "active":
+            if container["status"] != "running":
                 logger.debug(f"Container {container_id} is not active (status: {container['status']}). Skipping.")
                 continue
             try:
