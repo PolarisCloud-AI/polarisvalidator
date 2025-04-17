@@ -11,8 +11,7 @@ from template.base.validator import BaseValidatorNeuron
 from template.base.utils.weight_utils import (
     normalize_max_weight,
     convert_weights_and_uids_for_emit,
-    process_weights_for_netuid,
-    select_burner_uids
+    process_weights_for_netuid
 )
 from utils.api_utils import (
     get_filtered_miners,
@@ -21,7 +20,8 @@ from utils.api_utils import (
     track_tokens,
     get_containers_for_miner,
     get_unverified_miners,
-    update_miner_status
+    update_miner_status,filter_miners_by_id
+
 )
 from utils.validator_utils import process_miners, verify_miners
 from utils.state_utils import load_state, save_state
@@ -51,14 +51,6 @@ class PolarisNode(BaseValidatorNeuron):
         self.retry_delay_base = 5
         self.step = 0
         
-        # Burner miner parameters
-        self.num_burners = 3
-        self.total_burn_emission = 0.2
-        self.burner_emission = 0.05
-        self.config_burners = getattr(self.config, 'burners', []) or os.getenv('BURNER_UIDS', '').split(',')
-        self.config_burners = [int(uid) for uid in self.config_burners if uid.isdigit()]
-        self.burner_uids = []
-        
         # Score decay
         self.score_decay = 0.9
         
@@ -84,7 +76,7 @@ class PolarisNode(BaseValidatorNeuron):
         self.weights_rate_limit = self.get_weights_rate_limit()
         if previous_metagraph.axons == self.metagraph.axons:
             return
-        logger.info("Metagraph updated, re-syncing hotkeys, scores, and burners.")
+        logger.info("Metagraph updated, re-syncing hotkeys and scores.")
         for uid, hotkey in enumerate(self.hotkeys):
             if hotkey != self.metagraph.hotkeys[uid]:
                 self.scores[uid] = 0
@@ -94,7 +86,6 @@ class PolarisNode(BaseValidatorNeuron):
             new_scores[:min_len] = self.scores[:min_len]
             self.scores = new_scores
         self.hotkeys = copy.deepcopy(self.metagraph.hotkeys)
-        self.loop.create_task(self.update_burner_uids())
         self.save_state()
 
     def get_registered_miners(self) -> list[int]:
@@ -151,27 +142,6 @@ class PolarisNode(BaseValidatorNeuron):
             logger.error(f"Error checking chain sync: {e}")
             return False
 
-    async def update_burner_uids(self):
-        """Updates burner UIDs based on current metagraph and network state."""
-        try:
-            last_mechanism_step_block = self.subtensor.substrate.query(
-                "SubtensorModule", "LastMechansimStepBlock", [self.config.netuid]
-            ).value
-        except Exception as e:
-            logger.error(f"Error fetching last mechanism step block: {e}")
-            last_mechanism_step_block = None
-
-        self.burner_uids = select_burner_uids(
-            metagraph=self.metagraph,
-            subtensor=self.subtensor,
-            num_burners=self.num_burners,
-            stake_threshold=0.9,
-            config_burners=self.config_burners,
-            last_mechanism_step_block=last_mechanism_step_block
-        )
-        logger.info(f"Updated burner UIDs: {self.burner_uids}")
-        self.save_state()
-
     async def is_subnet_ready_for_weights(self) -> bool:
         """Checks if the subnet is ready for weight updates."""
         try:
@@ -205,8 +175,8 @@ class PolarisNode(BaseValidatorNeuron):
         logger.info("Starting update_validator_weights...")
         async with self.lock:
             try:
-                if not results and not self.burner_uids:
-                    logger.warning("No results and no burners. Skipping weight update.")
+                if not results:
+                    logger.warning("No results. Skipping weight update.")
                     return
                 if not self.check_registered():
                     logger.error("Validator not registered. Skipping weight update.")
@@ -238,21 +208,7 @@ class PolarisNode(BaseValidatorNeuron):
                 # Prepare weighted scores
                 weighted_scores = {str(uid): float(score) for uid, score in enumerate(self.scores) if score > 0}
 
-                # Get last mechanism step block for burner selection
-                try:
-                    node = self.subtensor.substrate
-                    last_mechanism_step_block = node.query("SubtensorModule", "LastMechansimStepBlock", [self.config.netuid]).value
-                except Exception as e:
-                    logger.error(f"Error fetching last mechanism step block: {e}")
-                    last_mechanism_step_block = None
-
-                weights, uids = convert_weights_and_uids_for_emit(
-                    weighted_scores,
-                    burners=self.burner_uids,
-                    total_burn_emission=self.total_burn_emission if self.burner_uids else 0.0,
-                    burner_emission=self.burner_emission,
-                    last_mechanism_step_block=last_mechanism_step_block
-                )
+                weights, uids = convert_weights_and_uids_for_emit(weighted_scores)
 
                 for attempt in range(self.max_retries):
                     success = process_weights_for_netuid(
@@ -269,15 +225,7 @@ class PolarisNode(BaseValidatorNeuron):
                         self.scores = np.zeros(self.metagraph.n, dtype=np.float32)
                         self.step += 1
                         self.save_state()
-                        # for uid in container_updates:
-                        #     # for container_id in container_updates[uid]:
-                        #     #     update_container_payment_status(container_id)
-                        #     if uid in uptime_rewards_dict and uptime_rewards_dict[uid]["reward_amount"] > 0:
-                        #         send_reward_log(uptime_rewards_dict[uid])
-                        # for uid, weight in zip(uids, weights):
-                        #     if weight > 0:
-                        #         track_tokens(str(uid), weight, self.wallet.hotkey_str, "Bittensor")
-                        # break
+                        break
                     else:
                         logger.warning(f"Weight update failed on attempt {attempt + 1}/{self.max_retries}")
                         if attempt < self.max_retries - 1:
@@ -297,7 +245,7 @@ class PolarisNode(BaseValidatorNeuron):
                 miners = self.get_registered_miners()
                 bittensor_miners = get_filtered_miners(miners)
                 await verify_miners(list(bittensor_miners.keys()), get_unverified_miners, update_miner_status)
-                await asyncio.sleep(180)
+                await asyncio.sleep(300)
             except Exception as e:
                 logger.error(f"Error in verify_miners_loop: {e}")
                 await asyncio.sleep(60)
@@ -308,13 +256,11 @@ class PolarisNode(BaseValidatorNeuron):
             try:
                 logger.info("Starting process_miners_loop...")
                 miners = self.get_registered_miners()
-                bittensor_miners = get_filtered_miners(miners)
+                white_list = get_filtered_miners(miners)
+                bittensor_miners = filter_miners_by_id(white_list)
                 miner_resources = get_miner_list_with_resources(bittensor_miners)
-                results, container_updates, uptime_rewards_dict = await process_miners(
-                    miners, miner_resources, get_containers_for_miner, self.tempo, max_score=self.max_allowed_weights
-                )
+                results, container_updates, uptime_rewards_dict = await process_miners( miners, miner_resources, get_containers_for_miner, self.tempo, max_score=self.max_allowed_weights)
                 await self.update_validator_weights(results, container_updates, uptime_rewards_dict)
-                
                 current_block = self.subtensor.block
                 blocks_since_last = current_block - self.last_weight_update_block
                 effective_rate_limit = max(self.tempo, self.weights_rate_limit)
@@ -331,7 +277,6 @@ class PolarisNode(BaseValidatorNeuron):
     async def setup(self):
         """Sets up the validator."""
         self.load_state()
-        await self.update_burner_uids()
         if not self._tasks_scheduled:
             asyncio.create_task(self.verify_miners_loop())
             asyncio.create_task(self.process_miners_loop())
