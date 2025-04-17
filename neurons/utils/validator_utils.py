@@ -1,9 +1,12 @@
 import asyncio
-from typing import List, Dict, Tuple
+from typing import List, Callable, Dict, Any,Tuple
 from loguru import logger
 import numpy as np
+import requests
+import tenacity
 from utils.pogs import execute_ssh_tasks, compare_compute_resources, compute_resource_score
 from utils.uptimedata import calculate_miner_rewards
+from utils.api_utils import get_miner_details, get_miner_uid_by_hotkey,check_miner_unique
 
 async def process_miners(
     miners: List[int],
@@ -37,7 +40,6 @@ async def process_miners(
 
     for miner_uid in miners:
         if miner_uid not in active_miners:
-            logger.debug(f"Miner {miner_uid} is not active. Skipping...")
             continue
         miner_id = subnet_to_miner_map.get(miner_uid)
         if not miner_id:
@@ -133,28 +135,111 @@ async def process_miners(
     logger.info(f"Processed miners: {results}")
     return results, container_updates, uptime_rewards_dict
 
-async def verify_miners(miners: List[str], get_unverified_func, update_status_func):
-    logger.info("Verifying miners...")
+async def _reject_miner(
+    miner: str,
+    reason: str,
+    update_status_func: Callable[[str, str, float], None]
+) -> None:
+    """Helper function to reject a miner with a reason and update status."""
+    logger.error(f"Rejecting miner {miner}: {reason}")
+    update_status_func(miner, "rejected", 0.0)
+
+@tenacity.retry(
+    stop=tenacity.stop_after_attempt(3),
+    wait=tenacity.wait_exponential(multiplier=1, min=1, max=5),
+    reraise=True
+)
+def _check_miner_unique_with_retry(miner: str) -> bool:
+    """Wrapper for check_miner_unique with retry logic."""
+    return check_miner_unique(miner)
+
+async def verify_miners(
+    miners: List[str],
+    get_unverified_func: Callable[[], Dict[str, Dict[str, Any]]],
+    update_status_func: Callable[[str, str, float], None]
+) -> None:
+    """
+    Verifies miners by checking their hotkey-based UID, uniqueness, and compute resources.
+    
+    Args:
+        miners: List of miner IDs to verify.
+        get_unverified_func: Function returning a dict of unverified miners.
+        update_status_func: Function to update miner status with ID, status, and percentage.
+    """
+    logger.info(f"Verifying {len(miners)} miners...")
     unverified_miners = get_unverified_func()
     for miner in miners:
+        # Check if miner is unverified
         if miner not in unverified_miners:
-            logger.debug(f"Miner {miner} not pending verification. Skipping...")
             continue
+
+        # Validate resources (expecting a dict from get_unverified_miners)
         miner_resources = unverified_miners.get(miner)
-        if not miner_resources:
-            logger.warning(f"No resources for miner {miner}. Skipping...")
+        if not isinstance(miner_resources, List) or not miner_resources:
+            await _reject_miner(miner, "Invalid or missing resources", update_status_func)
             continue
+
+        # Get miner details
+        miner_spec = get_miner_details(miner)
+        if not miner_spec:
+            await _reject_miner(miner, "No details returned", update_status_func)
+            continue
+
+        # Validate subnet_uid
+        subnet_uid = miner_spec.get("subnet_uid")
+        if subnet_uid != 49:
+            await _reject_miner(miner, f"Invalid subnet_uid {subnet_uid}, expected 49", update_status_func)
+            continue
+
+        # Extract and validate hotkey and miner_uid
+        hotkey = miner_spec.get("hotkey")
+        miner_uid = miner_spec.get("miner_uid")
+        if not hotkey or miner_uid is None:
+            await _reject_miner(miner, "Missing hotkey or miner_uid", update_status_func)
+            continue
+
+        # Verify UID using hotkey on subnet 49
+        network_uid = get_miner_uid_by_hotkey(hotkey, netuid=49, network="finney")
+        logger.info(f"network uid {network_uid}")
+        if network_uid is None or network_uid != miner_uid:
+            await _reject_miner(
+                miner,
+                f"UID mismatch: metagraph UID {network_uid}, reported UID {miner_uid}",
+                update_status_func
+            )
+            continue
+
+        # Verify miner uniqueness with retries
+        try:
+            is_unique = _check_miner_unique_with_retry(miner)
+            if not is_unique:
+                await _reject_miner(miner, "Not unique (check_miner_unique returned False)", update_status_func)
+                continue
+        except requests.RequestException as e:
+            await _reject_miner(miner, f"Uniqueness check failed: {str(e)}", update_status_func)
+            continue
+
+        # Perform SSH-based resource verification
         try:
             result = execute_ssh_tasks(miner)
-            if result and "task_results" in result:
-                specs = result["task_results"]
-                pog_score = compare_compute_resources(specs, miner_resources[0])
-                percentage = pog_score["percentage"]
-                status = "verified" if percentage >= 30 else "rejected"
-                update_status_func(miner, status, percentage)
-            else:
-                logger.warning(f"SSH tasks failed for miner {miner}")
-                update_status_func(miner, "rejected", 0.0)
+            if not result or "task_results" not in result:
+                await _reject_miner(miner, "SSH tasks failed or returned no results", update_status_func)
+                continue
+
+            specs = result["task_results"]
+            pog_score = compare_compute_resources(specs, miner_resources[0])
+            if not isinstance(pog_score, dict) or "percentage" not in pog_score:
+                await _reject_miner(miner, "Invalid compute resources comparison result", update_status_func)
+                continue
+            
+            percentage = float(pog_score["percentage"])
+            status = "verified" if percentage >= 50 else "rejected"
+            logger.info(f"Miner {miner} verification complete: status={status}, percentage={percentage}")
+            update_status_func(miner, status, percentage)
+
+        except ConnectionError as e:
+            await _reject_miner(miner, f"SSH connection error: {str(e)}", update_status_func)
+        except TimeoutError as e:
+            await _reject_miner(miner, f"SSH task timeout: {str(e)}", update_status_func)
         except Exception as e:
-            logger.error(f"Error verifying miner {miner}: {e}")
-            update_status_func(miner, "rejected", 0.0)
+            await _reject_miner(miner, f"Unexpected error during SSH verification: {str(e)}", update_status_func)
