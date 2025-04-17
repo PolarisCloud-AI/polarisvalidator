@@ -245,7 +245,7 @@ class PolarisNode(BaseValidatorNeuron):
                 miners = self.get_registered_miners()
                 bittensor_miners = get_filtered_miners(miners)
                 await verify_miners(list(bittensor_miners.keys()), get_unverified_miners, update_miner_status)
-                await asyncio.sleep(300)
+                await asyncio.sleep(200)
             except Exception as e:
                 logger.error(f"Error in verify_miners_loop: {e}")
                 await asyncio.sleep(60)

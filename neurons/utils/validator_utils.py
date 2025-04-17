@@ -159,23 +159,27 @@ async def verify_miners(
     update_status_func: Callable[[str, str, float], None]
 ) -> None:
     """
-    Verifies miners by checking their hotkey-based UID, uniqueness, and compute resources.
+    Verifies only unverified miners by checking their hotkey-based UID, uniqueness, and compute resources.
     
     Args:
-        miners: List of miner IDs to verify.
+        miners: List of miner IDs to consider.
         get_unverified_func: Function returning a dict of unverified miners.
         update_status_func: Function to update miner status with ID, status, and percentage.
     """
-    logger.info(f"Verifying {len(miners)} miners...")
+    logger.info(f"Received {len(miners)} miner IDs for verification")
     unverified_miners = get_unverified_func()
-    for miner in miners:
-        # Check if miner is unverified
-        if miner not in unverified_miners:
-            continue
+    if not unverified_miners:
+        logger.info("No unverified miners found, skipping verification")
+        return
 
+    # Filter miners to only those that are unverified
+    miners_to_verify = [miner for miner in miners if miner in unverified_miners]
+    logger.info(f"Verifying {len(miners_to_verify)} unverified miners: {miners_to_verify}")
+
+    for miner in miners_to_verify:
         # Validate resources (expecting a dict from get_unverified_miners)
         miner_resources = unverified_miners.get(miner)
-        if not isinstance(miner_resources, List) or not miner_resources:
+        if not isinstance(miner_resources, list) or not miner_resources:
             await _reject_miner(miner, "Invalid or missing resources", update_status_func)
             continue
 
@@ -200,7 +204,7 @@ async def verify_miners(
 
         # Verify UID using hotkey on subnet 49
         network_uid = get_miner_uid_by_hotkey(hotkey, netuid=49, network="finney")
-        logger.info(f"network uid {network_uid}")
+        logger.info(f"Network UID for miner {miner}: {network_uid}")
         if network_uid is None or network_uid != miner_uid:
             await _reject_miner(
                 miner,
