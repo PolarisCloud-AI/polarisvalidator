@@ -1,5 +1,5 @@
  # Use an official Python runtime as a base image
-FROM python:3.9-slim
+ FROM python:3.10-slim
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -18,6 +18,5 @@ RUN pip install -e .
 
 # Expose any necessary ports (optional, if the validator needs to communicate externally)
 EXPOSE 8080
-
 # Define the default command to run the validator script
 CMD ["sh", "-c", "python neurons/validator.py --netuid 49 --wallet.name $WALLET_NAME --wallet.hotkey $WALLET_HOTKEY"]
