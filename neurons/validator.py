@@ -259,7 +259,15 @@ class PolarisNode(BaseValidatorNeuron):
                 white_list = get_filtered_miners(miners)
                 bittensor_miners = filter_miners_by_id(white_list)
                 miner_resources = get_miner_list_with_resources(bittensor_miners)
-                results, container_updates, uptime_rewards_dict = await process_miners( miners, miner_resources, get_containers_for_miner, self.tempo, max_score=self.max_allowed_weights)
+                # Pass update_status_func (assuming self.update_miner_status exists)
+                results, container_updates, uptime_rewards_dict = await process_miners(
+                    miners=miners,
+                    miner_resources=miner_resources,
+                    get_containers_func=get_containers_for_miner,
+                    update_status_func=update_miner_status,
+                    tempo=self.tempo,
+                    max_score=self.max_allowed_weights
+                )
                 await self.update_validator_weights(results, container_updates, uptime_rewards_dict)
                 current_block = self.subtensor.block
                 blocks_since_last = current_block - self.last_weight_update_block
@@ -268,7 +276,6 @@ class PolarisNode(BaseValidatorNeuron):
                 sleep_time = max(60, blocks_remaining * 12)
                 logger.info(f"Sleeping for {sleep_time} seconds until next weight update opportunity.")
                 await asyncio.sleep(sleep_time)
-                
             except Exception as e:
                 logger.error(f"Error in process_miners_loop: {e}")
                 logger.info("Sleeping for 60 seconds after error.")
