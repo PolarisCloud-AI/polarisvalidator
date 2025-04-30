@@ -47,7 +47,6 @@ async def process_miners(
         miner_id = subnet_to_miner_map.get(miner_uid)
         if not miner_id:
             logger.warning(f"No miner_id for miner_uid {miner_uid}")
-            await _reject_miner(miner_id, "SSH tasks failed or returned no task_results", update_status_func)
             continue
 
         # Execute SSH tasks and check for valid results
