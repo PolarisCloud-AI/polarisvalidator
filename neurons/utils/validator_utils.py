@@ -12,17 +12,20 @@ async def process_miners(
     miners: List[int],
     miner_resources: Dict,
     get_containers_func,
+    update_status_func: Callable[[str, str, float], None],
     tempo: int,
-    max_score: float = 500.0
+    max_score: float = 500.0,
 ) -> Tuple[Dict[int, float], Dict[int, List[str]], Dict[int, Dict]]:
     """
     Processes miners to compute scores based on active containers and compute resources, with incentives for scalability,
     fair compute score weighting, and diminishing returns on container count. Normalizes scores to max_score.
+    Miners with no SSH task results or missing task_results are excluded from scoring.
 
     Args:
         miners: List of miner UIDs.
         miner_resources: Dictionary of miner resource information.
         get_containers_func: Function to retrieve containers for a miner.
+        update_status_func: Function to update miner status with ID, status, and percentage.
         tempo: Subnet tempo to scale rewards.
         max_score: Maximum score per miner (default: 500.0).
 
@@ -45,6 +48,14 @@ async def process_miners(
         if not miner_id:
             logger.warning(f"No miner_id for miner_uid {miner_uid}")
             continue
+
+        # Execute SSH tasks and check for valid results
+        result = execute_ssh_tasks(miner_id)
+        if not result or "task_results" not in result:
+            logger.warning(f"Miner {miner_id} excluded: SSH tasks failed or returned no task_results")
+            await _reject_miner(miner_id, "SSH tasks failed or returned no task_results", update_status_func)
+            continue
+
         miner_info = miner_resources.get(miner_id)
         if not miner_info:
             logger.warning(f"No resource info for miner_id {miner_id}")
@@ -115,6 +126,7 @@ async def process_miners(
                             f"uptime_rewards={uptime_rewards['reward_amount']})")
         except Exception as e:
             logger.error(f"Error calculating raw score for miner {miner_uid}: {e}")
+            
 
     # Normalize scores to max_score
     results = {}
