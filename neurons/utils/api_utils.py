@@ -4,21 +4,65 @@ import time
 import uuid
 import bittensor as bt
 from typing import List,Dict
+from datetime import datetime, timedelta
 
-def get_filtered_miners(allowed_uids: list[int]) -> dict[str, str]:
+def get_filtered_miners(allowed_uids: List[int]) -> tuple[Dict[str, str], List[str]]:
     try:
         response = requests.get("https://orchestrator-gekh.onrender.com/api/v1/bittensor/miners")
         response.raise_for_status()
         miners_data = response.json()
-        return {
-            miner["miner_id"]: miner["miner_uid"]
-            for miner in miners_data
-            if miner["miner_uid"] is not None and int(miner["miner_uid"]) in allowed_uids
-        }
+        
+        # Initialize outputs
+        filtered_miners = {}
+        miners_to_reject = []
+        
+        # Process each miner
+        for miner in miners_data:
+            miner_id = miner.get("miner_id")
+            miner_uid = miner.get("miner_uid")
+            miner_status = miner.get("status")
+            
+            if miner_id is None:
+                logger.warning("Skipping miner with missing miner_id")
+                continue
+                
+            if miner_uid is None:
+                # Only reject if status is PENDING_VERIFICATION
+                if miner_status == "pending_verification":
+                    miners_to_reject.append(miner_id)
+            elif int(miner_uid) in allowed_uids:
+                # Include miners with valid miner_uid in allowed_uids
+                filtered_miners[miner_id] = str(miner_uid)
+        
+        return filtered_miners, miners_to_reject
+    
     except Exception as e:
         logger.error(f"Error fetching filtered miners: {e}")
-        return {}
-
+        return {}, []
+    
+def reject_miners(miners_to_reject: List[str], reason: str = "miner_uid is None") -> None:
+    """
+    Rejects the specified miners by updating their status to 'rejected' with a given reason.
+    
+    Args:
+        miners_to_reject (List[str]): List of miner IDs to reject.
+        reason (str, optional): Reason for rejection. Defaults to "miner_uid is None".
+    """
+    if not miners_to_reject:
+        logger.info("No miners to reject.")
+        return
+    for miner_id in miners_to_reject:
+        logger.info(f"Rejecting miner {miner_id} with reason: {reason}")
+        new_status = update_miner_status(
+            miner_id=miner_id,
+            status="rejected",
+            percentage=0.0,
+            reason=reason
+        )
+        if new_status:
+            logger.info(f"Successfully rejected miner {miner_id} with status: {new_status}")
+        else:
+            logger.error(f"Failed to reject miner {miner_id}")
 def get_miner_list_with_resources(miner_commune_map: dict[str, str]) -> dict:
     try:
         response = requests.get("https://orchestrator-gekh.onrender.com/api/v1/miners")
@@ -50,10 +94,11 @@ def get_unverified_miners() -> dict[str, dict]:
         logger.error(f"Error fetching unverified miners: {e}")
         return {}
 
-def update_miner_status(miner_id: str, status: str, percentage: float) -> str:
+def update_miner_status(miner_id: str, status: str, percentage: float, reason: str) -> str:
+    updated_at =datetime.utcnow()
     url = f"https://orchestrator-gekh.onrender.com/api/v1/miners/{miner_id}/status"
     headers = {"Content-Type": "application/json"}
-    payload = {"status": status}
+    payload = {"status": status,"Reason":reason, "updated_at":updated_at.isoformat() + "Z"}
     try:
         response = requests.patch(url, json=payload, headers=headers)
         response.raise_for_status()
@@ -303,3 +348,58 @@ def filter_miners_by_id(bittensor_miners: Dict[str, int],netuid: int = 49, netwo
     except Exception as e:
         logger.error(f"Error filtering miners: {e}")
         return {}
+    
+
+def delete_miner(miner_id: str) -> bool:
+    url = f"https://orchestrator-gekh.onrender.com/api/v1/miners/{miner_id}"
+    try:
+        response = requests.delete(url)
+        response.raise_for_status()
+        return True
+    except Exception as e:
+        logger.error(f"Error deleting miner {miner_id}: {e}")
+        return False
+
+def get_rejected_miners() -> list[str]:
+    try:
+        # Get current date dynamically and calculate 2 days ago
+        today = datetime.now()
+        two_days_ago = today - timedelta(days=2)
+        
+        # Fetch data from API
+        response = requests.get("https://orchestrator-gekh.onrender.com/api/v1/miners")
+        response.raise_for_status()
+        miners_data = response.json()
+        
+        # Filter miners with status "rejected" and created 2 days ago
+        rejected_miners = [
+            miner["id"]
+            for miner in miners_data
+            if miner.get("status") == "rejected"
+            and miner.get("updated_at")  # Ensure created_at exists
+            and datetime.fromisoformat(miner["updated_at"].replace("Z", "+00:00")).date() <= two_days_ago.date()
+        ]
+        
+        return rejected_miners
+    
+    except Exception as e:
+        logger.info(f"No data found: {e}")
+        return []
+
+def delete_rejected_miners():
+    miner_ids = get_rejected_miners()
+    two_days_ago = (datetime.now() - timedelta(days=3)).strftime("%Y-%m-%d")
+    
+    if not miner_ids:
+        logger.info(f"No rejected miners created on {two_days_ago} found.")
+        return
+    
+    logger.info(f"Found {len(miner_ids)} rejected miners created on {two_days_ago}: {miner_ids}")
+    
+    # Delete each miner
+    for miner_id in miner_ids:
+        logger.info(f"Deleting miner {miner_id}...")
+        if delete_miner(miner_id):
+            logger.info(f"Unfortunately, we are saying goodbye to miner {miner_id}.")
+        else:
+            logger.error(f"Failed to delete miner {miner_id}")
