@@ -19,6 +19,7 @@ from utils.api_utils import (
     reject_miners,delete_rejected_miners,
     get_containers_for_miner,
     get_unverified_miners,
+    get_filtered_miners_val,
     update_miner_status,filter_miners_by_id
 
 )
@@ -262,11 +263,7 @@ class PolarisNode(BaseValidatorNeuron):
             try:
                 logger.info("Starting process_miners_loop...")
                 miners= self.get_registered_miners()
-                white_list,miners_to_reject = get_filtered_miners(miners)
-
-                reject_miners(miners_to_reject, reason="miner_uid is None")
-                logger.info(f"{len(miners_to_reject)} are rejected due to missing miner_uid")
-
+                white_list= get_filtered_miners_val(miners)
                 bittensor_miners = filter_miners_by_id(white_list)
                 miner_resources = get_miner_list_with_resources(bittensor_miners)
                 # Pass update_status_func (assuming self.update_miner_status exists)

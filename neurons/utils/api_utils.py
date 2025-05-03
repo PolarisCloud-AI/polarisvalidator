@@ -40,6 +40,21 @@ def get_filtered_miners(allowed_uids: List[int]) -> tuple[Dict[str, str], List[s
         logger.error(f"Error fetching filtered miners: {e}")
         return {}, []
     
+def get_filtered_miners_val(allowed_uids: list[int]) -> dict[str, str]:
+    try:
+        response = requests.get("https://orchestrator-gekh.onrender.com/api/v1/bittensor/miners")
+        response.raise_for_status()
+        miners_data = response.json()
+        return {
+            miner["miner_id"]: miner["miner_uid"]
+            for miner in miners_data
+            if miner["miner_uid"] is not None and int(miner["miner_uid"]) in allowed_uids
+        }
+    except Exception as e:
+        logger.error(f"Error fetching filtered miners: {e}")
+        return {}
+    
+    
 def reject_miners(miners_to_reject: List[str], reason: str = "miner_uid is None") -> None:
     """
     Rejects the specified miners by updating their status to 'rejected' with a given reason.
