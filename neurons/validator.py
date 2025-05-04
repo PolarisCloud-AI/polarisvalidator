@@ -16,10 +16,10 @@ from template.base.utils.weight_utils import (
 from utils.api_utils import (
     get_filtered_miners,
     get_miner_list_with_resources,
-    update_container_payment_status,
-    track_tokens,
+    reject_miners,delete_rejected_miners,
     get_containers_for_miner,
     get_unverified_miners,
+    get_filtered_miners_val,
     update_miner_status,filter_miners_by_id
 
 )
@@ -241,11 +241,18 @@ class PolarisNode(BaseValidatorNeuron):
         """Periodically verifies miners."""
         while True:
             try:
-                logger.info("Starting verify_miners_loop...")
+                logger.info("Starting miner verification cycle")
+
+                logger.debug("Fetching registered miners")
                 miners = self.get_registered_miners()
-                bittensor_miners = get_filtered_miners(miners)
+                logger.debug("Filtering miners based on allowed UIDs")
+                bittensor_miners,miners_to_reject, = get_filtered_miners(miners)
+                reject_miners(miners_to_reject, reason="miner_uid is None")
+                logger.debug("Deleting rejected miners")
+                delete_rejected_miners()
+                logger.debug(f"Verifying {len(bittensor_miners)} Bittensor miners")
                 await verify_miners(list(bittensor_miners.keys()), get_unverified_miners, update_miner_status)
-                await asyncio.sleep(200)
+                await asyncio.sleep(400)
             except Exception as e:
                 logger.error(f"Error in verify_miners_loop: {e}")
                 await asyncio.sleep(60)
@@ -255,8 +262,8 @@ class PolarisNode(BaseValidatorNeuron):
         while True:
             try:
                 logger.info("Starting process_miners_loop...")
-                miners = self.get_registered_miners()
-                white_list = get_filtered_miners(miners)
+                miners= self.get_registered_miners()
+                white_list= get_filtered_miners_val(miners)
                 bittensor_miners = filter_miners_by_id(white_list)
                 miner_resources = get_miner_list_with_resources(bittensor_miners)
                 # Pass update_status_func (assuming self.update_miner_status exists)

@@ -12,7 +12,7 @@ async def process_miners(
     miners: List[int],
     miner_resources: Dict,
     get_containers_func,
-    update_status_func: Callable[[str, str, float], None],
+    update_status_func: Callable[[str, str, float, str], None],
     tempo: int,
     max_score: float = 500.0,
 ) -> Tuple[Dict[int, float], Dict[int, List[str]], Dict[int, Dict]]:
@@ -150,11 +150,11 @@ async def process_miners(
 async def _reject_miner(
     miner: str,
     reason: str,
-    update_status_func: Callable[[str, str, float], None]
+    update_status_func: Callable[[str, str, float, str], None]
 ) -> None:
     """Helper function to reject a miner with a reason and update status."""
     logger.error(f"Rejecting miner {miner}: {reason}")
-    update_status_func(miner, "rejected", 0.0)
+    update_status_func(miner, "rejected", 0.0, reason)
 
 @tenacity.retry(
     stop=tenacity.stop_after_attempt(3),
@@ -168,7 +168,7 @@ def _check_miner_unique_with_retry(miner: str) -> bool:
 async def verify_miners(
     miners: List[str],
     get_unverified_func: Callable[[], Dict[str, Dict[str, Any]]],
-    update_status_func: Callable[[str, str, float], None]
+    update_status_func: Callable[[str, str, float, str], None]
 ) -> None:
     """
     Verifies only unverified miners by checking their hotkey-based UID, uniqueness, and compute resources.
@@ -242,7 +242,7 @@ async def verify_miners(
                 await _reject_miner(miner, "SSH tasks failed or returned no results", update_status_func)
                 continue
 
-            specs = result["task_results"]
+            specs = result.get("task_results", {})
             pog_score = compare_compute_resources(specs, miner_resources[0])
             if not isinstance(pog_score, dict) or "percentage" not in pog_score:
                 await _reject_miner(miner, "Invalid compute resources comparison result", update_status_func)
@@ -251,7 +251,8 @@ async def verify_miners(
             percentage = float(pog_score["percentage"])
             status = "verified" if percentage >= 50 else "rejected"
             logger.info(f"Miner {miner} verification complete: status={status}, percentage={percentage}")
-            update_status_func(miner, status, percentage)
+            reason= f"verified with {percentage} %"
+            update_status_func(miner, status, percentage,reason)
 
         except ConnectionError as e:
             await _reject_miner(miner, f"SSH connection error: {str(e)}", update_status_func)

@@ -6,67 +6,110 @@ import requests
 import tenacity
 from typing import Dict, Any,List, Union
 from loguru import logger
-import re
-
+import numpy as np
+from collections import defaultdict
 
 logger = logging.getLogger("remote_access")
 
 SERVER_URL = "https://orchestrator-gekh.onrender.com"
 API_PREFIX = "/api/v1"
 
-def execute_ssh_tasks(miner_id):
-    logger.info(f"Trying for miner {miner_id}")
+def execute_ssh_tasks(miner_id: str) -> Dict[str, Any]:
+    """
+    Execute SSH tasks for a given miner ID by calling the orchestrator API.
+    
+    Args:
+        miner_id (str): The ID of the miner to execute tasks for.
+    
+    Returns:
+        Dict[str, Any]: A dictionary containing:
+            - status: "success" or "error"
+            - message: Descriptive message about the outcome
+            - task_results: Dictionary of task results or empty dict if failed
+    """
+    logger.info(f"Executing SSH tasks for miner {miner_id}")
+    
+    # Validate miner_id
+    if not isinstance(miner_id, str) or not miner_id.strip():
+        logger.error("Invalid miner_id: must be a non-empty string")
+        return {
+            "status": "error",
+            "message": "Invalid miner_id: must be a non-empty string",
+            "task_results": {}
+        }
+    
+    url = url = f"https://orchestrator-gekh.onrender.com/api/v1/miners/{miner_id}/perform-tasks"
+    logger.debug(f"Requesting SSH tasks at: {url}")
+    
     try:
-        url = f"{SERVER_URL}{API_PREFIX}/miners/{miner_id}/perform-tasks"
-        logger.info(f"Trying to execute SSH tasks at: {url}")
+        response = requests.get(url, timeout=10)
+        logger.info(f"Response status: {response.status_code}")
         
-        try:
-            response = requests.get(url)
-            logger.info(f"Response status: {response.status_code}")
-            
-            if response.status_code == 200:
+        if response.status_code == 200:
+            try:
                 result = response.json()
-                logger.info(f"Server response: {result.get('message')}")
+                logger.debug(f"Server response: {result}")
                 
                 if result.get("status") != "success":
-                    logger.error(f"Error from server: {result.get('message')}")
+                    logger.error(f"Server error: {result.get('message', 'Unknown error')}")
                     return {
                         "status": "error",
-                        "message": result.get('message')
+                        "message": result.get("message", "Server reported failure"),
+                        "task_results": {}
                     }
-                    
+                
+                # Extract task_results (adjust key based on actual server response)
+                task_results = result.get("task_results", result.get("specifications", {}))
+                logger.info("SSH tasks executed successfully")
                 return {
                     "status": "success",
                     "message": "SSH tasks executed successfully",
-                    "task_results": result.get("task_results", {})
+                    "task_results": task_results
                 }
-        except requests.exceptions.RequestException as e:
-            logger.error(f"Error with endpoint {url}: {str(e)}")
-        
-        logger.error("Failed to execute SSH tasks")
+            except ValueError as e:
+                logger.error(f"Failed to parse JSON response: {str(e)}")
+                return {
+                    "status": "error",
+                    "message": f"Invalid server response: {str(e)}",
+                    "task_results": {}
+                }
+        else:
+            logger.error(f"Unexpected status code: {response.status_code}")
+            return {
+                "status": "error",
+                "message": f"Server returned status code {response.status_code}",
+                "task_results": {}
+            }
+            
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Request failed for {url}: {str(e)}")
         return {
             "status": "error",
-            "message": "Failed to execute SSH tasks"
+            "message": f"Request error: {str(e)}",
+            "task_results": {}
         }
-        
     except Exception as e:
-        logger.error(f"Error executing SSH tasks: {str(e)}")
+        logger.error(f"Unexpected error executing SSH tasks: {str(e)}")
         return {
             "status": "error",
-            "message": f"Error: {str(e)}"
+            "message": f"Unexpected error: {str(e)}",
+            "task_results": {}
         }
+    
 
 def normalize_memory_value(value: str) -> float:
-    """Convert memory value to GB, handling various formats."""
+    """Convert memory value to GB, handling various formats including GiB."""
     try:
         if not value or not isinstance(value, str):
             return 0.0
         value = value.strip().upper()
-        match = re.match(r"(\d*\.?\d+)\s*(GB|MB|TB|KB)?", value)
+        match = re.match(r"(\d*\.?\d+)\s*(GB|GIB|GI|MB|TB|KB)?", value, re.IGNORECASE)
         if not match:
             return 0.0
         num, unit = float(match.group(1)), match.group(2) or "GB"
-        if unit == "MB":
+        if unit in ["GIB", "GI"]:
+            return num * 1.07374  # Convert GiB to GB
+        elif unit == "MB":
             return num / 1024
         elif unit == "TB":
             return num * 1024
@@ -78,22 +121,43 @@ def normalize_memory_value(value: str) -> float:
         return 0.0
 
 def normalize_storage_capacity(value: str) -> float:
-    """Convert storage capacity to GB, handling various formats."""
+    """Convert storage capacity to GB, handling various formats including GiB."""
     try:
         if not value or not isinstance(value, str):
             return 0.0
         value = value.strip().upper()
-        match = re.match(r"(\d*\.?\d+)\s*(GB|TB|MB)?", value)
+        match = re.match(r"(\d*\.?\d+)\s*(GB|GIB|GI|TB|MB)?", value, re.IGNORECASE)
         if not match:
             return 0.0
         num, unit = float(match.group(1)), match.group(2) or "GB"
-        if unit == "MB":
+        if unit in ["GIB", "GI"]:
+            return num * 1.07374  # Convert GiB to GB
+        elif unit == "MB":
             return num / 1024
         elif unit == "TB":
             return num * 1024
         return num
     except (ValueError, TypeError) as e:
         logger.error(f"Error normalizing storage capacity '{value}': {e}")
+        return 0.0
+
+def normalize_speed(value: str) -> float:
+    """Convert speed (e.g., read_speed, write_speed) to MB/s."""
+    try:
+        if not value or not isinstance(value, str):
+            return 0.0
+        value = value.strip().upper()
+        match = re.match(r"(\d*\.?\d+)\s*(MB/S|GB/S|KB/S)?", value, re.IGNORECASE)
+        if not match:
+            return 0.0
+        num, unit = float(match.group(1)), match.group(2) or "MB/S"
+        if unit == "GB/S":
+            return num * 1000
+        elif unit == "KB/S":
+            return num / 1000
+        return num
+    except (ValueError, TypeError) as e:
+        logger.error(f"Error normalizing speed '{value}': {e}")
         return 0.0
 
 def parse_memory_usage(memory_usage: str) -> float:
@@ -167,11 +231,53 @@ def get_gpu_specs(resource: Dict[str, Any]) -> Dict[str, Any]:
     gpu_specs = resource.get("gpu_specs", {}) or {}
     if not gpu_specs and resource.get("nvidia_smi"):
         gpu_specs = parse_gpu_info(resource.get("nvidia_smi", ""))
-    return gpu_specs
+    if isinstance(gpu_specs, list) and len(gpu_specs) > 0:
+        gpu_specs = gpu_specs[0]  # Take first GPU if multiple
+    return gpu_specs if isinstance(gpu_specs, dict) else {}
 
 def get_gpu_memory(gpu_specs: Dict[str, Any]) -> str:
     """Extract GPU memory size, returning '0' if none."""
-    return gpu_specs.get("memory_size", "0") or "0"
+    return gpu_specs.get("memory_size", "0") or gpu_specs.get("memory_total", "0") or "0"
+
+def extract_features(resource: Dict[str, Any]) -> Dict[str, Any]:
+    """Extract and normalize features from a resource for vectorization."""
+    features = defaultdict(float)
+    categorical = {}
+
+    # Resource Type
+    categorical["resource_type"] = resource.get("resource_type", "").lower()
+
+    # RAM
+    ram = normalize_memory_value(resource.get("ram", "0"))
+    features["ram"] = ram / 128  # Normalize to max 128GB
+
+    # Storage
+    storage = resource.get("storage", {})
+    features["storage_capacity"] = normalize_storage_capacity(storage.get("capacity", "0")) / 4000  # Max 4TB
+    categorical["storage_type"] = storage.get("type", "").lower()
+    features["storage_read_speed"] = normalize_speed(storage.get("read_speed", "0")) / 10000  # Max 10GB/s
+    features["storage_write_speed"] = normalize_speed(storage.get("write_speed", "0")) / 10000
+
+    # CPU Specs
+    cpu_specs = resource.get("cpu_specs", {})
+    features["cpu_total_cpus"] = cpu_specs.get("total_cpus", 0) / 64  # Max 64 cores
+    features["cpu_threads_per_core"] = cpu_specs.get("threads_per_core", 0) / 4  # Max 4 threads
+    features["cpu_cores_per_socket"] = cpu_specs.get("cores_per_socket", 0) / 32  # Max 32 cores/socket
+    features["cpu_sockets"] = cpu_specs.get("sockets", 0) / 4  # Max 4 sockets
+    categorical["cpu_name"] = cpu_specs.get("cpu_name", "").lower()
+    categorical["cpu_vendor_id"] = cpu_specs.get("vendor_id", "").lower()
+    features["cpu_max_mhz"] = cpu_specs.get("cpu_max_mhz", 0) / 5000  # Max 5GHz
+
+    # GPU Specs
+    gpu_specs = get_gpu_specs(resource)
+    categorical["gpu_name"] = gpu_specs.get("gpu_name", "").lower()
+    features["gpu_memory"] = normalize_memory_value(get_gpu_memory(gpu_specs)) / 48  # Max 48GB
+    features["gpu_total_gpus"] = gpu_specs.get("total_gpus", 0) / 8  # Max 8 GPUs
+
+    # Is Active
+    features["is_active"] = 1.0 if resource.get("is_active", False) else 0.0
+
+    return features, categorical
 
 @tenacity.retry(
     stop=tenacity.stop_after_attempt(3),
@@ -180,227 +286,162 @@ def get_gpu_memory(gpu_specs: Dict[str, Any]) -> str:
 )
 def compare_compute_resources(new_resource: Dict[str, Any], existing_resource: Dict[str, Any]) -> Dict[str, Any]:
     """
-    Compare new compute resource specs with existing ones and calculate a percentage.
+    Compare new and existing resources as a whole using a similarity matrix.
     
     Args:
-        new_resource: Retrieved resources (e.g., SSH output with system_info, disk_space).
-        existing_resource: Expected resources (e.g., from get_unverified_miners).
+        new_resource: Retrieved resources (e.g., from execute_ssh_tasks).
+        existing_resource: Expected resources (e.g., from miner_resources).
     
     Returns:
-        Dict with 'percentage' key indicating similarity.
+        Dict with 'percentage' key indicating similarity and optional 'errors' key.
     """
     logger.info("Starting comparison of compute resources")
+    logger.debug(f"New resource: {new_resource}")
+    logger.debug(f"Existing resource: {existing_resource}")
 
     # Validate inputs
     if not isinstance(new_resource, dict) or not isinstance(existing_resource, dict):
         logger.error(f"Invalid resource types: new={type(new_resource)}, existing={type(existing_resource)}")
-        return {"percentage": 0.0, "error": "Invalid input types"}
+        return {"percentage": 0.0, "errors": ["Invalid input types"]}
 
-    score = 0.0
-    total_checks = 0
-    weights = {
-        "ram": 0.25,
-        "storage_capacity": 0.25,
-        "storage_type": 0.15,
-        "os_compatibility": 0.1,
-        "write_access": 0.1,
-        "gpu_name": 0.1,
-        "gpu_memory": 0.05
+    errors = []
+
+    # Extract features
+    try:
+        new_features, new_categorical = extract_features(new_resource)
+        existing_features, existing_categorical = extract_features(existing_resource)
+    except Exception as e:
+        errors.append(f"Feature extraction failed: {str(e)}")
+        logger.error(f"Error extracting features: {e}")
+        return {"percentage": 0.0, "errors": errors}
+
+    # Define similarity matrices for categorical attributes
+    resource_type_similarity = {
+        ("cpu", "cpu"): 1.0,
+        ("gpu", "gpu"): 1.0,
+        ("cpu", "gpu"): 0.2,
+        ("gpu", "cpu"): 0.2,
+        ("", ""): 1.0
+    }
+    storage_type_similarity = {
+        ("ssd", "ssd"): 1.0,
+        ("ssd", "disk"): 0.8,
+        ("disk", "ssd"): 0.8,
+        ("disk", "disk"): 1.0,
+        ("nvme", "ssd"): 0.9,
+        ("ssd", "nvme"): 0.9,
+        ("nvme", "nvme"): 1.0,
+        ("hdd", "hdd"): 1.0,
+        ("hdd", "ssd"): 0.7,
+        ("ssd", "hdd"): 0.7,
+        ("", ""): 1.0
+    }
+    cpu_name_similarity = {
+        ("amd epyc 7b12", "amd epyc 7b12"): 1.0,
+        ("amd epyc 7b12", "amd epyc 7b13"): 0.95,
+        ("intel xeon", "intel xeon"): 0.9,
+        ("", ""): 1.0
+    }
+    cpu_vendor_similarity = {
+        ("authenticamd", "authenticamd"): 1.0,
+        ("genuineintel", "genuineintel"): 1.0,
+        ("authenticamd", "genuineintel"): 0.5,
+        ("genuineintel", "authenticamd"): 0.5,
+        ("", ""): 1.0
+    }
+    gpu_name_similarity = {
+        ("", ""): 1.0,
+        ("nvidia rtx 3080", "nvidia rtx 3080"): 1.0,
+        ("nvidia rtx 3080", "nvidia rtx 3090"): 0.95,
+        ("nvidia", "nvidia"): 0.8,
+        ("amd radeon", "amd radeon"): 0.8
     }
 
+    # Compute categorical similarities
+    categorical_scores = {}
     try:
-        # --- RAM Comparison ---
-        total_checks += 1
-        try:
-            new_ram = parse_memory_usage(new_resource.get("memory_usage", ""))
-            existing_ram = normalize_memory_value(existing_resource.get("ram", "0"))
-            ram_diff_percent = abs(new_ram - existing_ram) / max(new_ram, existing_ram) if max(new_ram, existing_ram) > 0 else 1.0
-            ram_score = max(0, 1 - (ram_diff_percent / 0.05)) if ram_diff_percent < 0.1 else 0.0  # 5% tolerance
-            score += ram_score * weights["ram"]
-            logger.debug(f"RAM: new={new_ram:.2f}GB, existing={existing_ram:.2f}GB, score={ram_score:.2f}")
-        except (ValueError, TypeError) as e:
-            logger.error(f"Error comparing RAM: {e}")
-            score += 0.0 * weights["ram"]
-
-        # --- Storage Capacity Comparison ---
-        total_checks += 1
-        try:
-            new_storage = parse_disk_space(new_resource.get("disk_space", ""))
-            existing_storage = normalize_storage_capacity(existing_resource.get("storage", {}).get("capacity", "0"))
-            storage_diff_percent = abs(new_storage - existing_storage) / max(new_storage, existing_storage) if max(new_storage, existing_storage) > 0 else 1.0
-            storage_score = max(0, 1 - (storage_diff_percent / 0.05)) if storage_diff_percent < 0.1 else 0.0  # 5% tolerance
-            score += storage_score * weights["storage_capacity"]
-            logger.debug(f"Storage: new={new_storage:.2f}GB, existing={existing_storage:.2f}GB, score={storage_score:.2f}")
-        except (ValueError, TypeError) as e:
-            logger.error(f"Error comparing storage capacity: {e}")
-            score += 0.0 * weights["storage_capacity"]
-
-        # --- Storage Type Comparison ---
-        total_checks += 1
-        try:
-            existing_type = existing_resource.get("storage", {}).get("type", "").lower()
-            new_is_nvme = "nvme" in new_resource.get("disk_space", "").lower()
-            storage_type_score = 1.0 if existing_type == "ssd" and new_is_nvme else 0.0
-            score += storage_type_score * weights["storage_type"]
-            logger.debug(f"Storage Type: existing={existing_type}, new_is_nvme={new_is_nvme}, score={storage_type_score:.2f}")
-        except Exception as e:
-            logger.error(f"Error comparing storage type: {e}")
-            score += 0.0 * weights["storage_type"]
-
-        # --- OS Compatibility ---
-        total_checks += 1
-        try:
-            new_os = new_resource.get("system_info", "").lower()
-            os_score = 1.0 if "ubuntu" in new_os and existing_resource.get("network", {}).get("username") == "ubuntu" else 0.0
-            score += os_score * weights["os_compatibility"]
-            logger.debug(f"OS: new_contains_ubuntu={'ubuntu' in new_os}, existing_username=ubuntu, score={os_score:.2f}")
-        except Exception as e:
-            logger.error(f"Error comparing OS: {e}")
-            score += 0.0 * weights["os_compatibility"]
-
-        # --- Write Access ---
-        total_checks += 1
-        try:
-            write_score = 1.0 if "Successfully created test file" in new_resource.get("test_file", "") else 0.0
-            score += write_score * weights["write_access"]
-            logger.debug(f"Write Access: test_file_success={write_score > 0}, score={write_score:.2f}")
-        except Exception as e:
-            logger.error(f"Error comparing write access: {e}")
-            score += 0.0 * weights["write_access"]
-
-        # --- GPU Comparison ---
-        new_gpu = get_gpu_specs(new_resource)
-        existing_gpu = get_gpu_specs(existing_resource)
-        if existing_gpu:  # Only score GPU if expected
-            if not new_gpu:
-                # Fallback: Infer GPU capability from system context
-                is_high_perf = new_ram > 500 and new_storage > 200  # Heuristic for GPU-capable system
-                if is_high_perf:
-                    total_checks += 1
-                    gpu_score = 0.5  # Partial score for likely GPU presence
-                    score += gpu_score * weights["gpu_name"]
-                    logger.debug(f"GPU: new=no_data, existing={existing_gpu.get('gpu_name', 'Unknown')}, inferred_score={gpu_score:.2f}")
-            else:
-                # GPU Name Comparison
-                total_checks += 1
-                try:
-                    new_gpu_name = new_gpu.get("gpu_name", "").lower()
-                    existing_gpu_name = existing_gpu.get("gpu_name", "").lower()
-                    gpu_name_score = (
-                        1.0 if new_gpu_name == existing_gpu_name
-                        else 0.5 if ("nvidia" in new_gpu_name and "nvidia" in existing_gpu_name)
-                        else 0.0
-                    )
-                    score += gpu_name_score * weights["gpu_name"]
-                    logger.debug(f"GPU Name: new={new_gpu_name}, existing={existing_gpu_name}, score={gpu_name_score:.2f}")
-                except (ValueError, TypeError) as e:
-                    logger.error(f"Error comparing GPU name: {e}")
-                    score += 0.0 * weights["gpu_name"]
-
-                # GPU Memory Comparison
-                total_checks += 1
-                try:
-                    new_memory = normalize_memory_value(get_gpu_memory(new_gpu))
-                    existing_memory = normalize_memory_value(get_gpu_memory(existing_gpu))
-                    memory_diff = abs(new_memory - existing_memory) / max(new_memory, existing_memory) if max(new_memory, existing_memory) > 0 else 1.0
-                    gpu_memory_score = max(0, 1 - (memory_diff / 0.05)) if memory_diff < 0.1 else 0.0  # 5% tolerance
-                    score += gpu_memory_score * weights["gpu_memory"]
-                    logger.debug(f"GPU Memory: new={new_memory:.2f}GB, existing={existing_memory:.2f}GB, score={gpu_memory_score:.2f}")
-                except (ValueError, TypeError) as e:
-                    logger.error(f"Error comparing GPU memory: {e}")
-                    score += 0.0 * weights["gpu_memory"]
-
-        # --- CPU Comparison ---
-        new_cpu = parse_cpu_info(new_resource.get("cpu_info", "") or new_resource.get("system_info", ""))
-        existing_cpu = existing_resource.get("cpu_specs", {}) or {}
-        if existing_cpu or new_cpu:
-            total_checks += 1
-            try:
-                new_arch = new_cpu.get("architecture", "").lower()
-                existing_arch = existing_cpu.get("architecture", "").lower()
-                cpu_score = 1.0 if new_arch == existing_arch and new_arch else 0.5 if new_arch in ["x86_64", "amd64"] else 0.0
-                score += cpu_score * weights.get("cpu", 0.1)
-                logger.debug(f"CPU: new_arch={new_arch}, existing_arch={existing_arch}, score={cpu_score:.2f}")
-            except Exception as e:
-                logger.error(f"Error comparing CPU: {e}")
-                score += 0.0 * weights.get("cpu", 0.1)
-
-        # Calculate percentage
-        total_weight = sum(w for k, w in weights.items() if k in ["ram", "storage_capacity", "storage_type", "os_compatibility", "write_access"] or (k == "cpu" and (existing_cpu or new_cpu)) or (k in ["gpu_name", "gpu_memory"] and existing_gpu))
-        percentage = (score / total_weight) * 100 if total_weight > 0 else 0.0
-        result = {"percentage": percentage}
-        logger.info(f"Comparison complete: percentage={percentage:.2f}%")
-        return result
-
+        categorical_scores["resource_type"] = resource_type_similarity.get(
+            (new_categorical["resource_type"], existing_categorical["resource_type"]), 0.0)
+        categorical_scores["storage_type"] = storage_type_similarity.get(
+            (new_categorical["storage_type"], existing_categorical["storage_type"]), 0.0)
+        categorical_scores["cpu_name"] = cpu_name_similarity.get(
+            (new_categorical["cpu_name"], existing_categorical["cpu_name"]),
+            1.0 if new_categorical["cpu_name"] == existing_categorical["cpu_name"] else 0.0)
+        categorical_scores["cpu_vendor_id"] = cpu_vendor_similarity.get(
+            (new_categorical["cpu_vendor_id"], existing_categorical["cpu_vendor_id"]), 0.0)
+        categorical_scores["gpu_name"] = gpu_name_similarity.get(
+            (new_categorical["gpu_name"], existing_categorical["gpu_name"]),
+            1.0 if new_categorical["gpu_name"] == existing_categorical["gpu_name"] else 0.0)
     except Exception as e:
-        logger.error(f"Unexpected error in compute resource comparison: {e}")
-        return {"percentage": 0.0, "error": str(e)}
+        errors.append(f"Categorical similarity computation failed: {str(e)}")
+        logger.error(f"Error computing categorical similarities: {e}")
 
-def verify_compute_resources(new_resource, existing_resources, min_match_threshold=70.0):
-    """
-    Verify if a newly detected compute resource matches any in the existing collection.
-    
-    Args:
-        new_resource (dict): The newly detected compute resource specs
-        existing_resources (list): List of existing compute resources to compare against
-        min_match_threshold (float): Minimum percentage match required to consider resources equivalent
-        
-    Returns:
-        tuple: (is_match, best_match_id, match_score) - match status, ID of best match (if any), and score
-    """
-    if not new_resource:
-        logger.error("Cannot verify empty compute resource")
-        return False, None, 0
-        
-    if not existing_resources:
-        logger.info("No existing resources to compare against - treating as new resource")
-        return False, None, 0
-    
-    # Validate the new resource structure
-    required_keys = ["resource_type", "cpu_specs"]
-    for key in required_keys:
-        if key not in new_resource:
-            logger.error(f"New resource missing required key: {key}")
-            return False, None, 0
-    
-    # Initialize tracking variables for best match
-    best_match = None
-    best_score = 0
-    best_percentage = 0
-    
-    # Compare with each existing resource
-    for existing in existing_resources:
-        resource_id = existing.get("id", "unknown")
-        logger.info(f"Comparing with existing resource ID: {resource_id}")
-        
-        # Run comparison
-        try:
-            result = compare_compute_resources(new_resource, existing)
-            percentage = result.get("percentage", 0)
-            
-            logger.info(f"Match percentage with {resource_id}: {percentage:.2f}%")
-            
-            # Check if this is the best match so far
-            if percentage > best_percentage:
-                best_percentage = percentage
-                best_match = resource_id
-                best_score = result.get("score", 0)
-        except Exception as e:
-            logger.error(f"Error comparing with resource {resource_id}: {e}")
-            continue
-    
-    # Determine if we have a match based on threshold
-    is_match = best_percentage >= min_match_threshold
-    
-    if is_match:
-        logger.info(f"Found matching resource: {best_match} with {best_percentage:.2f}% match")
-    else:
-        if best_match:
-            logger.info(f"Best match {best_match} with {best_percentage:.2f}% does not meet threshold of {min_match_threshold}%")
+    # Feature weights
+    feature_weights = {
+        "ram": 0.15,
+        "storage_capacity": 0.15,
+        "storage_read_speed": 0.05,
+        "storage_write_speed": 0.05,
+        "cpu_total_cpus": 0.15,
+        "cpu_threads_per_core": 0.1,
+        "cpu_cores_per_socket": 0.05,
+        "cpu_sockets": 0.05,
+        "cpu_max_mhz": 0.05,
+        "gpu_memory": 0.05,
+        "gpu_total_gpus": 0.05,
+        "is_active": 0.05
+    }
+    categorical_weights = {
+        "resource_type": 0.1,
+        "storage_type": 0.1,
+        "cpu_name": 0.05,
+        "cpu_vendor_id": 0.05,
+        "gpu_name": 0.05
+    }
+
+    # Create feature vectors
+    try:
+        numerical_features = list(feature_weights.keys())
+        new_vector = np.array([new_features.get(f, 0.0) for f in numerical_features])
+        existing_vector = np.array([existing_features.get(f, 0.0) for f in numerical_features])
+        numerical_weights = np.array([feature_weights.get(f, 0.0) for f in numerical_features])
+
+        # Compute weighted cosine similarity for numerical features
+        if np.any(new_vector) or np.any(existing_vector):
+            weighted_new = new_vector * numerical_weights
+            weighted_existing = existing_vector * numerical_weights
+            cosine_sim = np.dot(weighted_new, weighted_existing) / (
+                np.linalg.norm(weighted_new) * np.linalg.norm(weighted_existing) + 1e-10)
+            numerical_score = max(0.0, min(1.0, cosine_sim))
         else:
-            logger.info("No matching resources found")
-    
-    return is_match, best_match, best_score
+            numerical_score = 1.0  # Both empty
+        numerical_weight = sum(feature_weights.values())
+
+        # Combine with categorical scores
+        categorical_score = sum(score * categorical_weights[cat] for cat, score in categorical_scores.items())
+        categorical_weight = sum(categorical_weights.values())
+        
+        # Total score
+        total_weight = numerical_weight + categorical_weight
+        if total_weight > 0:
+            score = (numerical_score * numerical_weight + categorical_score) / total_weight
+        else:
+            score = 0.0
+
+        percentage = score * 100
+        logger.debug(f"Numerical score: {numerical_score:.2f}, Categorical score: {categorical_score:.2f}, Total percentage: {percentage:.2f}%")
+    except Exception as e:
+        errors.append(f"Similarity computation failed: {str(e)}")
+        logger.error(f"Error computing similarity: {e}")
+        return {"percentage": 0.0, "errors": errors}
+
+    result = {"percentage": percentage}
+    if errors:
+        result["errors"] = errors
+    logger.info(f"Comparison complete: percentage={percentage:.2f}%")
+    return result
+
+
 
 def compute_resource_score(resource: Union[Dict, List]) -> Union[float, List[float]]:
     """
