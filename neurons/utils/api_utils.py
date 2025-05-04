@@ -20,16 +20,8 @@ def get_filtered_miners(allowed_uids: List[int]) -> tuple[Dict[str, str], List[s
         for miner in miners_data:
             miner_id = miner.get("miner_id")
             miner_uid = miner.get("miner_uid")
-            miner_status = miner.get("status")
-            
-            if miner_id is None:
-                logger.warning("Skipping miner with missing miner_id")
-                continue
-                
             if miner_uid is None:
-                # Only reject if status is PENDING_VERIFICATION
-                if miner_status == "pending_verification":
-                    miners_to_reject.append(miner_id)
+                miners_to_reject.append(miner_id)
             elif int(miner_uid) in allowed_uids:
                 # Include miners with valid miner_uid in allowed_uids
                 filtered_miners[miner_id] = str(miner_uid)
