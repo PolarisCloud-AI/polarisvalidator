@@ -40,13 +40,14 @@
 import json
 import re
 import logging
-from datetime import datetime
+from datetime import datetime,timedelta
 import requests
 import tenacity
 from typing import Dict, Any, List, Union
 from loguru import logger
 import numpy as np
 from collections import defaultdict
+
 
 # from neurons.utils.pogs import execute_ssh_tasks, compare_compute_resources, compute_resource_score
 def get_unverified_miners() -> dict[str, dict]:
@@ -209,98 +210,98 @@ def update_rejected_miners_to_pending():
 #     except Exception as e:
 #         logger.error(f"Error fetching filtered miners: {e}")
 #         return {}, []
-allowed_uids=[2,0,13,131,207]
-def get_filtered_miners(allowed_uids: List[int]) -> tuple[Dict[str, str], List[str]]:
-    try:
-        response = requests.get("https://orchestrator-gekh.onrender.com/api/v1/bittensor/miners")
-        response.raise_for_status()
-        miners_data = response.json()
-        
-        # Initialize outputs
-        filtered_miners = {}
-        miners_to_reject = []
-        
-        # Process each miner
-        for miner in miners_data:
-            miner_id = miner.get("miner_id")
-            miner_uid = miner.get("miner_uid")
-            if miner_uid is None:
-                miners_to_reject.append(miner_id)
-            elif int(miner_uid) in allowed_uids:
-                # Include miners with valid miner_uid in allowed_uids
-                filtered_miners[miner_id] = str(miner_uid)
-        
-        return filtered_miners, miners_to_reject
-    
-    except Exception as e:
-        logger.error(f"Error fetching filtered miners: {e}")
-        return {}, []
-    
-filtered,miners_to_reject =get_filtered_miners(allowed_uids)
-print(miners_to_reject)
-print(filtered)
-# def get_rejected_miners() -> list[str]:
+# allowed_uids=[2,0,13,131,207]
+# def get_filtered_miners(allowed_uids: List[int]) -> tuple[Dict[str, str], List[str]]:
 #     try:
-#         # Get current date dynamically and calculate 2 days ago
-#         today = datetime.now()
-#         two_days_ago = today - timedelta(days=2)
-        
-#         # Fetch data from API
-#         response = requests.get("https://orchestrator-gekh.onrender.com/api/v1/miners")
+#         response = requests.get("https://orchestrator-gekh.onrender.com/api/v1/bittensor/miners")
 #         response.raise_for_status()
 #         miners_data = response.json()
         
-#         # Filter miners with status "rejected" and created 2 days ago
-#         rejected_miners = [
-#             miner["id"]
-#             for miner in miners_data
-#             if miner.get("status") == "rejected"
-#             and miner.get("created_at")  # Ensure created_at exists
-#             and datetime.fromisoformat(miner["created_at"].replace("Z", "+00:00")).date() <= two_days_ago.date()
-#         ]
+#         # Initialize outputs
+#         filtered_miners = {}
+#         miners_to_reject = []
         
-#         return rejected_miners
+#         # Process each miner
+#         for miner in miners_data:
+#             miner_id = miner.get("miner_id")
+#             miner_uid = miner.get("miner_uid")
+#             if miner_uid is None:
+#                 miners_to_reject.append(miner_id)
+#             elif int(miner_uid) in allowed_uids:
+#                 # Include miners with valid miner_uid in allowed_uids
+#                 filtered_miners[miner_id] = str(miner_uid)
+        
+#         return filtered_miners, miners_to_reject
     
 #     except Exception as e:
-#         print(f"No data found: {e}")
-#         return []
+#         logger.error(f"Error fetching filtered miners: {e}")
+#         return {}, []
+    
+# filtered,miners_to_reject =get_filtered_miners(allowed_uids)
+# print(miners_to_reject)
+# print(filtered)
+def get_rejected_miners() -> list[str]:
+    try:
+        # Get current date dynamically and calculate 2 days ago
+        today = datetime.now()
+        two_days_ago = today - timedelta(days=2)
+        
+        # Fetch data from API
+        response = requests.get("https://orchestrator-gekh.onrender.com/api/v1/miners")
+        response.raise_for_status()
+        miners_data = response.json()
+        
+        # Filter miners with status "rejected" and created 2 days ago
+        rejected_miners = [
+            miner["id"]
+            for miner in miners_data
+            if miner.get("status") == "pending_verification"
+            and miner.get("created_at")  # Ensure created_at exists
+            and datetime.fromisoformat(miner["created_at"].replace("Z", "+00:00")).date() <= two_days_ago.date()
+        ]
+        
+        return rejected_miners
+    
+    except Exception as e:
+        print(f"No data found: {e}")
+        return []
     
 
 
-# def delete_miner(miner_id: str) -> bool:
-#     url = f"https://orchestrator-gekh.onrender.com/api/v1/miners/{miner_id}"
-#     try:
-#         response = requests.delete(url)
-#         response.raise_for_status()
-#         return True
-#     except Exception as e:
-#         print(f"Error deleting miner {miner_id}: {e}")
-#         return False
+def delete_miner(miner_id: str) -> bool:
+    url = f"https://orchestrator-gekh.onrender.com/api/v1/miners/{miner_id}"
+    try:
+        response = requests.delete(url)
+        response.raise_for_status()
+        return True
+    except Exception as e:
+        print(f"Error deleting miner {miner_id}: {e}")
+        return False
     
 
-# def delete_rejected_miners():
-#     # Get the list of rejected miners created 2 days ago
-#     miner_ids = get_rejected_miners()
+def delete_rejected_miners():
+    # Get the list of rejected miners created 2 days ago
+    miner_ids = get_rejected_miners()
     
-#     # Format the date 2 days ago for output
-#     two_days_ago = (datetime.now() - timedelta(days=2)).strftime("%Y-%m-%d")
+    # Format the date 2 days ago for output
+    two_days_ago = (datetime.now() - timedelta(days=2)).strftime("%Y-%m-%d")
     
-#     if not miner_ids:
-#         print(f"No rejected miners created on {two_days_ago} found.")
-#         return
+    if not miner_ids:
+        print(f"No rejected miners created on {two_days_ago} found.")
+        return
     
-#     print(f"Found {len(miner_ids)} rejected miners created on {two_days_ago}: {miner_ids}")
+    print(f"Found {len(miner_ids)} rejected miners created on {two_days_ago}: {miner_ids}")
     
-#     # Delete each miner
-#     for miner_id in miner_ids:
-#         print(f"Deleting miner {miner_id}...")
-#         if delete_miner(miner_id):
-#             print(f"Successfully deleted miner {miner_id}")
-#         else:
-#             print(f"Failed to delete miner {miner_id}")
+    # Delete each miner
+    for miner_id in miner_ids:
+        print(f"Deleting miner {miner_id}...")
+        if delete_miner(miner_id):
+            print(f"Successfully deleted miner {miner_id}")
+        else:
+            print(f"Failed to delete miner {miner_id}")
     
-# if __name__ == "__main__":
-#     delete_rejected_miners()
+if __name__ == "__main__":
+    delete_rejected_miners()
 
 # 
 # logger = logging.getLogger("remote_access")
