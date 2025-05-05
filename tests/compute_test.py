@@ -4,13 +4,15 @@ import logging
 from datetime import datetime
 import requests
 import tenacity
-from typing import Dict, Any,List, Union
+from typing import Dict, Any, List, Union, Tuple
 from loguru import logger
 import numpy as np
 from collections import defaultdict
 from difflib import SequenceMatcher
-from typing import Dict, Any, List, Union, Tuple
+
+# Configure logger
 logger = logging.getLogger("remote_access")
+logging.basicConfig(level=logging.INFO)
 
 # API configuration
 SERVER_URL = "https://orchestrator-gekh.onrender.com"
@@ -423,27 +425,18 @@ def compare_compute_resources(new_resource: Dict[str, Any], existing_resource: D
         Dict with percentage, errors, and issues.
     """
     logger.info("Starting resource comparison")
-
     errors = []
     issues = []
 
-    # Check if new_resource is None or empty
-    if new_resource is None or (isinstance(new_resource, dict) and not new_resource):
-        logger.error("new_resource is None or empty")
-        issues.append("Compute node could not be accessible")
-        return {"percentage": 0.0, "errors": errors, "issues": issues}
-
-    # Validate existing_resource
-    if existing_resource is None:
-        logger.error("existing_resource is None")
-        errors.append("existing_resource is None")
-        return {"percentage": 0.0, "errors": errors, "issues": ["Invalid input: existing_resource is None"]}
+    if new_resource is None or existing_resource is None:
+        logger.error("One or both resources are None")
+        errors.append("Resources are None")
+        return {"percentage": 0.0, "errors": errors, "issues": ["Invalid input: resource is None"]}
     if not isinstance(new_resource, dict) or not isinstance(existing_resource, dict):
         logger.error(f"Invalid types: new={type(new_resource)}, existing={type(existing_resource)}")
         errors.append("Invalid input types")
         return {"percentage": 0.0, "errors": errors, "issues": ["Invalid input: resources must be dictionaries"]}
 
-    # Check for SSH task errors
     ssh_result = new_resource.get("status", "success")
     error_message = new_resource.get("message", "")
     if ssh_result == "error":
@@ -451,7 +444,6 @@ def compare_compute_resources(new_resource: Dict[str, Any], existing_resource: D
         issues.append(error_message)
         return {"percentage": 0.0, "errors": [], "issues": [error_message]}
 
-    # Extract features
     try:
         new_features, new_categorical = extract_features(new_resource.get("task_results", new_resource))
         existing_features, existing_categorical = extract_features(existing_resource)
@@ -493,7 +485,6 @@ def compare_compute_resources(new_resource: Dict[str, Any], existing_resource: D
         ("", ""): 1.0
     }
 
-    # Compute categorical similarities
     categorical_scores = {}
     try:
         categorical_scores["resource_type"] = resource_type_similarity.get(
@@ -556,7 +547,6 @@ def compare_compute_resources(new_resource: Dict[str, Any], existing_resource: D
             categorical_weights[f"{c_type}_name"] = 0.05
             categorical_weights[f"{c_type}_vendor"] = 0.05
 
-    # Compute similarity
     try:
         numerical_features = list(feature_weights.keys())
         new_vector = np.array([new_features.get(f, 0.0) for f in numerical_features])
@@ -592,192 +582,32 @@ def compare_compute_resources(new_resource: Dict[str, Any], existing_resource: D
     logger.info(f"Comparison complete: percentage={percentage:.2f}%")
     return result
 
-def compute_resource_score(resource: Union[Dict, List]) -> Union[float, List[float]]:
-    """
-    Calculate a score for a compute resource (CPU or GPU) based on its specifications.
-    Robust to different key naming conventions and missing or None values in input data.
-
-    Parameters:
-    resource (dict or list): A dictionary containing compute resource details, or a list of such dictionaries.
-
-    Returns:
-    float or list: A score representing the performance of the resource, or a list of scores if a list is provided.
-    """
-    if isinstance(resource, list):
-        # If the input is a list, calculate the score for each resource
-        return [compute_resource_score(item) for item in resource]
-
-    if not isinstance(resource, dict):
-        logger.error(f"Expected 'resource' to be a dictionary or list, got type: {type(resource)}")
-        raise TypeError(f"Expected 'resource' to be a dictionary or a list of dictionaries, but got type: {type(resource)}")
-
-    if "resource_type" not in resource:
-        logger.error("Missing 'resource_type' in resource dictionary")
-        raise KeyError("The key 'resource_type' is missing from the resource dictionary.")
-
-    score = 0
-    weights = {
-        "cpu": {
-            "cores": 0.4,
-            "threads_per_core": 0.1,
-            "max_clock_speed": 0.3,
-            "ram": 0.15,
-            "storage_speed": 0.05
-        },
-        "gpu": {
-            "vram": 0.5,
-            "compute_cores": 0.3,
-            "bandwidth": 0.2
+def get_unverified_miners() -> dict[str, dict]:
+    try:
+        response = requests.get("https://orchestrator-gekh.onrender.com/api/v1/miners")
+        response.raise_for_status()
+        miners_data = response.json()
+        return {
+            miner["id"]: miner.get("compute_resources", {})
+            for miner in miners_data
+            if miner.get("status") == "rejected"
         }
-    }
-
-    if resource["resource_type"] == "CPU":
-        # Ensure cpu_specs is a dictionary
-        cpu_specs = resource.get("cpu_specs", {}) if isinstance(resource.get("cpu_specs"), dict) else {}
-        ram = resource.get("ram", "0GB")
-        storage = resource.get("storage", {}) if isinstance(resource.get("storage"), dict) else {}
-
-        # Convert RAM to numeric value
-        try:
-            if isinstance(ram, str):
-                ram = float(ram.replace("GB", ""))
-            elif not isinstance(ram, (int, float)):
-                logger.warning(f"Invalid RAM value: {ram}, defaulting to 0")
-                ram = 0
-        except (ValueError, AttributeError):
-            logger.warning(f"Failed to parse RAM: {ram}, defaulting to 0")
-            ram = 0
-
-        # Convert storage speed to numeric value
-        storage_speed = storage.get("read_speed", "0MB/s")
-        try:
-            if isinstance(storage_speed, str):
-                storage_speed = float(storage_speed.replace("MB/s", ""))
-            elif not isinstance(storage_speed, (int, float)):
-                logger.warning(f"Invalid storage speed: {storage_speed}, defaulting to 0")
-                storage_speed = 0
-        except (ValueError, AttributeError):
-            logger.warning(f"Failed to parse storage speed: {storage_speed}, defaulting to 0")
-            storage_speed = 0
-
-        # Normalize CPU values for scoring, with robust fallbacks
-        cores_score = (cpu_specs.get("total_cpus", cpu_specs.get("cores", 0)) or 0) / 64  # Max 64 cores
-        threads_score = (cpu_specs.get("threads_per_core", 0) or 0) / 2  # Max 2 threads/core
-        clock_speed_score = (cpu_specs.get("cpu_max_mhz", cpu_specs.get("clock_speed", 0)) or 0) / 5000  # Max 5 GHz
-        ram_score = ram / 128  # Max 128GB RAM
-        storage_score = storage_speed / 1000  # Max 1000MB/s
-
-        # Log input values for debugging
-        logger.debug(f"CPU scoring for resource: cores={cores_score*64}, threads={threads_score*2}, "
-                     f"clock_speed={clock_speed_score*5000}, ram={ram}, storage_speed={storage_speed}")
-
-        # Weighted score for CPU
-        score += (
-            cores_score * weights["cpu"]["cores"] +
-            threads_score * weights["cpu"]["threads_per_core"] +
-            clock_speed_score * weights["cpu"]["max_clock_speed"] +
-            ram_score * weights["cpu"]["ram"] +
-            storage_score * weights["cpu"]["storage_speed"]
-        )
-
-    elif resource["resource_type"] == "GPU":
-        # Ensure gpu_specs is a dictionary
-        gpu_specs = resource.get("gpu_specs", {})
-        if isinstance(gpu_specs, list) and len(gpu_specs) > 0:
-            gpu_specs = gpu_specs[0]  # Take the first GPU if there are multiple
-        elif not isinstance(gpu_specs, dict):
-            logger.warning(f"Invalid gpu_specs: {gpu_specs}, defaulting to empty dict")
-            gpu_specs = {}
-
-        # Handle VRAM with multiple key names
-        vram = gpu_specs.get("memory_total", 
-                    gpu_specs.get("memory_size", 
-                        gpu_specs.get("vram", "0GB")))
-        try:
-            if isinstance(vram, str):
-                vram_str = vram.upper()
-                if "GB" in vram_str:
-                    vram = float(vram_str.replace("GB", ""))
-                elif "GIB" in vram_str:
-                    vram = float(vram_str.replace("GIB", ""))
-                else:
-                    vram = float(''.join(c for c in vram_str if c.isdigit() or c == '.'))
-            elif not isinstance(vram, (int, float)):
-                logger.warning(f"Invalid VRAM value: {vram}, defaulting to 0")
-                vram = 0
-        except (ValueError, AttributeError):
-            logger.warning(f"Failed to parse VRAM: {vram}, defaulting to 0")
-            vram = 0
-
-        # Handle compute cores
-        compute_cores = gpu_specs.get("compute_cores", 
-                           gpu_specs.get("cuda_cores", 
-                               gpu_specs.get("cores", 0)) or 0)
-
-        # Handle bandwidth
-        bandwidth = gpu_specs.get("bandwidth", 
-                      gpu_specs.get("memory_bandwidth", "0GB/s"))
-        try:
-            if isinstance(bandwidth, str):
-                bandwidth_str = bandwidth.upper()
-                if "GB/S" in bandwidth_str:
-                    bandwidth = float(bandwidth_str.replace("GB/S", ""))
-                else:
-                    bandwidth = float(''.join(c for c in bandwidth_str if c.isdigit() or c == '.'))
-            elif not isinstance(bandwidth, (int, float)):
-                logger.warning(f"Invalid bandwidth value: {bandwidth}, defaulting to 0")
-                bandwidth = 0
-        except (ValueError, AttributeError):
-            logger.warning(f"Failed to parse bandwidth: {bandwidth}, defaulting to 0")
-            bandwidth = 0
-
-        # Normalize GPU values for scoring
-        vram_score = vram / 48  # Max 48GB VRAM
-        compute_cores_score = compute_cores / 10000  # Max 10k cores
-        bandwidth_score = bandwidth / 1000  # Max 1 TB/s
-
-        # Log input values for debugging
-        logger.debug(f"GPU scoring for resource: vram={vram}, compute_cores={compute_cores}, bandwidth={bandwidth}")
-
-        # Weighted score for GPU
-        score += (
-            vram_score * weights["gpu"]["vram"] +
-            compute_cores_score * weights["gpu"]["compute_cores"] +
-            bandwidth_score * weights["gpu"]["bandwidth"]
-        )
-
-    else:
-        logger.error(f"Unknown resource type: {resource['resource_type']}")
-        raise ValueError(f"Unknown resource type: {resource['resource_type']}")
-
-    final_score = round(score, 3)
-    logger.info(f"Computed score for {resource['resource_type']} resource: {final_score}")
-    return final_score
-
-
-def time_calculation(start_time, expiry_time):
-    logger.info(f"start_time {start_time}")
-    logger.info(f"expiry_time {expiry_time}")
-    expires_dt = datetime.strptime(expiry_time, "%Y-%m-%dT%H:%M:%S.%f")
-    created_dt = datetime.strptime(start_time, "%Y-%m-%dT%H:%M:%S.%f")
-
-    # Calculate the difference
-    time_diff = expires_dt - created_dt
-
-    # Convert the difference to hours
-    hours_diff = time_diff.total_seconds() / 3600
-    logger.info(f"hours_diff {hours_diff}")
-    return hours_diff
-
-def has_expired(expires_at):
-    # Parse the expires_at timestamp into a datetime object
-    expires_dt = datetime.strptime(expires_at, "%Y-%m-%dT%H:%M:%S.%f")
+    except Exception as e:
+        print(f"No data found: {e}")
+        return {}
     
-    # Get the current time
-    now_dt = datetime.now()
-    
-    # Compare the two times
-    if expires_dt < now_dt:
-        return True  # The time span has expired
-    else:
-        return True  # The time span has not expired
+
+unverified_miners=get_unverified_miners()
+miner="b7q1mnJYeAkMm0eeyIEa"
+miner_resources = unverified_miners.get(miner)
+print(f"miner resources {miner_resources[0]}")
+
+result = execute_ssh_tasks(miner)
+if not result or "task_results" not in result:
+    print("go data")
+
+
+specs = result.get("task_results", {})
+print(f"specs {specs}")
+pog_score = compare_compute_resources(specs, miner_resources[0])
+print(f"scores {pog_score}")

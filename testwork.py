@@ -186,30 +186,30 @@ def update_rejected_miners_to_pending():
             print(f"Successfully updated miner {miner_id} to status: {new_status}")
         else:
             print(f"Failed to update miner {miner_id}")
-# update_rejected_miners_to_pending()
+update_rejected_miners_to_pending()
 
-# def get_filtered_miners() -> tuple[Dict[str, str], List[str]]:
-#     try:
-#         response = requests.get("https://orchestrator-gekh.onrender.com/api/v1/bittensor/miners")
-#         response.raise_for_status()
-#         miners_data = response.json()
+def get_filtered_miners() -> tuple[Dict[str, str], List[str]]:
+    try:
+        response = requests.get("https://orchestrator-gekh.onrender.com/api/v1/bittensor/miners")
+        response.raise_for_status()
+        miners_data = response.json()
         
-#         # Initialize outputs
-#         miners_to_reject = []
+        # Initialize outputs
+        miners_to_reject = []
         
-#         # Process each miner
-#         for miner in miners_data:
-#             miner_id = miner.get("miner_id")
-#             miner_uid = miner.get("miner_uid")
-#             print(f"miner uid {miner_id} and {miner_uid}")
-#             if miner_uid is None:
-#                 miners_to_reject.append(miner_id)
+        # Process each miner
+        for miner in miners_data:
+            miner_id = miner.get("miner_id")
+            miner_uid = miner.get("miner_uid")
+            print(f"miner uid {miner_id} and {miner_uid}")
+            if miner_uid is None:
+                miners_to_reject.append(miner_id)
         
-#         return miners_to_reject
+        return miners_to_reject
     
-#     except Exception as e:
-#         logger.error(f"Error fetching filtered miners: {e}")
-#         return {}, []
+    except Exception as e:
+        logger.error(f"Error fetching filtered miners: {e}")
+        return {}, []
 # allowed_uids=[2,0,13,131,207]
 # def get_filtered_miners(allowed_uids: List[int]) -> tuple[Dict[str, str], List[str]]:
 #     try:
@@ -237,7 +237,7 @@ def update_rejected_miners_to_pending():
 #         logger.error(f"Error fetching filtered miners: {e}")
 #         return {}, []
     
-# filtered,miners_to_reject =get_filtered_miners(allowed_uids)
+# miners_to_reject =get_filtered_miners()
 # print(miners_to_reject)
 # print(filtered)
 def get_rejected_miners() -> list[str]:
@@ -278,30 +278,36 @@ def delete_miner(miner_id: str) -> bool:
         print(f"Error deleting miner {miner_id}: {e}")
         return False
     
+# for miner_id in miners_to_reject:
+#     print(f"Deleting miner {miner_id}...")
+#     if delete_miner(miner_id):
+#         print(f"Successfully deleted miner {miner_id}")
+#     else:
+#         print(f"Failed to delete miner {miner_id}")
 
-def delete_rejected_miners():
-    # Get the list of rejected miners created 2 days ago
-    miner_ids = get_rejected_miners()
+# def delete_rejected_miners():
+#     # Get the list of rejected miners created 2 days ago
+#     miner_ids = get_rejected_miners()
     
-    # Format the date 2 days ago for output
-    two_days_ago = (datetime.now() - timedelta(days=2)).strftime("%Y-%m-%d")
+#     # Format the date 2 days ago for output
+#     two_days_ago = (datetime.now() - timedelta(days=2)).strftime("%Y-%m-%d")
     
-    if not miner_ids:
-        print(f"No rejected miners created on {two_days_ago} found.")
-        return
+#     if not miner_ids:
+#         print(f"No rejected miners created on {two_days_ago} found.")
+#         return
     
-    print(f"Found {len(miner_ids)} rejected miners created on {two_days_ago}: {miner_ids}")
+#     print(f"Found {len(miner_ids)} rejected miners created on {two_days_ago}: {miner_ids}")
     
-    # Delete each miner
-    for miner_id in miner_ids:
-        print(f"Deleting miner {miner_id}...")
-        if delete_miner(miner_id):
-            print(f"Successfully deleted miner {miner_id}")
-        else:
-            print(f"Failed to delete miner {miner_id}")
+#     # Delete each miner
+#     for miner_id in miner_ids:
+#         print(f"Deleting miner {miner_id}...")
+#         if delete_miner(miner_id):
+#             print(f"Successfully deleted miner {miner_id}")
+#         else:
+#             print(f"Failed to delete miner {miner_id}")
     
-if __name__ == "__main__":
-    delete_rejected_miners()
+# if __name__ == "__main__":
+#     delete_rejected_miners()
 
 # 
 # logger = logging.getLogger("remote_access")

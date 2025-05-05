@@ -187,7 +187,7 @@ async def verify_miners(
     # Filter miners to only those that are unverified
     miners_to_verify = [miner for miner in miners if miner in unverified_miners]
     logger.info(f"Verifying {len(miners_to_verify)} unverified miners: {miners_to_verify}")
-
+    
     for miner in miners_to_verify:
         # Validate resources (expecting a dict from get_unverified_miners)
         miner_resources = unverified_miners.get(miner)

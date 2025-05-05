@@ -25,7 +25,7 @@ def get_filtered_miners(allowed_uids: List[int]) -> tuple[Dict[str, str], List[s
             elif int(miner_uid) in allowed_uids:
                 # Include miners with valid miner_uid in allowed_uids
                 filtered_miners[miner_id] = str(miner_uid)
-        
+        # filtered_miners_={'RplPqqDYqdPNptJ1jDTx':'173', 'SCJ2kuYzFhzQtEiTzAJ8':'0', 'WQRo8rJxvlM9LDlTS5Is':'239','Wbjht0arLPqeQ8ktEX0L':'173','WvOcrfWgVhJpAJiyrlHj':'96','YrPUTbjNrIwXacIcT4oB':'127','b7q1mnJYeAkMm0eeyIEa':'53','gTOo7rTfzpIkxLeXfU94':'0'}
         return filtered_miners, miners_to_reject
     
     except Exception as e:
