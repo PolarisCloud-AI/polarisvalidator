@@ -13,7 +13,7 @@ from typing import Dict, Any, List, Union, Tuple
 logger = logging.getLogger("remote_access")
 
 # API configuration
-SERVER_URL = "https://orchestrator-gekh.onrender.com"
+SERVER_URL = "https://80a8-148-76-188-140.ngrok-free.app"
 API_PREFIX = "/api/v1"
 
 def string_similarity(a: str, b: str) -> float:

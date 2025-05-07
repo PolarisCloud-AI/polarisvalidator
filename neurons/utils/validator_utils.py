@@ -178,7 +178,6 @@ async def verify_miners(
         get_unverified_func: Function returning a dict of unverified miners.
         update_status_func: Function to update miner status with ID, status, and percentage.
     """
-    logger.info(f"Received {len(miners)} miner IDs for verification")
     unverified_miners = get_unverified_func()
     if not unverified_miners:
         logger.info("No unverified miners found, skipping verification")
@@ -249,7 +248,7 @@ async def verify_miners(
                 continue
             
             percentage = float(pog_score["percentage"])
-            status = "verified" if percentage >= 50 else "rejected"
+            status = "verified" if percentage >= 45 else "rejected"
             logger.info(f"Miner {miner} verification complete: status={status}, percentage={percentage}")
             reason= f"verified with {percentage} %"
             update_status_func(miner, status, percentage,reason)

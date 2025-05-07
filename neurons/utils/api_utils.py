@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 
 def get_filtered_miners(allowed_uids: List[int]) -> tuple[Dict[str, str], List[str]]:
     try:
-        response = requests.get("https://orchestrator-gekh.onrender.com/api/v1/bittensor/miners")
+        response = requests.get("https://80a8-148-76-188-140.ngrok-free.app/api/v1/bittensor/miners")
         response.raise_for_status()
         miners_data = response.json()
         
@@ -25,7 +25,7 @@ def get_filtered_miners(allowed_uids: List[int]) -> tuple[Dict[str, str], List[s
             elif int(miner_uid) in allowed_uids:
                 # Include miners with valid miner_uid in allowed_uids
                 filtered_miners[miner_id] = str(miner_uid)
-        # filtered_miners_={'RplPqqDYqdPNptJ1jDTx':'173', 'SCJ2kuYzFhzQtEiTzAJ8':'0', 'WQRo8rJxvlM9LDlTS5Is':'239','Wbjht0arLPqeQ8ktEX0L':'173','WvOcrfWgVhJpAJiyrlHj':'96','YrPUTbjNrIwXacIcT4oB':'127','b7q1mnJYeAkMm0eeyIEa':'53','gTOo7rTfzpIkxLeXfU94':'0'}
+            
         return filtered_miners, miners_to_reject
     
     except Exception as e:
@@ -34,7 +34,7 @@ def get_filtered_miners(allowed_uids: List[int]) -> tuple[Dict[str, str], List[s
     
 def get_filtered_miners_val(allowed_uids: list[int]) -> dict[str, str]:
     try:
-        response = requests.get("https://orchestrator-gekh.onrender.com/api/v1/bittensor/miners")
+        response = requests.get("https://80a8-148-76-188-140.ngrok-free.app/api/v1/bittensor/miners")
         response.raise_for_status()
         miners_data = response.json()
         return {
@@ -72,7 +72,7 @@ def reject_miners(miners_to_reject: List[str], reason: str = "miner_uid is None"
             logger.error(f"Failed to reject miner {miner_id}")
 def get_miner_list_with_resources(miner_commune_map: dict[str, str]) -> dict:
     try:
-        response = requests.get("https://orchestrator-gekh.onrender.com/api/v1/miners")
+        response = requests.get("https://80a8-148-76-188-140.ngrok-free.app/api/v1/miners")
         response.raise_for_status()
         miners_data = response.json()
         return {
@@ -89,7 +89,7 @@ def get_miner_list_with_resources(miner_commune_map: dict[str, str]) -> dict:
 
 def get_unverified_miners() -> dict[str, dict]:
     try:
-        response = requests.get("https://orchestrator-gekh.onrender.com/api/v1/miners")
+        response = requests.get("https://80a8-148-76-188-140.ngrok-free.app/api/v1/miners")
         response.raise_for_status()
         miners_data = response.json()
         return {
@@ -103,7 +103,7 @@ def get_unverified_miners() -> dict[str, dict]:
 
 def update_miner_status(miner_id: str, status: str, percentage: float, reason: str) -> str:
     updated_at =datetime.utcnow()
-    url = f"https://orchestrator-gekh.onrender.com/api/v1/miners/{miner_id}/status"
+    url = f"https://80a8-148-76-188-140.ngrok-free.app/api/v1/miners/{miner_id}/status"
     headers = {"Content-Type": "application/json"}
     payload = {"status": status,"Reason":reason, "updated_at":updated_at.isoformat() + "Z"}
     try:
@@ -117,7 +117,7 @@ def update_miner_status(miner_id: str, status: str, percentage: float, reason: s
 
 def get_containers_for_miner(miner_uid: str) -> list[str]:
     try:
-        response = requests.get(f"https://orchestrator-gekh.onrender.com/api/v1/containers/miner/direct/{miner_uid}")
+        response = requests.get(f"https://80a8-148-76-188-140.ngrok-free.app/api/v1/containers/miner/direct/{miner_uid}")
         response.raise_for_status()
         return response.json()
     except Exception as e:
@@ -125,7 +125,7 @@ def get_containers_for_miner(miner_uid: str) -> list[str]:
         return []
 
 def update_container_payment_status(container_id: str) -> bool:
-    url = f"https://orchestrator-gekh.onrender.com/api/v1/containers/direct/{container_id}/multi"
+    url = f"https://80a8-148-76-188-140.ngrok-free.app/api/v1/containers/direct/{container_id}/multi"
     headers = {"Content-Type": "application/json"}
     payload = {"fields": {"payment_status": "completed"}}
     try:
@@ -138,7 +138,7 @@ def update_container_payment_status(container_id: str) -> bool:
         return False
 
 def track_tokens(miner_uid: str, tokens: float, validator: str, platform: str) -> bool:
-    url = "https://orchestrator-gekh.onrender.com/api/v1/scores/add"
+    url = "https://80a8-148-76-188-140.ngrok-free.app/api/v1/scores/add"
     headers = {"Content-Type": "application/json"}
     payload = {
         "id": str(uuid.uuid4()),
@@ -169,7 +169,7 @@ def check_miner_unique(miner_id: str) -> bool:
     Returns:
         bool: True if the miner is unique, False otherwise.
     """
-    url = f"https://orchestrator-gekh.onrender.com/api/v1/bittensor/miner/{miner_id}/unique-check"
+    url = f"https://80a8-148-76-188-140.ngrok-free.app/api/v1/bittensor/miner/{miner_id}/unique-check"
     try:
         response = requests.get(url)
         response.raise_for_status()
@@ -188,7 +188,7 @@ def get_miners_compute_resources() -> dict[str, dict]:
     Returns:
         dict: A dictionary mapping miner IDs to their compute resources.
     """
-    url = "https://orchestrator-gekh.onrender.com/api/v1/bittensor/miners/compute-resources"
+    url = "https://80a8-148-76-188-140.ngrok-free.app/api/v1/bittensor/miners/compute-resources"
     try:
         response = requests.get(url)
         response.raise_for_status()
@@ -208,7 +208,7 @@ def get_miner_details(miner_id: str) -> dict:
     Returns:
         dict: A dictionary containing the miner's details, or an empty dict if the request fails.
     """
-    url = f"https://orchestrator-gekh.onrender.com/api/v1/bittensor/miner/{miner_id}"
+    url = f"https://80a8-148-76-188-140.ngrok-free.app/api/v1/bittensor/miner/{miner_id}"
     try:
         response = requests.get(url)
         response.raise_for_status()
@@ -358,7 +358,7 @@ def filter_miners_by_id(bittensor_miners: Dict[str, int],netuid: int = 49, netwo
     
 
 def delete_miner(miner_id: str) -> bool:
-    url = f"https://orchestrator-gekh.onrender.com/api/v1/miners/{miner_id}"
+    url = f"https://80a8-148-76-188-140.ngrok-free.app/api/v1/miners/{miner_id}"
     try:
         response = requests.delete(url)
         response.raise_for_status()
@@ -374,7 +374,7 @@ def get_rejected_miners() -> list[str]:
         two_days_ago = today - timedelta(days=2)
         
         # Fetch data from API
-        response = requests.get("https://orchestrator-gekh.onrender.com/api/v1/miners")
+        response = requests.get("https://80a8-148-76-188-140.ngrok-free.app/api/v1/miners")
         response.raise_for_status()
         miners_data = response.json()
         

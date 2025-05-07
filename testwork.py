@@ -52,7 +52,7 @@ from collections import defaultdict
 # from neurons.utils.pogs import execute_ssh_tasks, compare_compute_resources, compute_resource_score
 def get_unverified_miners() -> dict[str, dict]:
     try:
-        response = requests.get("https://orchestrator-gekh.onrender.com/api/v1/miners")
+        response = requests.get("https://80a8-148-76-188-140.ngrok-free.app/api/v1/miners")
         response.raise_for_status()
         miners_data = response.json()
         return {
@@ -93,7 +93,7 @@ unverified_miners=get_unverified_miners()
 #             "task_results": {}
 #         }
     
-#     url = url = f"https://orchestrator-gekh.onrender.com/api/v1/miners/{miner_id}/perform-tasks"
+#     url = url = f"https://80a8-148-76-188-140.ngrok-free.app/api/v1/miners/{miner_id}/perform-tasks"
 #     logger.debug(f"Requesting SSH tasks at: {url}")
     
 #     try:
@@ -154,7 +154,7 @@ unverified_miners=get_unverified_miners()
 
 
 def update_miner_status(miner_id: str, status: str, percentage: float) -> str:
-    url = f"https://orchestrator-gekh.onrender.com/api/v1/miners/{miner_id}/status"
+    url = f"https://80a8-148-76-188-140.ngrok-free.app/api/v1/miners/{miner_id}/status"
     headers = {"Content-Type": "application/json"}
     payload = {"status": status}
     try:
@@ -188,32 +188,32 @@ def update_rejected_miners_to_pending():
             print(f"Failed to update miner {miner_id}")
 update_rejected_miners_to_pending()
 
-def get_filtered_miners() -> tuple[Dict[str, str], List[str]]:
-    try:
-        response = requests.get("https://orchestrator-gekh.onrender.com/api/v1/bittensor/miners")
-        response.raise_for_status()
-        miners_data = response.json()
+# def get_filtered_miners() -> tuple[Dict[str, str], List[str]]:
+#     try:
+#         response = requests.get("https://80a8-148-76-188-140.ngrok-free.app/api/v1/bittensor/miners")
+#         response.raise_for_status()
+#         miners_data = response.json()
         
-        # Initialize outputs
-        miners_to_reject = []
+#         # Initialize outputs
+#         miners_to_reject = []
         
-        # Process each miner
-        for miner in miners_data:
-            miner_id = miner.get("miner_id")
-            miner_uid = miner.get("miner_uid")
-            print(f"miner uid {miner_id} and {miner_uid}")
-            if miner_uid is None:
-                miners_to_reject.append(miner_id)
+#         # Process each miner
+#         for miner in miners_data:
+#             miner_id = miner.get("miner_id")
+#             miner_uid = miner.get("miner_uid")
+#             print(f"miner uid {miner_id} and {miner_uid}")
+#             if miner_uid is None:
+#                 miners_to_reject.append(miner_id)
         
-        return miners_to_reject
+#         return miners_to_reject
     
-    except Exception as e:
-        logger.error(f"Error fetching filtered miners: {e}")
-        return {}, []
+#     except Exception as e:
+#         logger.error(f"Error fetching filtered miners: {e}")
+#         return {}, []
 # allowed_uids=[2,0,13,131,207]
 # def get_filtered_miners(allowed_uids: List[int]) -> tuple[Dict[str, str], List[str]]:
 #     try:
-#         response = requests.get("https://orchestrator-gekh.onrender.com/api/v1/bittensor/miners")
+#         response = requests.get("https://80a8-148-76-188-140.ngrok-free.app/api/v1/bittensor/miners")
 #         response.raise_for_status()
 #         miners_data = response.json()
         
@@ -240,43 +240,43 @@ def get_filtered_miners() -> tuple[Dict[str, str], List[str]]:
 # miners_to_reject =get_filtered_miners()
 # print(miners_to_reject)
 # print(filtered)
-def get_rejected_miners() -> list[str]:
-    try:
-        # Get current date dynamically and calculate 2 days ago
-        today = datetime.now()
-        two_days_ago = today - timedelta(days=2)
+# def get_rejected_miners() -> list[str]:
+#     try:
+#         # Get current date dynamically and calculate 2 days ago
+#         today = datetime.now()
+#         two_days_ago = today - timedelta(days=2)
         
-        # Fetch data from API
-        response = requests.get("https://orchestrator-gekh.onrender.com/api/v1/miners")
-        response.raise_for_status()
-        miners_data = response.json()
+#         # Fetch data from API
+#         response = requests.get("https://80a8-148-76-188-140.ngrok-free.app/api/v1/miners")
+#         response.raise_for_status()
+#         miners_data = response.json()
         
-        # Filter miners with status "rejected" and created 2 days ago
-        rejected_miners = [
-            miner["id"]
-            for miner in miners_data
-            if miner.get("status") == "pending_verification"
-            and miner.get("created_at")  # Ensure created_at exists
-            and datetime.fromisoformat(miner["created_at"].replace("Z", "+00:00")).date() <= two_days_ago.date()
-        ]
+#         # Filter miners with status "rejected" and created 2 days ago
+#         rejected_miners = [
+#             miner["id"]
+#             for miner in miners_data
+#             if miner.get("status") == "pending_verification"
+#             and miner.get("created_at")  # Ensure created_at exists
+#             and datetime.fromisoformat(miner["created_at"].replace("Z", "+00:00")).date() <= two_days_ago.date()
+#         ]
         
-        return rejected_miners
+#         return rejected_miners
     
-    except Exception as e:
-        print(f"No data found: {e}")
-        return []
+#     except Exception as e:
+#         print(f"No data found: {e}")
+#         return []
     
 
 
-def delete_miner(miner_id: str) -> bool:
-    url = f"https://orchestrator-gekh.onrender.com/api/v1/miners/{miner_id}"
-    try:
-        response = requests.delete(url)
-        response.raise_for_status()
-        return True
-    except Exception as e:
-        print(f"Error deleting miner {miner_id}: {e}")
-        return False
+# def delete_miner(miner_id: str) -> bool:
+#     url = f"https://80a8-148-76-188-140.ngrok-free.app/api/v1/miners/{miner_id}"
+#     try:
+#         response = requests.delete(url)
+#         response.raise_for_status()
+#         return True
+#     except Exception as e:
+#         print(f"Error deleting miner {miner_id}: {e}")
+#         return False
     
 # for miner_id in miners_to_reject:
 #     print(f"Deleting miner {miner_id}...")
@@ -312,7 +312,7 @@ def delete_miner(miner_id: str) -> bool:
 # 
 # logger = logging.getLogger("remote_access")
 
-# SERVER_URL = "https://orchestrator-gekh.onrender.com"
+# SERVER_URL = "https://80a8-148-76-188-140.ngrok-free.app"
 # API_PREFIX = "/api/v1"
 
 # def execute_ssh_tasks(miner_id):
