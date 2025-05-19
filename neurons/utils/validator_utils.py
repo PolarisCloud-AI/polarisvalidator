@@ -4,9 +4,10 @@ from loguru import logger
 import numpy as np
 import requests
 import tenacity
-from utils.pogs import execute_ssh_tasks, compare_compute_resources, compute_resource_score
+from utils.pogs import execute_ssh_tasks, compare_compute_resources
+from utils.compute_score import calculate_compute_score
 from utils.uptimedata import calculate_miner_rewards
-from utils.api_utils import get_miner_details, get_miner_uid_by_hotkey,check_miner_unique
+from utils.api_utils import get_miner_details, get_miner_uid_by_hotkey,check_miner_unique,update_miner_status
 
 async def process_miners(
     miners: List[int],
@@ -53,8 +54,19 @@ async def process_miners(
         result = execute_ssh_tasks(miner_id)
         if not result or "task_results" not in result:
             logger.warning(f"Miner {miner_id} excluded: SSH tasks failed or returned no task_results")
-            await _reject_miner(miner_id, "SSH tasks failed or returned no task_results", update_status_func)
+            reason="SSH tasks failed or returned no task_results"
+            update_miner_status(miner_id,"pending_verification",0.0,reason)
             continue
+
+        specs = result.get("task_results", {})
+        pog_score = compare_compute_resources(specs, miner_resources[0])
+        if not isinstance(pog_score, dict) or "percentage" not in pog_score:
+            await _reject_miner(miner_id, "Invalid compute resources comparison result", update_status_func)
+            continue
+        percentage = float(pog_score["percentage"])
+        if percentage < 90:
+            reason="Invalid compute resources compared to the original resources specified during registration "
+            update_miner_status(miner_id,"pending_verification",percentage,reason)
 
         miner_info = miner_resources.get(miner_id)
         if not miner_info:
@@ -62,9 +74,10 @@ async def process_miners(
             continue
 
         try:
-            compute_score = compute_resource_score(miner_info["compute_resources"][0])
+            specs = result.get("task_results", {})
+            compute_score = calculate_compute_score(specs)
             # Logarithmic scaling for fair compute score
-            scaled_compute_score = np.log1p(compute_score) * 5  # Scales to ~35 for compute_score=1000
+            scaled_compute_score = np.log1p(compute_score) * 10  # Scales to ~35 for compute_score=1000
             logger.info(f"Compute score for miner {miner_uid}: raw={compute_score}, scaled={scaled_compute_score:.2f}")
         except Exception as e:
             logger.error(f"Error calculating compute score for miner {miner_uid}: {e}")
@@ -102,11 +115,10 @@ async def process_miners(
             # Diminishing returns on container count
             effective_container_count = min(active_container_count, 10) + np.log1p(max(0, active_container_count - 10))
             # Scalability bonus
-            container_bonus = np.sqrt(active_container_count) * 3  # Scales to ~9 for 10 containers
+            container_bonus = np.sqrt(active_container_count) * 2  # Scales to ~9 for 10 containers
             # Balanced weighting: 0.5 containers, 0.5 compute
-            base_score = 0.5 * effective_container_count + 0.5 * scaled_compute_score
-            # Scale base_score to keep within reasonable bounds
-            base_score = base_score / 10
+            base_score = 0.6 * effective_container_count + 0.4 * scaled_compute_score
+            
             # Apply tempo and bonus
             raw_score = (base_score * tempo + container_bonus) + uptime_rewards["reward_amount"]
             
@@ -131,16 +143,21 @@ async def process_miners(
     # Normalize scores to max_score
     results = {}
     if raw_results:
-        max_raw_score = max(raw_results.values())
-        if max_raw_score > 0:
-            normalization_factor = max_score / max_raw_score
-            for miner_uid, raw_score in raw_results.items():
-                normalized_score = raw_score * normalization_factor
-                results[miner_uid] = normalized_score
-                logger.info(f"Miner {miner_uid}: raw_score={raw_score:.2f}, "
-                           f"normalized_score={normalized_score:.2f} (factor={normalization_factor:.4f})")
+        raw_scores = list(raw_results.values())
+        if raw_scores:
+            # Use 90th percentile to reduce outlier impact
+            percentile_90 = np.percentile(raw_scores, 90) if len(raw_scores) >= 5 else max(raw_scores)
+            if percentile_90 > 0:
+                normalization_factor = max_score / percentile_90
+                for miner_uid, raw_score in raw_results.items():
+                    normalized_score = raw_score * normalization_factor
+                    results[miner_uid] = min(max_score, normalized_score)
+                    logger.info(f"Miner {miner_uid}: raw_score={raw_score:.2f}, "
+                               f"normalized_score={normalized_score:.2f} (factor={normalization_factor:.4f})")
+            else:
+                logger.warning("All raw scores are zero. Skipping normalization.")
         else:
-            logger.warning("All raw scores are zero. Skipping normalization.")
+            logger.info("No valid scores to normalize.")
     else:
         logger.info("No valid scores to normalize.")
 
@@ -251,7 +268,7 @@ async def verify_miners(
             percentage = float(pog_score["percentage"])
             status = "verified" if percentage >= 50 else "rejected"
             logger.info(f"Miner {miner} verification complete: status={status}, percentage={percentage}")
-            reason= f"verified with {percentage} %"
+            reason= f"Failed verification with {percentage} %"
             update_status_func(miner, status, percentage,reason)
 
         except ConnectionError as e:

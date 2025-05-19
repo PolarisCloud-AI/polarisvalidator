@@ -25,7 +25,7 @@ def get_filtered_miners(allowed_uids: List[int]) -> tuple[Dict[str, str], List[s
             elif int(miner_uid) in allowed_uids:
                 # Include miners with valid miner_uid in allowed_uids
                 filtered_miners[miner_id] = str(miner_uid)
-        
+        filtered_miners={"CNrPZc8dmBIYe9qcvyX8":"80"}
         return filtered_miners, miners_to_reject
     
     except Exception as e:
@@ -95,7 +95,7 @@ def get_unverified_miners() -> dict[str, dict]:
         return {
             miner["id"]: miner.get("compute_resources", {})
             for miner in miners_data
-            if miner.get("status") == "pending_verification"
+            if miner.get("status") == "rejected"
         }
     except Exception as e:
         logger.error(f"Error fetching unverified miners: {e}")

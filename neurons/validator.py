@@ -248,8 +248,8 @@ class PolarisNode(BaseValidatorNeuron):
                 logger.debug("Filtering miners based on allowed UIDs")
                 bittensor_miners,miners_to_reject, = get_filtered_miners(miners)
                 reject_miners(miners_to_reject, reason="miner_uid is None")
-                logger.debug("Deleting rejected miners")
-                delete_rejected_miners()
+                # logger.debug("Deleting rejected miners")
+                # delete_rejected_miners()
                 logger.debug(f"Verifying {len(bittensor_miners)} Bittensor miners")
                 await verify_miners(list(bittensor_miners.keys()), get_unverified_miners, update_miner_status)
                 await asyncio.sleep(400)
@@ -293,7 +293,7 @@ class PolarisNode(BaseValidatorNeuron):
         self.load_state()
         if not self._tasks_scheduled:
             asyncio.create_task(self.verify_miners_loop())
-            asyncio.create_task(self.process_miners_loop())
+            # asyncio.create_task(self.process_miners_loop())
             self._tasks_scheduled = True
         logger.info("Setup completed")
 

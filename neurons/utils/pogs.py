@@ -7,6 +7,8 @@ import tenacity
 from typing import Dict, Any,List, Union
 from loguru import logger
 import numpy as np
+import time
+import random
 from collections import defaultdict
 
 logger = logging.getLogger("remote_access")
@@ -38,63 +40,88 @@ def execute_ssh_tasks(miner_id: str) -> Dict[str, Any]:
             "task_results": {}
         }
     
-    url = url = f"https://orchestrator-gekh.onrender.com/api/v1/miners/{miner_id}/perform-tasks"
+    url = f"https://orchestrator-gekh.onrender.com/api/v1/miners/{miner_id}/perform-tasks"
     logger.debug(f"Requesting SSH tasks at: {url}")
     
-    try:
-        response = requests.get(url, timeout=10)
-        logger.info(f"Response status: {response.status_code}")
-        
-        if response.status_code == 200:
-            try:
-                result = response.json()
-                logger.debug(f"Server response: {result}")
-                
-                if result.get("status") != "success":
-                    logger.error(f"Server error: {result.get('message', 'Unknown error')}")
+    # Retry configuration
+    max_retries = 3
+    base_delay = 1.0  # Seconds
+    retry_status_codes = {500, 502, 503, 504}  # Transient HTTP errors
+    
+    for attempt in range(max_retries):
+        try:
+            response = requests.get(url, timeout=30)
+            logger.info(f"Response status: {response.status_code} (attempt {attempt + 1}/{max_retries})")
+            
+            if response.status_code == 200:
+                try:
+                    result = response.json()
+                    logger.debug(f"Server response: {result}")
+                    
+                    if result.get("status") != "success":
+                        logger.error(f"Server error: {result.get('message', 'Unknown error')}")
+                        return {
+                            "status": "error",
+                            "message": result.get("message", "Server reported failure"),
+                            "task_results": {}
+                        }
+                    
+                    # Extract task_results (adjust key based on actual server response)
+                    task_results = result.get("task_results", result.get("specifications", {}))
+                    logger.info("SSH tasks executed successfully")
+                    return {
+                        "status": "success",
+                        "message": "SSH tasks executed successfully",
+                        "task_results": task_results
+                    }
+                except ValueError as e:
+                    logger.error(f"Failed to parse JSON response: {str(e)}")
                     return {
                         "status": "error",
-                        "message": result.get("message", "Server reported failure"),
+                        "message": f"Invalid server response: {str(e)}",
                         "task_results": {}
                     }
-                
-                # Extract task_results (adjust key based on actual server response)
-                task_results = result.get("task_results", result.get("specifications", {}))
-                logger.info("SSH tasks executed successfully")
-                return {
-                    "status": "success",
-                    "message": "SSH tasks executed successfully",
-                    "task_results": task_results
-                }
-            except ValueError as e:
-                logger.error(f"Failed to parse JSON response: {str(e)}")
+            elif response.status_code in retry_status_codes:
+                logger.warning(f"Transient HTTP error {response.status_code}, retrying...")
+                if attempt < max_retries - 1:
+                    delay = base_delay * (2 ** attempt) * (1 + random.uniform(-0.1, 0.1))
+                    logger.info(f"Waiting {delay:.2f} seconds before retry {attempt + 2}")
+                    time.sleep(delay)
+                    continue
+                logger.error(f"Exhausted retries for status code: {response.status_code}")
                 return {
                     "status": "error",
-                    "message": f"Invalid server response: {str(e)}",
+                    "message": f"Server returned status code {response.status_code} after {max_retries} attempts",
                     "task_results": {}
                 }
-        else:
-            logger.error(f"Unexpected status code: {response.status_code}")
+            else:
+                logger.error(f"Unexpected status code: {response.status_code}")
+                return {
+                    "status": "error",
+                    "message": f"Server returned status code {response.status_code}",
+                    "task_results": {}
+                }
+            
+        except requests.exceptions.RequestException as e:
+            logger.warning(f"Request failed for {url}: {str(e)} (attempt {attempt + 1}/{max_retries})")
+            if attempt < max_retries - 1:
+                delay = base_delay * (2 ** attempt) * (1 + random.uniform(-0.1, 0.1))
+                logger.info(f"Waiting {delay:.2f} seconds before retry {attempt + 2}")
+                time.sleep(delay)
+                continue
+            logger.error(f"Exhausted retries for request error: {str(e)}")
             return {
                 "status": "error",
-                "message": f"Server returned status code {response.status_code}",
+                "message": f"Request error after {max_retries} attempts: {str(e)}",
                 "task_results": {}
             }
-            
-    except requests.exceptions.RequestException as e:
-        logger.error(f"Request failed for {url}: {str(e)}")
-        return {
-            "status": "error",
-            "message": f"Request error: {str(e)}",
-            "task_results": {}
-        }
-    except Exception as e:
-        logger.error(f"Unexpected error executing SSH tasks: {str(e)}")
-        return {
-            "status": "error",
-            "message": f"Unexpected error: {str(e)}",
-            "task_results": {}
-        }
+        except Exception as e:
+            logger.error(f"Unexpected error executing SSH tasks: {str(e)}")
+            return {
+                "status": "error",
+                "message": f"Unexpected error: {str(e)}",
+                "task_results": {}
+            }
     
 
 def normalize_memory_value(value: str) -> float:
