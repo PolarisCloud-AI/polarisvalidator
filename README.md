@@ -94,17 +94,17 @@ docker pull bateesa/polaris-validator
 
 **For macOS/Linux**:
 ```bash
-docker run --rm -it -v ~/.bittensor:/root/.bittensor -e WALLET_NAME=<your_wallet_name> -e WALLET_HOTKEY=default bateesa/polaris-validator
+docker run --rm -it -v ~/.bittensor:/root/.bittensor -e WALLET_NAME=<your_wallet_name> -e WALLET_HOTKEY=default -e CLUSTER_ID=0 bateesa/polaris-validator
 ```
 
 **For Windows (Command Prompt)**:
 ```bash
-docker run --rm -it -v C:\Users\YourUsername\.bittensor:/root/.bittensor -e WALLET_NAME=<your_wallet_name> -e WALLET_HOTKEY=default bateesa/polaris-validator
+docker run --rm -it -v C:\Users\YourUsername\.bittensor:/root/.bittensor -e WALLET_NAME=<your_wallet_name> -e WALLET_HOTKEY=default -e CLUSTER_ID=0 bateesa/polaris-validator
 ```
 
 **For Windows (PowerShell)**:
 ```powershell
-docker run --rm -it -v ${HOME}/.bittensor:/root/.bittensor -e WALLET_NAME=<your_wallet_name> -e WALLET_HOTKEY=default bateesa/polaris-validator
+docker run --rm -it -v ${HOME}/.bittensor:/root/.bittensor -e WALLET_NAME=<your_wallet_name> -e WALLET_HOTKEY=default -e CLUSTER_ID=0  bateesa/polaris-validator
 ```
 
 ### Method 3: Using the Automated Script

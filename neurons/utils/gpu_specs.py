@@ -23,7 +23,7 @@ GPU_WEIGHTS = {
     "RTX 4090": 0.16,      # $0.50/hr
     "RTX 4080": 0.08,      # $0.25/hr (Vast.ai)
     "RTX 4070": 0.04,      # $0.12/hr (Vast.ai)
-    "RTX 4060 Ti": 0.04,   # $0.12/hr (Vast.ai)
+    "RTX 4060 Ti": 0.16,   # $0.12/hr (Vast.ai)
     "RTX 4060": 0.02,      # $0.07/hr (Vast.ai)
     "RTX 3080": 0.06,      # $0.20/hr
     "RTX 3070": 0.05,      # Estimated, $0.16/hr

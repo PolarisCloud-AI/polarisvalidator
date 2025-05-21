@@ -9,14 +9,12 @@ import json
 from loguru import logger
 from template.base.validator import BaseValidatorNeuron
 from template.base.utils.weight_utils import (
-    normalize_max_weight,
     convert_weights_and_uids_for_emit,
     process_weights_for_netuid
 )
 from utils.api_utils import (
     get_filtered_miners,
     get_miner_list_with_resources,
-    reject_miners,delete_rejected_miners,
     get_containers_for_miner,
     get_unverified_miners,
     get_filtered_miners_val,
@@ -25,7 +23,6 @@ from utils.api_utils import (
 )
 from utils.validator_utils import process_miners, verify_miners
 from utils.state_utils import load_state, save_state
-from utils.uptimedata import send_reward_log
 
 class PolarisNode(BaseValidatorNeuron):
     def __init__(self, config=None):
@@ -56,6 +53,21 @@ class PolarisNode(BaseValidatorNeuron):
         
         # Subnet price fallback
         self.default_subnet_price = 1.0
+        try:
+            # Check both config.miner_cluster_id and config.neuron.miner_cluster_id
+            if hasattr(self.config, 'miner_cluster_id') and self.config.miner_cluster_id is not None:
+                miner_cluster_id = int(self.config.miner_cluster_id)
+            elif hasattr(self.config.neuron, 'miner_cluster_id') and self.config.neuron.miner_cluster_id is not None:
+                miner_cluster_id = int(self.config.neuron.miner_cluster_id)
+            else:
+                miner_cluster_id = 0
+            logger.info(f"Using miner_cluster_id: {miner_cluster_id}")
+        except ValueError:
+            logger.error(f"Invalid miner_cluster_id: {self.config.miner_cluster_id if hasattr(self.config, 'miner_cluster_id') else self.config.neuron.miner_cluster_id if hasattr(self.config.neuron, 'miner_cluster_id') else 'None'}. Falling back to 0.")
+            miner_cluster_id = 0
+        
+        cluster_ranges = {0: (0, 63), 1: (64, 127), 2: (128, 191), 3: (192, 255)}
+        self.config.uid_start, self.config.uid_end = cluster_ranges.get(miner_cluster_id)
 
     def save_state(self):
         """Saves the validator state by calling the external save_state function."""
@@ -184,7 +196,6 @@ class PolarisNode(BaseValidatorNeuron):
                 if not await self.is_subnet_ready_for_weights():
                     logger.info("Subnet not ready for weights.")
                     return
-
                 subnet_price = self.default_subnet_price
                 try:
                     async with bt.AsyncSubtensor(network=self.config.subtensor.network) as sub:
@@ -239,17 +250,24 @@ class PolarisNode(BaseValidatorNeuron):
 
     async def verify_miners_loop(self):
         """Periodically verifies miners."""
+        uid_start = self.config.uid_start
+        uid_end = self.config.uid_end
+        allowed_uids = set(range(uid_start, uid_end + 1))
         while True:
             try:
                 logger.info("Starting miner verification cycle")
 
                 logger.debug("Fetching registered miners")
                 miners = self.get_registered_miners()
+                miners = [
+                    miner for miner in miners
+                    if miner in allowed_uids 
+                ]
+                if not miners:
+                    logger.warning("No eligible miners after filtering by UID range and blacklist. Sleeping for 60 seconds.")
+                    continue
                 logger.debug("Filtering miners based on allowed UIDs")
                 bittensor_miners,miners_to_reject, = get_filtered_miners(miners)
-                reject_miners(miners_to_reject, reason="miner_uid is None")
-                # logger.debug("Deleting rejected miners")
-                # delete_rejected_miners()
                 logger.debug(f"Verifying {len(bittensor_miners)} Bittensor miners")
                 await verify_miners(list(bittensor_miners.keys()), get_unverified_miners, update_miner_status)
                 await asyncio.sleep(400)
@@ -259,10 +277,22 @@ class PolarisNode(BaseValidatorNeuron):
 
     async def process_miners_loop(self):
         """Periodically processes miners and updates weights."""
+        uid_start = self.config.uid_start
+        uid_end = self.config.uid_end
+        blacklisted_miners = {}
+        allowed_uids = set(range(uid_start, uid_end + 1))
+        logger.info(f"Processing miners in UID range: {uid_start}–{uid_end}")
         while True:
             try:
                 logger.info("Starting process_miners_loop...")
                 miners= self.get_registered_miners()
+                miners = [
+                    miner for miner in miners
+                    if miner in allowed_uids and miner not in blacklisted_miners
+                ]
+                if not miners:
+                    logger.warning("No eligible miners after filtering by UID range and blacklist. Sleeping for 60 seconds.")
+                    continue
                 white_list= get_filtered_miners_val(miners)
                 bittensor_miners = filter_miners_by_id(white_list)
                 miner_resources = get_miner_list_with_resources(bittensor_miners)
@@ -293,7 +323,7 @@ class PolarisNode(BaseValidatorNeuron):
         self.load_state()
         if not self._tasks_scheduled:
             asyncio.create_task(self.verify_miners_loop())
-            # asyncio.create_task(self.process_miners_loop())
+            asyncio.create_task(self.process_miners_loop())
             self._tasks_scheduled = True
         logger.info("Setup completed")
 
