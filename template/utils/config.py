@@ -168,6 +168,13 @@ def add_miner_args(cls, parser):
 
 def add_validator_args(cls, parser):
     """Add validator specific arguments to the parser."""
+    parser.add_argument(
+        "--neuron.miner_cluster_id",
+        type=int,
+        choices=[0, 1, 2, 3],
+        default=0,
+        help="Miner cluster ID to process (0: 0-63, 1: 64-127, 2: 128-191, 3: 192-255)"
+    )
 
     parser.add_argument(
         "--neuron.name",
@@ -244,13 +251,12 @@ def add_validator_args(cls, parser):
 
 
 def config(cls):
-    """
-    Returns the configuration object specific to this miner or validator after adding relevant arguments.
-    """
     parser = argparse.ArgumentParser()
     bt.wallet.add_args(parser)
     bt.subtensor.add_args(parser)
     bt.logging.add_args(parser)
     bt.axon.add_args(parser)
     cls.add_args(parser)
-    return bt.config(parser)
+    parsed_config = bt.config(parser)
+    bt.logging.info(f"Parsed config: {parsed_config}")
+    return parsed_config

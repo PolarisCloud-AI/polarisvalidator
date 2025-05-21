@@ -25,7 +25,6 @@ def get_filtered_miners(allowed_uids: List[int]) -> tuple[Dict[str, str], List[s
             elif int(miner_uid) in allowed_uids:
                 # Include miners with valid miner_uid in allowed_uids
                 filtered_miners[miner_id] = str(miner_uid)
-        
         return filtered_miners, miners_to_reject
     
     except Exception as e:
@@ -70,9 +69,11 @@ def reject_miners(miners_to_reject: List[str], reason: str = "miner_uid is None"
             logger.info(f"Successfully rejected miner {miner_id} with status: {new_status}")
         else:
             logger.error(f"Failed to reject miner {miner_id}")
+
+
 def get_miner_list_with_resources(miner_commune_map: dict[str, str]) -> dict:
     try:
-        response = requests.get("https://orchestrator-gekh.onrender.com/api/v1/miners")
+        response = requests.get("https://polaris-test-server.onrender.com/api/v1/miners")
         response.raise_for_status()
         miners_data = response.json()
         return {
@@ -89,7 +90,7 @@ def get_miner_list_with_resources(miner_commune_map: dict[str, str]) -> dict:
 
 def get_unverified_miners() -> dict[str, dict]:
     try:
-        response = requests.get("https://orchestrator-gekh.onrender.com/api/v1/miners")
+        response = requests.get("https://polaris-test-server.onrender.com/api/v1/miners")
         response.raise_for_status()
         miners_data = response.json()
         return {
@@ -374,7 +375,7 @@ def get_rejected_miners() -> list[str]:
         two_days_ago = today - timedelta(days=2)
         
         # Fetch data from API
-        response = requests.get("https://orchestrator-gekh.onrender.com/api/v1/miners")
+        response = requests.get("https://polaris-test-server.onrender.com/api/v1/miners")
         response.raise_for_status()
         miners_data = response.json()
         
