@@ -18,7 +18,7 @@ from template.base.utils.weight_utils import (
     convert_weights_and_uids_for_emit,
     process_weights_for_netuid
 )
-from utils.api_utils import (
+from neurons.utils.api_utils import (
     get_filtered_miners,
     get_miner_list_with_resources,
     get_containers_for_miner,
@@ -27,8 +27,8 @@ from utils.api_utils import (
     update_miner_status,
     filter_miners_by_id
 )
-from utils.validator_utils import process_miners, verify_miners
-from utils.state_utils import load_state, save_state
+from neurons.utils.validator_utils import process_miners, verify_miners
+from neurons.utils.state_utils import load_state, save_state
 from gpu_proof_of_work import GPUProofOfWork, ValidationResult
 
 
