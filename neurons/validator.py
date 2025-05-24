@@ -41,6 +41,22 @@ class PolarisNode(BaseValidatorNeuron):
         self.hotkeys = self.metagraph.hotkeys.copy()
         self.dendrite = bt.dendrite(wallet=self.wallet)
         
+        # Safe mode - prevents actual deletions/rejections, just logs
+        # Check command line arguments for safe mode
+        import sys
+        self.safe_mode = True  # Default to safe mode
+        if '--no-safe-mode' in sys.argv:
+            self.safe_mode = False
+        elif '--live-mode' in sys.argv:
+            self.safe_mode = False
+            
+        if self.safe_mode:
+            logger.warning("🛡️  SAFE MODE ENABLED - No miners will be rejected or deleted, only logged")
+            logger.warning("🛡️  To disable safe mode, run with --no-safe-mode or --live-mode")
+        else:
+            logger.error("⚠️  LIVE MODE ENABLED - Actions will be taken! Miners can be rejected!")
+            logger.error("⚠️  To enable safe mode, remove --no-safe-mode/--live-mode flags")
+        
         # Initialize scoring system with proper defaults
         self.scores = np.zeros(self.metagraph.n, dtype=np.float32)
         self.score_history = {}  # Track historical performance
@@ -87,6 +103,15 @@ class PolarisNode(BaseValidatorNeuron):
         self._init_cluster_config()
         
         logger.info(f"PolarisNode initialized with improved scoring and GPU validation")
+        
+    def safe_update_miner_status(self, miner_id: str, status: str, score: float, reason: str):
+        """Safe wrapper for update_miner_status that logs instead of taking action in safe mode"""
+        if self.safe_mode:
+            logger.info(f"🛡️  [SAFE MODE] Would update miner {miner_id}: status='{status}', score={score:.2f}, reason='{reason}'")
+            return
+        else:
+            logger.info(f"🔄 Updating miner {miner_id}: status='{status}', score={score:.2f}, reason='{reason}'")
+            return update_miner_status(miner_id, status, score, reason)
         
     def _init_cluster_config(self):
         """Initialize cluster configuration with proper validation"""
@@ -432,13 +457,19 @@ class PolarisNode(BaseValidatorNeuron):
                 success = await self._update_weights_with_retry(weights, uids)
                 
                 if success:
-                    logger.success(f"✓ Weights updated successfully at block {self.subtensor.block}")
+                    if self.safe_mode:
+                        logger.success(f"🛡️  [SAFE MODE] ✓ Would have updated weights at block {self.subtensor.block}")
+                    else:
+                        logger.success(f"✓ Weights updated successfully at block {self.subtensor.block}")
                     self.last_weight_update_block = self.subtensor.block
                     self.step += 1
                     # FIXED: Do NOT reset scores! Let decay handle the history
                     self.save_state()
                 else:
-                    logger.error("Failed to update weights after all retries")
+                    if self.safe_mode:
+                        logger.info("🛡️  [SAFE MODE] Would have failed to update weights (simulated)")
+                    else:
+                        logger.error("Failed to update weights after all retries")
                     
             except Exception as e:
                 logger.error(f"Exception in update_validator_weights: {e}", exc_info=True)
@@ -456,7 +487,14 @@ class PolarisNode(BaseValidatorNeuron):
         return self.default_subnet_price
 
     async def _update_weights_with_retry(self, weights: np.ndarray, uids: np.ndarray) -> bool:
-        """Update weights with retry logic"""
+        """Update weights with retry logic - in safe mode, just logs without setting weights"""
+        if self.safe_mode:
+            logger.info(f"🛡️  [SAFE MODE] Would set weights for {len(uids)} miners:")
+            for i, uid in enumerate(uids):
+                logger.info(f"  - UID {uid}: weight={weights[i]:.6f}")
+            logger.info("🛡️  [SAFE MODE] Weights not actually set - safe mode enabled")
+            return True  # Return success so the cycle continues
+        
         for attempt in range(self.max_retries):
             try:
                 logger.info(f"Attempting weight update (attempt {attempt + 1}/{self.max_retries})")
@@ -511,7 +549,7 @@ class PolarisNode(BaseValidatorNeuron):
                     await verify_miners(
                         list(bittensor_miners.keys()), 
                         get_unverified_miners, 
-                        update_miner_status
+                        self.safe_update_miner_status
                     )
                 
                 # Sleep before next verification cycle
@@ -530,7 +568,10 @@ class PolarisNode(BaseValidatorNeuron):
             try:
                 cycle_start = time.time()
                 logger.info("=" * 60)
-                logger.info("Starting miner processing cycle")
+                if self.safe_mode:
+                    logger.info("🛡️  Starting miner processing cycle [SAFE MODE - no actions taken]")
+                else:
+                    logger.info("⚠️  Starting miner processing cycle [LIVE MODE - actions will be taken]")
                 
                 # Get registered miners
                 all_miners = self.get_registered_miners()
@@ -563,7 +604,7 @@ class PolarisNode(BaseValidatorNeuron):
                     miners=eligible_miners,
                     miner_resources=miner_resources,
                     get_containers_func=get_containers_for_miner,
-                    update_status_func=update_miner_status,
+                    update_status_func=self.safe_update_miner_status,
                     tempo=self.tempo,
                     max_score=self.max_allowed_weights
                 )
@@ -720,10 +761,27 @@ class PolarisNode(BaseValidatorNeuron):
 if __name__ == "__main__":
     # Run the validator
     async def main():
-        async with PolarisNode() as validator:
-            logger.info("Polaris validator started successfully")
-            while True:
-                bt.logging.info(f"Validator running... {time.time()}")
-                await asyncio.sleep(300)
+        try:
+            async with PolarisNode() as validator:
+                if validator.safe_mode:
+                    logger.success("🛡️  Polaris validator started in SAFE MODE - no actions will be taken")
+                    logger.info("🛡️  All miner updates and weight changes will be logged only")
+                else:
+                    logger.warning("⚠️  Polaris validator started in LIVE MODE - actions will be taken!")
+                    logger.warning("⚠️  Miners can be rejected and weights will be set")
+                
+                while True:
+                    bt.logging.info(f"Validator running... {time.time()}")
+                    await asyncio.sleep(300)
+        except KeyboardInterrupt:
+            logger.info("Validator stopped by user")
+        except Exception as e:
+            logger.error(f"Validator error: {e}")
+    
+    # Show safe mode instructions
+    import sys
+    if '--no-safe-mode' not in sys.argv and '--live-mode' not in sys.argv:
+        logger.info("🛡️  Running in SAFE MODE by default")
+        logger.info("🛡️  To run in live mode, use: python3 neurons/validator.py --no-safe-mode")
     
     asyncio.run(main())
