@@ -1,0 +1,17 @@
+# Optional GPU libraries for enhanced validation
+# Install with: pip install -r requirements-gpu.txt
+
+# NVIDIA GPU monitoring (works on most systems)
+pynvml>=11.4.1
+
+# OpenCL support for AMD/Intel/Apple GPUs (requires OpenCL drivers)
+pyopencl>=2023.1
+
+# CUDA support for NVIDIA compute (choose based on your CUDA version)
+cupy-cuda12x>=12.0.0  # For CUDA 12.x systems
+# cupy-cuda11x>=11.0.0  # For CUDA 11.x systems (uncomment if using CUDA 11.x)
+
+# Note: These libraries have system requirements:
+# - pynvml: Works anywhere, only monitors NVIDIA GPUs
+# - pyopencl: Requires OpenCL drivers (nvidia-opencl-dev, amd-opencl-dev, etc.)
+# - cupy: Requires NVIDIA CUDA toolkit (https://developer.nvidia.com/cuda-downloads) 
