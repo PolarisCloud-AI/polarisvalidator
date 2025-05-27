@@ -4,18 +4,6 @@ from loguru import logger
 import math
 import re
     
-
-# # miner_id= "0sy5sozr8YlBQGYU0OuV"
-# # # miner_id = "3APsdH6RIYoiyd9JYbTS"
-# # # miner_id="1wEnm0ZcnWF3JuW355NT"
-
-# # result = execute_ssh_tasks(miner_id)
-# # specs = result.get("task_results", {})
-# # score = calculate_compute_score(specs=specs)
-
-
-
-
 MAX_CPU_ONLY_SCORE = 60.0
 CPU_ONLY_SPEED_REFERENCE = 4.0
 DEFAULT_CPU_SPEED_GHZ = 2.5
@@ -71,7 +59,7 @@ def calculate_cpu_only_score(specs: Dict[str, Any]) -> float:
         cpu_count = int(cpu_specs.get("total_cpus", 0))
         threads_per_core = int(cpu_specs.get("threads_per_core", 1))
         cpu_speed_mhz = float(cpu_specs.get("cpu_max_mhz", 0))
-        cpu_name = cpu_specs.get("cpu_name", "").lower()
+        cpu_name = (cpu_specs.get("cpu_name") or "unknown").lower()
         cpu_speed_ghz = cpu_speed_mhz / 1000.0 if cpu_speed_mhz > 0 else DEFAULT_CPU_SPEED_GHZ
         log_cpu_count = math.log2(max(cpu_count, 1)) * max(threads_per_core, 1)
         cpu_score = log_cpu_count * (cpu_speed_ghz / CPU_ONLY_SPEED_REFERENCE) * 25.0

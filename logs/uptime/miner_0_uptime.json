@@ -1,0 +1,38 @@
+[
+  {
+    "timestamp": "2025-05-26T09:24:11.274434+00:00",
+    "miner_uid": 0,
+    "status": "inactive",
+    "compute_score": 10.748625,
+    "uptime_reward": 0.0,
+    "block_number": 5641500,
+    "reason": ""
+  },
+  {
+    "timestamp": "2025-05-26T09:24:11.302337+00:00",
+    "miner_uid": 0,
+    "status": "inactive",
+    "compute_score": 10.748625,
+    "uptime_reward": 0.00021497250000000002,
+    "block_number": 5641500,
+    "reason": "Reward updated"
+  },
+  {
+    "timestamp": "2025-05-26T09:44:03.680389+00:00",
+    "miner_uid": 0,
+    "status": "inactive",
+    "compute_score": 10.748625,
+    "uptime_reward": 0.0,
+    "block_number": 5641600,
+    "reason": ""
+  },
+  {
+    "timestamp": "2025-05-26T09:44:03.693644+00:00",
+    "miner_uid": 0,
+    "status": "inactive",
+    "compute_score": 10.748625,
+    "uptime_reward": 2.149725,
+    "block_number": 5641600,
+    "reason": "Reward updated"
+  }
+]
