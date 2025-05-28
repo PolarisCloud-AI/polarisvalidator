@@ -46,6 +46,7 @@ async def process_miners(
     update_status_func: Callable[[str, str, float, str], None],
     tempo: int,
     max_score: float = 500.0,
+    dashboard_client=None,
 ) -> Tuple[Dict[int, float], Dict[int, List[str]], Dict[int, Dict]]:
     """
     Processes miners to compute scores based on uptime, active containers, and compute resources.
@@ -60,6 +61,7 @@ async def process_miners(
         update_status_func: Function to update miner status with ID, status, and percentage.
         tempo: Subnet tempo (seconds per block, e.g., 4320 for 72 minutes).
         max_score: Maximum score per miner (default: 500.0).
+        dashboard_client: Optional dashboard client for logging.
 
     Returns:
         Tuple of (results, container_updates, uptime_rewards_dict):
@@ -78,8 +80,12 @@ async def process_miners(
         subtensor = bt.subtensor(network="finney")
         current_block = subtensor.block
         logger.info(f"Current block number: {current_block}")
+        if dashboard_client:
+            dashboard_client.update_block_info(current_block)
     except Exception as e:
         logger.error(f"Error fetching current block: {e}")
+        if dashboard_client:
+            dashboard_client.log_error("validator.blockchain", f"Error fetching current block: {e}")
         current_block = 0
 
     for miner_uid in miners:
@@ -90,21 +96,37 @@ async def process_miners(
         logger.info(f"Information for miner {miner_uid} and internal id {miner_id}")
         if not miner_id:
             logger.warning(f"No miner_id for miner_uid {miner_uid}")
+            if dashboard_client:
+                dashboard_client.add_log("WARNING", "validator.process_miners", 
+                                       f"No miner_id found for UID {miner_uid}")
             continue
 
         miner_info = miner_resources.get(miner_id)
         if not miner_info:
             logger.warning(f"No resource info for miner_id {miner_id}")
+            if dashboard_client:
+                dashboard_client.add_log("WARNING", "validator.process_miners", 
+                                       f"No resource info for miner {miner_id}", miner_uid=miner_uid)
             continue
 
         try:
             # Execute SSH tasks and check for valid results
             resource_type = miner_info.get("compute_resource_details", [{}])[0].get("resource_type")
             wrk = miner_info.get("compute_resource_details", [{}])[0].get("network", {}).get("ssh")
+            
+            if dashboard_client:
+                dashboard_client.add_log("INFO", "validator.ssh", 
+                                       f"Attempting SSH connection to miner {miner_uid}", miner_uid=miner_uid)
+            
             result = await perform_ssh_tasks(wrk)
             if not result or "task_results" not in result:
                 await _reject_miner(miner_id, "SSH tasks failed or returned no results", update_status_func)
+                if dashboard_client:
+                    dashboard_client.log_ssh_attempt(miner_uid, False, "SSH tasks failed or returned no results")
                 continue
+
+            if dashboard_client:
+                dashboard_client.log_ssh_attempt(miner_uid, True)
 
             specs = result.get("task_results", {})
             pog_score = calculate_compute_score(resource_type, specs)
@@ -112,6 +134,8 @@ async def process_miners(
                 logger.info(f"Miner {miner_id} below threshold with {pog_score} percent")
                 reason = f"Your compute score is low with {pog_score}%"
                 update_status_func(miner_id, "pending_verification", pog_score, reason)
+                if dashboard_client:
+                    dashboard_client.log_miner_processed(miner_uid, pog_score, "below_threshold")
                 continue
 
             scaled_compute_score = np.log1p(pog_score) * 10
@@ -125,8 +149,15 @@ async def process_miners(
                 else:
                     pog_score *= gpu_weight
             logger.info(f"Compute score for miner {miner_uid}: raw={pog_score:.2f}, scaled={scaled_compute_score:.2f}")
+            
+            if dashboard_client:
+                dashboard_client.log_miner_processed(miner_uid, pog_score, "processed")
+                
         except Exception as e:
             logger.error(f"Error calculating compute score for miner {miner_uid}: {e}")
+            if dashboard_client:
+                dashboard_client.log_ssh_attempt(miner_uid, False, str(e))
+                dashboard_client.log_error("validator.compute_score", f"Error calculating score for miner {miner_uid}: {e}", miner_uid)
             continue
 
         try:
@@ -267,7 +298,8 @@ def _check_miner_unique_with_retry(miner: str) -> bool:
 async def verify_miners(
     miners: List[str],
     get_unverified_func: Callable[[], Dict[str, Dict[str, Any]]],
-    update_status_func: Callable[[str, str, float, str], None]
+    update_status_func: Callable[[str, str, float, str], None],
+    dashboard_client=None
 ) -> None:
     """
     Verifies only unverified miners by checking their hotkey-based UID, uniqueness, and compute resources.
@@ -276,16 +308,26 @@ async def verify_miners(
         miners: List of miner IDs to consider.
         get_unverified_func: Function returning a dict of unverified miners.
         update_status_func: Function to update miner status with ID, status, and percentage.
+        dashboard_client: Optional dashboard client for logging.
     """
     logger.info(f"Received {len(miners)} miner IDs for verification")
     unverified_miners = get_unverified_func()
     if not unverified_miners:
         logger.info("No unverified miners found, skipping verification")
+        if dashboard_client:
+            dashboard_client.add_log("INFO", "validator.verify", "No unverified miners found")
         return
 
     # Filter miners to only those that are unverified
     miners_to_verify = [miner for miner in miners if miner in unverified_miners]
     logger.info(f"Verifying {len(miners_to_verify)} unverified miners")
+    
+    if dashboard_client:
+        dashboard_client.add_log("INFO", "validator.verify", 
+                               f"Found {len(miners_to_verify)} unverified miners to verify")
+
+    verified_count = 0
+    rejected_count = 0
 
     for miner in miners_to_verify:
         # Validate resources (expecting a dict from get_unverified_miners)
@@ -294,18 +336,27 @@ async def verify_miners(
 
         if not isinstance(miner_resources, list) or not miner_resources:
             await _reject_miner(miner, "Invalid or missing resources", update_status_func)
+            if dashboard_client:
+                dashboard_client.log_miner_verification(None, False, error="Invalid or missing resources")
+            rejected_count += 1
             continue
 
         # Get miner details
         miner_spec = get_miner_details(miner)
         if not miner_spec:
             await _reject_miner(miner, "No details returned", update_status_func)
+            if dashboard_client:
+                dashboard_client.log_miner_verification(None, False, error="No details returned")
+            rejected_count += 1
             continue
 
         # Validate subnet_uid
         subnet_uid = miner_spec['bittensor_registration'].get('subnet_uid')
         if subnet_uid != 49:
             await _reject_miner(miner, f"Invalid subnet_uid {subnet_uid}, expected 49", update_status_func)
+            if dashboard_client:
+                dashboard_client.log_miner_verification(None, False, error=f"Invalid subnet_uid {subnet_uid}")
+            rejected_count += 1
             continue
 
         # Extract and validate hotkey and miner_uid
@@ -314,6 +365,9 @@ async def verify_miners(
 
         if not hotkey or miner_uid is None:
             await _reject_miner(miner, "Missing hotkey or miner_uid", update_status_func)
+            if dashboard_client:
+                dashboard_client.log_miner_verification(miner_uid, False, error="Missing hotkey or miner_uid")
+            rejected_count += 1
             continue
 
         # Verify UID using hotkey on subnet 49
@@ -325,6 +379,10 @@ async def verify_miners(
                 f"UID mismatch: metagraph UID {network_uid}, reported UID {miner_uid}",
                 update_status_func
             )
+            if dashboard_client:
+                dashboard_client.log_miner_verification(miner_uid, False, 
+                                                      error=f"UID mismatch: {network_uid} vs {miner_uid}")
+            rejected_count += 1
             continue
 
         # Verify miner uniqueness with retries
@@ -332,19 +390,37 @@ async def verify_miners(
             is_unique = _check_miner_unique_with_retry(miner)
             if not is_unique:
                 await _reject_miner(miner, "Not unique (check_miner_unique returned False)", update_status_func)
+                if dashboard_client:
+                    dashboard_client.log_miner_verification(miner_uid, False, error="Miner not unique")
+                rejected_count += 1
                 continue
         except requests.RequestException as e:
             await _reject_miner(miner, f"Uniqueness check failed: {str(e)}", update_status_func)
+            if dashboard_client:
+                dashboard_client.log_miner_verification(miner_uid, False, error=f"Uniqueness check failed: {e}")
+            rejected_count += 1
             continue
 
         # Perform SSH-based resource verification
         try:
             resource_type =miner_spec['compute_resources_details'][0].get('resource_type')
             wrk =miner_spec['compute_resources_details'][0]['network'].get('ssh')
+            
+            if dashboard_client:
+                dashboard_client.add_log("INFO", "validator.verify_ssh", 
+                                       f"Starting SSH verification for miner {miner_uid}", miner_uid=miner_uid)
+            
             result = await perform_ssh_tasks(wrk) 
             if not result or "task_results" not in result:
                 await _reject_miner(miner, "SSH tasks failed or returned no results", update_status_func)
+                if dashboard_client:
+                    dashboard_client.log_ssh_attempt(miner_uid, False, "SSH tasks failed")
+                    dashboard_client.log_miner_verification(miner_uid, False, error="SSH tasks failed")
+                rejected_count += 1
                 continue
+
+            if dashboard_client:
+                dashboard_client.log_ssh_attempt(miner_uid, True)
 
             specs = result.get("task_results", {})
             pog_score = calculate_compute_score(resource_type,specs)
@@ -352,11 +428,36 @@ async def verify_miners(
             logger.info(f"Miner {miner} verification complete: status={status}, percentage={pog_score}")
             reason= f"Verification score is: {pog_score} %"
             update_status_func(miner, status, pog_score,reason)
+            
+            if dashboard_client:
+                success = status == "verified"
+                dashboard_client.log_miner_verification(miner_uid, success, pog_score)
+                if success:
+                    verified_count += 1
+                else:
+                    rejected_count += 1
 
         except ConnectionError as e:
             await _reject_miner(miner, f"SSH connection error: {str(e)}", update_status_func)
+            if dashboard_client:
+                dashboard_client.log_ssh_attempt(miner_uid, False, f"Connection error: {e}")
+                dashboard_client.log_miner_verification(miner_uid, False, error=f"SSH connection error: {e}")
+            rejected_count += 1
         except TimeoutError as e:
             await _reject_miner(miner, f"SSH task timeout: {str(e)}", update_status_func)
+            if dashboard_client:
+                dashboard_client.log_ssh_attempt(miner_uid, False, f"Timeout: {e}")
+                dashboard_client.log_miner_verification(miner_uid, False, error=f"SSH timeout: {e}")
+            rejected_count += 1
         except Exception as e:
             await _reject_miner(miner, f"Unexpected error during SSH verification: {str(e)}", update_status_func)
-            
+            if dashboard_client:
+                dashboard_client.log_ssh_attempt(miner_uid, False, f"Unexpected error: {e}")
+                dashboard_client.log_miner_verification(miner_uid, False, error=f"Unexpected error: {e}")
+            rejected_count += 1
+    
+    # Update dashboard with final verification counts
+    if dashboard_client:
+        dashboard_client.update_miner_counts(verified=verified_count, rejected=rejected_count)
+        dashboard_client.add_log("INFO", "validator.verify", 
+                               f"Verification complete: {verified_count} verified, {rejected_count} rejected")            

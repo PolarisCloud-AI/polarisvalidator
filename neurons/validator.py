@@ -23,6 +23,7 @@ from utils.api_utils import (
 )
 from utils.validator_utils import process_miners, verify_miners
 from utils.state_utils import load_state, save_state
+from utils.dashboard_client import DashboardClient
 
 class PolarisNode(BaseValidatorNeuron):
     def __init__(self, config=None):
@@ -55,6 +56,22 @@ class PolarisNode(BaseValidatorNeuron):
         
         # Subnet price fallback
         self.default_subnet_price = 1.0
+
+        # Initialize dashboard client
+        dashboard_url = getattr(config, 'dashboard_url', 'http://localhost:3001') if config else 'http://localhost:3001'
+        self.dashboard = DashboardClient(
+            server_url=dashboard_url,
+            validator_id=f"validator_{self.instance_id}",
+            validator_name=f"Polaris Validator {self.instance_id}",
+            hotkey=self.wallet.hotkey.ss58_address,
+            send_interval=5,
+            sse_logs=True,       # Stream logs via SSE
+            log_buffer_size=50   # Keep 50 recent logs for display
+        )
+        
+        # Start dashboard client
+        self.dashboard.start()
+        # Silent dashboard operation
 
     def save_state(self):
         """Saves the validator state by calling the external save_state function."""
@@ -194,16 +211,24 @@ class PolarisNode(BaseValidatorNeuron):
     async def update_validator_weights(self, results: dict[int, float], container_updates: dict[int, list[str]], uptime_rewards_dict: dict[int, dict]):
         """Updates validator weights based on miner scores."""
         logger.info("Starting update_validator_weights...")
+        
+        # Update dashboard with current block info
+        current_block = self.subtensor.block
+        self.dashboard.update_block_info(current_block, self.last_weight_update_block)
+        
         async with self.lock:
             try:
                 if not results:
                     logger.warning("No results. Skipping weight update.")
+                    self.dashboard.add_log("WARNING", "validator.weights", "No results available for weight update")
                     return
                 if not self.check_registered():
                     logger.error("Validator not registered. Skipping weight update.")
+                    self.dashboard.add_log("ERROR", "validator.registration", "Validator not registered on subnet")
                     return
                 if not await self.is_subnet_ready_for_weights():
                     logger.info("Subnet not ready for weights.")
+                    self.dashboard.add_log("INFO", "validator.weights", "Subnet not ready for weight updates")
                     return
                 subnet_price = self.default_subnet_price
                 try:
@@ -213,17 +238,25 @@ class PolarisNode(BaseValidatorNeuron):
                     logger.info(f"Subnet price: {subnet_price}")
                 except Exception as e:
                     logger.error(f"Error fetching subnet price, using default {self.default_subnet_price}: {e}")
+                    self.dashboard.log_error("validator.subnet", f"Error fetching subnet price: {e}")
 
                 # Apply score decay
                 self.scores *= self.score_decay
                 logger.info(f"Applied score decay: {self.score_decay}, new scores sum: {self.scores.sum()}")
 
                 # Update scores with new results
+                total_score = 0.0
                 for uid, score in results.items():
                     uid = int(uid)
                     if uid < len(self.scores):
                         self.scores[uid] = max(self.scores[uid], float(score) * subnet_price)
-                logger.info(f"Updated scores, top 5: {sorted(zip(range(len(self.scores)), self.scores), key=lambda x: x[1], reverse=True)[:5]}")
+                        total_score += self.scores[uid]
+                        
+                # Log top scores to dashboard
+                top_scores = sorted(zip(range(len(self.scores)), self.scores), key=lambda x: x[1], reverse=True)[:5]
+                logger.info(f"Updated scores, top 5: {top_scores}")
+                self.dashboard.add_log("INFO", "validator.scores", 
+                                     f"Updated scores, top 5: {top_scores}")
 
                 # Prepare weighted scores
                 weighted_scores = {str(uid): float(score) for uid, score in enumerate(self.scores) if score > 0}
@@ -242,6 +275,8 @@ class PolarisNode(BaseValidatorNeuron):
                     if success:
                         logger.info(f"Weights updated successfully on attempt {attempt + 1}.")
                         self.last_weight_update_block = self.subtensor.block
+                        self.dashboard.log_weight_update(len(results), total_score)
+                        self.dashboard.update_block_info(current_block, self.last_weight_update_block)
                         self.scores = np.zeros(self.metagraph.n, dtype=np.float32)
                         self.step += 1
                         self.save_state()
@@ -254,35 +289,58 @@ class PolarisNode(BaseValidatorNeuron):
                             await asyncio.sleep(delay)
                 else:
                     logger.error("All retry attempts failed. Skipping updates.")
+                    self.dashboard.log_error("validator.weights", "All weight update attempts failed")
             except Exception as e:
                 logger.error(f"Exception in update_validator_weights: {e}")
+                self.dashboard.log_error("validator.weights", f"Exception in weight update: {e}")
 
     async def verify_miners_loop(self):
         """Periodically verifies miners."""
         while True:
             try:
+                cycle_start = time.time()
+                self.dashboard.log_cycle_start("verify_miners")
                 logger.info("Starting miner verification cycle")
 
                 logger.debug("Fetching registered miners")
                 miners = self.get_registered_miners()
+                self.dashboard.update_miner_counts(active=len(miners))
+                
                 logger.debug("Filtering miners based on allowed UIDs")
-                bittensor_miners,miners_to_reject, = get_filtered_miners(miners)
+                bittensor_miners, miners_to_reject = get_filtered_miners(miners)
+                
                 logger.debug(f"Verifying {len(bittensor_miners)} Bittensor miners")
-                await verify_miners(list(bittensor_miners.keys()), get_unverified_miners, update_miner_status)
+                self.dashboard.add_log("INFO", "validator.verify", 
+                                     f"Starting verification of {len(bittensor_miners)} miners")
+                
+                await verify_miners(list(bittensor_miners.keys()), get_unverified_miners, update_miner_status, self.dashboard)
+                
+                cycle_duration = time.time() - cycle_start
+                self.dashboard.log_cycle_end("verify_miners", cycle_duration, len(bittensor_miners))
+                
                 await asyncio.sleep(400)
             except Exception as e:
                 logger.error(f"Error in verify_miners_loop: {e}")
+                self.dashboard.log_error("validator.verify_miners_loop", f"Error in verification cycle: {e}")
                 await asyncio.sleep(60)
 
     async def process_miners_loop(self):
         """Periodically processes miners and updates weights."""
         while True:
             try:
+                cycle_start = time.time()
+                self.dashboard.log_cycle_start("process_miners")
                 logger.info("Starting process_miners_loop...")
-                miners= self.get_registered_miners()
-                white_list= get_filtered_miners_val(miners)
+                
+                miners = self.get_registered_miners()
+                white_list = get_filtered_miners_val(miners)
                 bittensor_miners = filter_miners_by_id(white_list, netuid=self.config.netuid, network=self.config.subtensor.network)
                 miner_resources = get_miner_list_with_resources(bittensor_miners)
+                
+                self.dashboard.update_miner_counts(active=len(bittensor_miners))
+                self.dashboard.add_log("INFO", "validator.process", 
+                                     f"Processing {len(bittensor_miners)} miners")
+                
                 # Pass update_status_func (assuming self.update_miner_status exists)
                 results, container_updates, uptime_rewards_dict = await process_miners(
                     miners=miners,
@@ -290,19 +348,37 @@ class PolarisNode(BaseValidatorNeuron):
                     get_containers_func=get_containers_for_miner,
                     update_status_func=update_miner_status,
                     tempo=self.tempo,
-                    max_score=self.max_allowed_weights
+                    max_score=self.max_allowed_weights,
+                    dashboard_client=self.dashboard
                 )
 
+                # Log rewards distribution
+                total_rewards = 0.0
+                for miner_uid, reward_info in uptime_rewards_dict.items():
+                    reward_amount = reward_info.get("reward_amount", 0.0)
+                    if reward_amount > 0:
+                        self.dashboard.log_reward_distribution(miner_uid, reward_amount)
+                        total_rewards += reward_amount
+
+                self.dashboard.update_miner_counts(processed=len(results))
+                self.dashboard.update_metrics(total_rewards=total_rewards)
+
                 await self.update_validator_weights(results, container_updates, uptime_rewards_dict)
+                
                 current_block = self.subtensor.block
                 blocks_since_last = current_block - self.last_weight_update_block
                 effective_rate_limit = max(self.tempo, self.weights_rate_limit)
                 blocks_remaining = effective_rate_limit - blocks_since_last
                 sleep_time = max(60, blocks_remaining * 12)
+                
+                cycle_duration = time.time() - cycle_start
+                self.dashboard.log_cycle_end("process_miners", cycle_duration, len(results))
+                
                 logger.info(f"Sleeping for {sleep_time} seconds until next weight update opportunity.")
                 await asyncio.sleep(sleep_time)
             except Exception as e:
                 logger.error(f"Error in process_miners_loop: {e}")
+                self.dashboard.log_error("validator.process_miners_loop", f"Error in processing cycle: {e}")
                 logger.info("Sleeping for 60 seconds after error.")
                 await asyncio.sleep(60)
 
@@ -317,6 +393,9 @@ class PolarisNode(BaseValidatorNeuron):
 
     async def cleanup(self):
         """Cleans up resources."""
+        if hasattr(self, 'dashboard') and self.dashboard:
+            self.dashboard.stop()
+            # Silent dashboard cleanup
         pass
 
     async def __aenter__(self):
