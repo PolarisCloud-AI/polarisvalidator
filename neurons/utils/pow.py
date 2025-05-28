@@ -3,17 +3,18 @@ import paramiko
 from fastapi import HTTPException
 import asyncio
 import logging
+import socket
 
 logger = logging.getLogger(__name__)
 
 async def execute_ssh_task(hostname, port, username, key_path, command, timeout=30):
     """
-    Execute a single SSH command and return the result
+    Execute a single SSH command and return the result or an error message.
     """
+    client = paramiko.SSHClient()
+    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+
     try:
-        client = paramiko.SSHClient()
-        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        
         logger.info(f"Connecting to {username}@{hostname}:{port} using public key")
         client.connect(
             hostname=hostname,
@@ -22,25 +23,43 @@ async def execute_ssh_task(hostname, port, username, key_path, command, timeout=
             key_filename=key_path,
             timeout=10
         )
-        
-        # Execute command
+
         logger.info(f"Executing command: {command}")
         stdin, stdout, stderr = client.exec_command(command, timeout=timeout)
-        
-        # Get output
-        output = stdout.read().decode('utf-8')
-        error = stderr.read().decode('utf-8')
-        
+
+        output = stdout.read().decode('utf-8').strip()
+        error = stderr.read().decode('utf-8').strip()
+
         if error:
-            logger.warning(f"Command produced error output: {error}")
-        
-        # Close connection
-        client.close()
-        
-        return output
+            logger.warning(f"Command stderr: {error}")
+
+        return output if output else f"Command executed but no output returned. Stderr: {error}"
+
+    except paramiko.ssh_exception.NoValidConnectionsError as e:
+        logger.error(f"No valid connections to {hostname}:{port} - {str(e)}", exc_info=True)
+        return f"ERROR: No valid SSH connections: {str(e)}"
+
+    except paramiko.ssh_exception.AuthenticationException as e:
+        logger.error(f"SSH Authentication failed for {username}@{hostname}:{port} - {str(e)}", exc_info=True)
+        return "ERROR: SSH Authentication failed"
+
+    except paramiko.SSHException as e:
+        logger.error(f"General SSH error for {hostname}:{port} - {str(e)}", exc_info=True)
+        return f"ERROR: SSHException - {str(e)}"
+
+    except socket.timeout as e:
+        logger.error(f"Connection timed out to {hostname}:{port}", exc_info=True)
+        return f"ERROR: SSH connection to {hostname}:{port} timed out"
+
     except Exception as e:
-        logger.error(f"Error executing SSH task: {str(e)}", exc_info=True)
+        logger.error(f"Unexpected error executing SSH task: {str(e)}", exc_info=True)
         return f"ERROR: {str(e)}"
+
+    finally:
+        try:
+            client.close()
+        except Exception:
+            pass  # If close fails, it’s already broken.
 
 async def perform_ssh_tasks(ssh: str):
     try:
@@ -151,4 +170,4 @@ async def perform_ssh_tasks(ssh: str):
             "task_results": task_results
         }
     except Exception as e:
-        logger.error(f"Error executing SSH tasks: {str(e)}")
+        logger.error(f"Error executing SSH tasks")

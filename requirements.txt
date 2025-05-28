@@ -13,3 +13,5 @@ uuid
 asyncssh
 pandas
 torch
+sockets
+cryptography

@@ -168,13 +168,6 @@ def add_miner_args(cls, parser):
 
 def add_validator_args(cls, parser):
     """Add validator specific arguments to the parser."""
-    parser.add_argument(
-        "--neuron.miner_cluster_id",
-        type=int,
-        choices=[0, 1, 2, 3],
-        default=0,
-        help="Miner cluster ID to process (0: 0-63, 1: 64-127, 2: 128-191, 3: 192-255)"
-    )
 
     parser.add_argument(
         "--neuron.name",

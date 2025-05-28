@@ -47,27 +47,14 @@ class PolarisNode(BaseValidatorNeuron):
         self.max_retries = 3
         self.retry_delay_base = 5
         self.step = 0
-        
+        self.hotkey_to_uid = {}  # Cache hotkey-to-UID mapping
+        self.last_metagraph_sync = 0
+        self.metagraph_sync_interval = 300
         # Score decay
         self.score_decay = 0.9
         
         # Subnet price fallback
         self.default_subnet_price = 1.0
-        try:
-            # Check both config.miner_cluster_id and config.neuron.miner_cluster_id
-            if hasattr(self.config, 'miner_cluster_id') and self.config.miner_cluster_id is not None:
-                miner_cluster_id = int(self.config.miner_cluster_id)
-            elif hasattr(self.config.neuron, 'miner_cluster_id') and self.config.neuron.miner_cluster_id is not None:
-                miner_cluster_id = int(self.config.neuron.miner_cluster_id)
-            else:
-                miner_cluster_id = 0
-            logger.info(f"Using miner_cluster_id: {miner_cluster_id}")
-        except ValueError:
-            logger.error(f"Invalid miner_cluster_id: {self.config.miner_cluster_id if hasattr(self.config, 'miner_cluster_id') else self.config.neuron.miner_cluster_id if hasattr(self.config.neuron, 'miner_cluster_id') else 'None'}. Falling back to 0.")
-            miner_cluster_id = 0
-        
-        cluster_ranges = {0: (0, 63), 1: (64, 127), 2: (128, 191), 3: (192, 255)}
-        self.config.uid_start, self.config.uid_end = cluster_ranges.get(miner_cluster_id)
 
     def save_state(self):
         """Saves the validator state by calling the external save_state function."""
@@ -80,20 +67,29 @@ class PolarisNode(BaseValidatorNeuron):
         logger.info("Validator state loaded via external state_utils.load_state")
 
     def resync_metagraph(self):
-        """Resyncs the metagraph and updates related state."""
+        """Resyncs the metagraph, updates hotkey-to-UID cache, and manages state."""
         logger.info("Resyncing metagraph...")
         previous_metagraph = copy.deepcopy(self.metagraph)
-        self.metagraph.sync(subtensor=self.subtensor)
-        self.tempo = self.subtensor.tempo(self.config.netuid)
-        self.weights_rate_limit = self.get_weights_rate_limit()
+        try:
+            self.metagraph.sync(subtensor=self.subtensor)
+            self.tempo = self.subtensor.tempo(self.config.netuid)
+            self.weights_rate_limit = self.get_weights_rate_limit()
+            self.hotkey_to_uid = {hotkey: uid for uid, hotkey in enumerate(self.metagraph.hotkeys)}
+            self.last_metagraph_sync = time.time()
+            logger.info(f"Metagraph synced, {len(self.hotkey_to_uid)} hotkeys cached")
+        except Exception as e:
+            logger.error(f"Error syncing metagraph: {e}")
+            return
+
         if previous_metagraph.axons == self.metagraph.axons:
             return
-        logger.info("Metagraph updated, re-syncing hotkeys and scores.")
+
+        logger.info("Metagraph updated, re-syncing hotkeys and scores")
         for uid, hotkey in enumerate(self.hotkeys):
-            if hotkey != self.metagraph.hotkeys[uid]:
+            if uid < len(self.metagraph.hotkeys) and hotkey != self.metagraph.hotkeys[uid]:
                 self.scores[uid] = 0
         if len(self.hotkeys) < len(self.metagraph.hotkeys):
-            new_scores = np.zeros(self.metagraph.n)
+            new_scores = np.zeros(self.metagraph.n, dtype=np.float32)
             min_len = min(len(self.hotkeys), len(self.scores))
             new_scores[:min_len] = self.scores[:min_len]
             self.scores = new_scores
@@ -129,6 +125,19 @@ class PolarisNode(BaseValidatorNeuron):
         except Exception as e:
             logger.error(f"Error fetching last update: {e}")
             return 1000
+        
+    def get_miner_uid_by_hotkey(self, hotkey: str, netuid: int, network: str = "finney") -> int | None:
+        """Retrieve miner UID using cached metagraph."""
+        # Check if metagraph needs resync
+        if time.time() - self.last_metagraph_sync > self.metagraph_sync_interval:
+            self.resync_metagraph()
+        
+        uid = self.hotkey_to_uid.get(hotkey)
+        if uid is not None:
+            logger.info(f"Found hotkey {hotkey} with UID {uid} in cached metagraph")
+            return uid
+        logger.warning(f"Hotkey {hotkey} not found in subnet {netuid}")
+        return None
 
     def check_registered(self):
         """Checks if the validator is registered on the subnet."""
@@ -250,22 +259,12 @@ class PolarisNode(BaseValidatorNeuron):
 
     async def verify_miners_loop(self):
         """Periodically verifies miners."""
-        uid_start = self.config.uid_start
-        uid_end = self.config.uid_end
-        allowed_uids = set(range(uid_start, uid_end + 1))
         while True:
             try:
                 logger.info("Starting miner verification cycle")
 
                 logger.debug("Fetching registered miners")
                 miners = self.get_registered_miners()
-                miners = [
-                    miner for miner in miners
-                    if miner in allowed_uids 
-                ]
-                if not miners:
-                    logger.warning("No eligible miners after filtering by UID range and blacklist. Sleeping for 60 seconds.")
-                    continue
                 logger.debug("Filtering miners based on allowed UIDs")
                 bittensor_miners,miners_to_reject, = get_filtered_miners(miners)
                 logger.debug(f"Verifying {len(bittensor_miners)} Bittensor miners")
@@ -277,24 +276,12 @@ class PolarisNode(BaseValidatorNeuron):
 
     async def process_miners_loop(self):
         """Periodically processes miners and updates weights."""
-        uid_start = self.config.uid_start
-        uid_end = self.config.uid_end
-        blacklisted_miners = {}
-        allowed_uids = set(range(uid_start, uid_end + 1))
-        logger.info(f"Processing miners in UID range: {uid_start}–{uid_end}")
         while True:
             try:
                 logger.info("Starting process_miners_loop...")
                 miners= self.get_registered_miners()
-                miners = [
-                    miner for miner in miners
-                    if miner in allowed_uids and miner not in blacklisted_miners
-                ]
-                if not miners:
-                    logger.warning("No eligible miners after filtering by UID range and blacklist. Sleeping for 60 seconds.")
-                    continue
                 white_list= get_filtered_miners_val(miners)
-                bittensor_miners = filter_miners_by_id(white_list)
+                bittensor_miners = filter_miners_by_id(white_list, netuid=self.config.netuid, network=self.config.subtensor.network)
                 miner_resources = get_miner_list_with_resources(bittensor_miners)
                 # Pass update_status_func (assuming self.update_miner_status exists)
                 results, container_updates, uptime_rewards_dict = await process_miners(
@@ -305,6 +292,7 @@ class PolarisNode(BaseValidatorNeuron):
                     tempo=self.tempo,
                     max_score=self.max_allowed_weights
                 )
+
                 await self.update_validator_weights(results, container_updates, uptime_rewards_dict)
                 current_block = self.subtensor.block
                 blocks_since_last = current_block - self.last_weight_update_block
