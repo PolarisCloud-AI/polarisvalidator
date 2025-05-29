@@ -752,81 +752,222 @@ butt ={'0WKTOGat9IUVDWIvbynF': '49', '0e8CRALWdml3Pnf27Z4C': '1', '0icypK4pgzlAu
 # ree = ['0WKTOGat9IUVDWIvbynF', '0e8CRALWdml3Pnf27Z4C', '0icypK4pgzlAuTS9c5Kl', '0rny3Vhvmne8DKEDHVsa', '1arXF3eSoXrzJbdsYFFC', '1eYBryIJWdHV76gmxT2S', '1wEnm0ZcnWF3JuW355NT', '2LpLqWHWf7AUVY2vPy7i', '2T8Yono9z7HeuBiFC5lc', '2d5ayYKanlefjvEqEjLe', '2jN2m0492M9YMpfWKoxA', '2mv3Z4eepUpafF1m8Ezb', '2pDgM79QuL0TJ8BV0kq7', '340NevUIWzoVhiYh669j', '41SxnzgjAOGtaL5ePiMi', '4eQQsfwqiVsa2Tq2jRS5', '4r6R71dJ4vyvErClkd9x', '4xegUUWQnAcydIapQR4a', '5lOdoOA3VCXy8DB77oet', '5nhKJm3EpPbNOi9B9n5c', '6osulq8hR6oHSCbYY7Kw', '7RnrqmhcC8Nr5rD1YmLO', '8hvxxUmM16AAouBqmRsr', '8iqtRaIv1TaBMqf6xsbe', '9d4KAfmPhXNhfsqlltq3', 'A0bel7PDzm5KbjWaPxsg', 'A6erViSHjYOp3hYCEpfr', 'AJjmbYUdYwBRfQRs2WeX', 'AOoep8Z84sMW3V57Mclc', 'B14zFYQjX1kD2STC308b', 'CNrPZc8dmBIYe9qcvyX8', 'CQcHZz7sWxptocMqV5bS', 'D63CYkdLlWMaIf5i8Yh8', 'DaPaRHc26J9TKwV4QDZe', 'DnA8lTBnRTPu2d1dURMb', 'E4QpIamMLoYsNffk2Izw', 'E83NDzEkSsmSAFoLmE2t', 'EsFaFAb8RFvX8quj0SZ9', 'FqvzUNI5vYs0lrlF5mcy', 'GMkAHTWBFArdzciK7f9f', 'GYcaqFyVvm3TAkImFYFF', 'H77hxM1S9cfko0BFqae1', 'HDyTezxTLaPF0xwtTZWQ', 'HNeGZT1fO6MMiaFvQXig', 'IHkLesAOka0VDC0oUM1F', 'IZDOmm6Xxs5LysowIEi8', 'IxMgfuxMUlhKGzIy9bJk', 'J4wqKHpewMbvp8yaU8Rs', 'Kb3SlbFxGNAinDQCbOLq', 'KmPadhTTI9dozBvXP8F5', 'LDToI07GM3y89vPmg1kt', 'LvPSJbE9kIyBvTONrEc2', 'M1kMP40ZaaAuX3s5ciCz', 'MQ96vMXYB6J37ZV9llJm', 'MRQC5BCoFiqkteuNiw9u', 'MT4O1PvKSDOcR5qOLuOW', 'N4jfmWUvQ1Yfd24dBUeM', 'ND0e3MtUuukQR2PflDgL', 'NTOadeiCOeRPj8vwoo9e', 'NyKoFh9xhRzKERPBuft2', 'OlAcCHLSkxjEZwWYgKhn', 'P8vw6BuadZrqKEsoSsfP', 'Q6qlifLxb88jgm3N3P1n', 'QL2Pj9Bz2rBkGxAriGni', 'QP7Y8pm9xiJfMxymWTGc', 'Qo58fb85M23qr3xrJXpx', 'Rtl3qvMWMvPIZv8D8UcQ', 'S2XJuMnC29rn7JQUUPIS', 'SCJ2kuYzFhzQtEiTzAJ8', 'SHgoiWPB5htfBs3pXjIN', 'SYciHeMGsVuu55n07oKr', 'T2h1RxfnUwWrGVKmuFla', 'Th91HEEhtWhC4ylJnPMt', 'TuLi2e3paFDt1KrFy8EB', 'VTFxMIrze1deRrZGDGKj', 'VraUo9eCGiAmCTdnz9eC', 'WtSMNXfN9tx8B3f2D7bp', 'X8szTKXH49tbgAvVJQzk', 'XORDAt6vljYsR31xowvj', 'XaaJ0RSTMA5gDbWK29Sp', 'Xc8tfUJj2VYSuDGY905Y', 'YILsF8Qxxr8UlKkwLzKt', 'ZmtqC29ZCqhDYQCpHaIG', 'aETz6JkF5PdrZaAN0Htw', 'aPEICXX6LBgjZDieNTJd', 'c92FHnjhUWSvscCkbFG8', 'cPCN9jRRePOJww4ZxO08', 'ctQ2N2txxCQbrTU1Tmwn', 'diBAfIGiwBUJSNODpgkP', 'eIkiUFkJgSPBoF4kXkvV', 'eKScaWF2H96SAdPk774y', 'eURPmpf42Pee8rxGCj89', 'egl7lBFHIGfJttPEiEPh', 'fJGaHD2t22KZjU9hab0o', 'grYwTA7fnZatSR3qcezS', 'gwk7FImD0Yl0ZdZ0dBWc', 'h1nYxCo2xom42gkiP0lu', 'hLoV2OXPw60SFHF51vYE', 'hUarPqf7f0DppiuYa0co', 'iArUCOD1ylnGEgrKVDKV', 'iE0kLc88vWpz1qzOiSS6', 'iH1SFIA8nAtF8lEWDCey', 'jJhod5DBG7OfzLgECReE', 'kO4NiuQW6rXZveDq6VKo', 'klOBnZR1eFWtgOFOWDej', 'l2oQm4OHla9CUI50pmlT', 'lZ2Q9Ys6R3ynP3gfBJ9w', 'md94sqyYwsm8ppbJKR6q', 'mdSIRXm1x8OJJScmIn9q', 'navcdCleGl4qsbRNuzZN', 'nzQIc2THYhLiINzEtRBb', 'o6yYmyNsID29l7jJMqMU', 'ovtxvy6xXX97szRH7IMO', 'pbPc0b4Uf1TxjwtQHsSN', 'pcMrbPzBFu8iNwZ2wint', 'ph5UdhtGyj6RDcJZn94S', 'q8oiO4OsVhPBYS2iikkA', 'qmJEdNYSYaToARHVyiCb', 'qtYNDsUkH0lxyLfAcmL7', 'rLQ1kttoG0nREKPizFKH', 'sG3D9cMKoayIHId8Ib2h', 'sP1QXKT46E48RyIsY4kM', 'tIvwvtUntMoOFmZNfUom', 'tdnIlo7ZsStHVTMdFTTa', 'tlw9yqs4QFX6LRNmyu9g', 'uWwXp6L82A3Zc0Q1nqnP', 'uuD9ZsZeYPXZu08gSa1u', 'veZPvA20PexrpUHDPiKb', 'vzazHtvIaPVWab976yps', 'w8FVsQszJYRHDkgEQgNR', 'xHXtyMvHAvZ4WEKHNLM6', 'xOygCIuLsMSVZh4geA39', 'xSQbPSAlnbPy5z7gnWnl', 'xuzS80dcNyIZDWmfcmoT', 'yHQj7qDWqnQVi61yqQzJ', 'yRi08zQBH3NLvFcf19Bl', 'yueTiA1EIVOYEoTI5886', 'zMJCmBjFQlLDupQPRGqa', 'zexiPSfZ404mKfg5s52U', 'zlGakvHqctqNDoW69or8', 'zuERoymc9gRWByz6jcXs']
 # # print(f"new data {info}")
 
-def get_unverified_miners() -> Dict[str, dict]:
+# def get_unverified_miners() -> Dict[str, dict]:
+#     try:
+#         # Get cached miners data
+#         miners = _get_cached_miners_data()
+
+#         # Return only unverified miners
+#         return {
+#             miner.get("id"): miner.get("compute_resources_details", {})
+#             for miner in miners
+#             if miner.get("status") == "pending_verification"
+#         }
+
+#     except Exception as e:
+#         logger.error(f"Error fetching unverified miners: {e}")
+#         return {}
+
+# rejected = get_unverified_miners()
+# print(f"rejected miners {list(rejected.keys())}")
+# def update_miner_status(miner_id: str, status: str, percentage: float, reason: str) -> Optional[str]:
+#     """
+#     Updates a miner's full status using the new PUT endpoint.
+
+#     Args:
+#         miner_id: The ID of the miner to update.
+#         status: New status string (e.g. 'active', 'inactive').
+#         percentage: Completion or activity percentage.
+#         reason: Reason for the status change.
+
+#     Returns:
+#         The updated status from the server or None if failed.
+#     """
+#     headers = {
+#             "Connection": "keep-alive",
+#             "x-api-key": "dev-services-key",
+#             "x-use-encryption": "true",
+#             "service-key": "53c8f1eba578f46cd3361d243a62c2c46e2852f80acaf5ccc35eaf16304bc60b",
+#             "service-name": "miner_service",
+#             "Content-Type": "application/json"
+#         }
+#     updated_at = datetime.utcnow()
+#     url = f"https://polaris-interface.onrender.com/api/v1/services/miner/miners/{miner_id}"
+#     payload = {
+#         "status": status,
+#         "percentage": percentage,
+#         "reason": reason,
+#         "updated_at": updated_at.isoformat() + "Z"
+#     }
+
+#     try:
+#         response = requests.put(url, json=payload, headers=headers)
+#         response.raise_for_status()
+#         logger.info(f"Miner {miner_id} successfully updated to {status} ({percentage}%) - Reason: {reason}")
+#         return response.json().get("status", "unknown")
+#     except Exception as e:
+#         logger.error(f"Failed to update miner {miner_id}: {e}")
+#         return None
+    
+# def update_all_miners():
+#     status = "pending_verification"
+#     reason = "Verified through batch update process"
+    
+#     for miner_id in rejected:
+#         try:
+#             # Convert percentage string to float
+#             # Call the update function
+#             result = update_miner_status(miner_id, status, 0.0, reason)
+#             if result:
+#                 logger.info(f"Successfully updated miner {miner_id} with status {result}")
+#             else:
+#                 logger.warning(f"Update for miner {miner_id} returned no status")
+#         except ValueError as e:
+#             logger.error(f"Invalid percentage value for miner {miner_id}")
+#         except Exception as e:
+#             logger.error(f"Error processing miner {miner_id}: {e}")
+
+# # Execute the update
+# if __name__ == "__main__":
+    # update_all_miners()
+
+def get_registered_miners(self) -> list[int]:
+        """Returns a list of registered miner UIDs."""
+        try:
+            self.metagraph.sync()
+            return [int(uid) for uid in self.metagraph.uids]
+        except Exception as e:
+            logger.error(f"Error fetching registered miners: {e}")
+            return []
+
+
+
+def get_filtered_miners() -> Tuple[Dict[str, Dict[str, str]], List[str]]:
     try:
         # Get cached miners data
         miners = _get_cached_miners_data()
 
-        # Return only unverified miners
-        return {
-            miner.get("id"): miner.get("compute_resources_details", {})
-            for miner in miners
-            if miner.get("status") == "pending_verification"
-        }
+        # Initialize outputs
+        filtered_miners = {}
+        miners_to_reject = []
 
-    except Exception as e:
-        logger.error(f"Error fetching unverified miners: {e}")
-        return {}
+        for miner in miners:
+            miner_id = miner.get("id")
+            bittensor_reg = miner.get("bittensor_registration")
 
-rejected = get_unverified_miners()
-print(f"rejected miners {list(rejected.keys())}")
-def update_miner_status(miner_id: str, status: str, percentage: float, reason: str) -> Optional[str]:
-    """
-    Updates a miner's full status using the new PUT endpoint.
+            if not miner_id:
+                continue 
 
-    Args:
-        miner_id: The ID of the miner to update.
-        status: New status string (e.g. 'active', 'inactive').
-        percentage: Completion or activity percentage.
-        reason: Reason for the status change.
-
-    Returns:
-        The updated status from the server or None if failed.
-    """
-    headers = {
-            "Connection": "keep-alive",
-            "x-api-key": "dev-services-key",
-            "x-use-encryption": "true",
-            "service-key": "53c8f1eba578f46cd3361d243a62c2c46e2852f80acaf5ccc35eaf16304bc60b",
-            "service-name": "miner_service",
-            "Content-Type": "application/json"
-        }
-    updated_at = datetime.utcnow()
-    url = f"https://polaris-interface.onrender.com/api/v1/services/miner/miners/{miner_id}"
-    payload = {
-        "status": status,
-        "percentage": percentage,
-        "reason": reason,
-        "updated_at": updated_at.isoformat() + "Z"
-    }
-
-    try:
-        response = requests.put(url, json=payload, headers=headers)
-        response.raise_for_status()
-        logger.info(f"Miner {miner_id} successfully updated to {status} ({percentage}%) - Reason: {reason}")
-        return response.json().get("status", "unknown")
-    except Exception as e:
-        logger.error(f"Failed to update miner {miner_id}: {e}")
-        return None
-    
-def update_all_miners():
-    status = "pending_verification"
-    reason = "Verified through batch update process"
-    
-    for miner_id in rejected:
-        try:
-            # Convert percentage string to float
-            # Call the update function
-            result = update_miner_status(miner_id, status, 0.0, reason)
-            if result:
-                logger.info(f"Successfully updated miner {miner_id} with status {result}")
+            if bittensor_reg is not None:
+                miner_uid = bittensor_reg.get("miner_uid")
+                hotkey = bittensor_reg.get("hotkey")
+                if miner_uid is None or hotkey is None:
+                    miners_to_reject.append(miner_id)
+                elif int(miner_uid):
+                    filtered_miners[miner_id] = {"miner_uid": str(miner_uid), "hotkey": hotkey}
             else:
-                logger.warning(f"Update for miner {miner_id} returned no status")
-        except ValueError as e:
-            logger.error(f"Invalid percentage value for miner {miner_id}")
-        except Exception as e:
-            logger.error(f"Error processing miner {miner_id}: {e}")
+                miners_to_reject.append(miner_id)
 
-# Execute the update
+        return filtered_miners, miners_to_reject
+
+    except Exception as e:
+        logger.error(f"Error fetching filtered miners: {e}")
+        return {}, []
+
+
+# allowed_uids=get_registered_miners()
+# filtered_miners ,rejected =  get_filtered_miners()
+
+
+def get_miner_uid_by_hotkey(hotkey: str, netuid: int, network: str = "finney") -> int | None:
+    """
+    Retrieves the miner UID for a given hotkey on a specific Bittensor subnet.
+    
+    Args:
+        hotkey: The SS58 address of the miner's hotkey.
+        netuid: The subnet ID (e.g., 49).
+        network: The Bittensor network to query (default: "finney" for mainnet).
+    
+    Returns:
+        int | None: The miner's UID if found, None otherwise.
+    """
+    try:
+        # Initialize subtensor connection
+        subtensor = bt.subtensor(network=network)
+        logger.info(f"Connected to Bittensor network: {network}, querying subnet: {netuid}")
+
+        # Sync metagraph for the specified subnet
+        metagraph = subtensor.metagraph(netuid=netuid)
+        logger.info(f"Synced metagraph for netuid {netuid}, total nodes: {len(metagraph.hotkeys)}")
+
+        # Search for the hotkey in the metagraph
+        for uid, registered_hotkey in enumerate(metagraph.hotkeys):
+            if registered_hotkey == hotkey:
+                logger.info(f"Found hotkey {hotkey} with UID {uid} on subnet {netuid}")
+                return uid
+
+        logger.warning(f"Hotkey {hotkey} not found in subnet {netuid}")
+        return None
+
+    except Exception as e:
+        logger.error(f"Error retrieving miner UID for hotkey {hotkey} on subnet {netuid}: {e}")
+        return None
+
+def write_invalid_miners_to_file():
+    # Output file
+    output_file = "invalid_miners.txt"
+    
+    # Get filtered miners
+    filtered_miners, miners_to_reject = get_filtered_miners()
+    
+    # List to store invalid miners' details
+    invalid_miners = []
+    
+    # Process miners_to_reject (missing bittensor_registration or miner_uid/hotkey/subnet_uid)
+    for miner_id in miners_to_reject:
+        invalid_miners.append({
+            "miner_id": miner_id,
+            "hotkey": "N/A",
+            "reason": "Missing bittensor_registration or miner_uid/hotkey/subnet_uid"
+        })
+    
+    # Process filtered_miners with hotkey validation
+    for miner_id, data in filtered_miners.items():
+        hotkey = data["hotkey"]
+        miner_uid = int(data["miner_uid"])
+        netuid = 49
+        
+        # Check hotkey against the subnet's metagraph
+        metagraph_uid = get_miner_uid_by_hotkey(hotkey, netuid, network="finney")
+        
+        if metagraph_uid is None:
+            invalid_miners.append({
+                "miner_id": miner_id,
+                "hotkey": hotkey,
+                "reason": f"Hotkey {hotkey} not found in subnet {netuid}"
+            })
+        elif metagraph_uid != miner_uid:
+            invalid_miners.append({
+                "miner_id": miner_id,
+                "hotkey": hotkey,
+                "reason": f"UID mismatch: metagraph UID {metagraph_uid}, reported UID {miner_uid}"
+            })
+    
+    # Write to text file
+    with open(output_file, "w") as f:
+        if not invalid_miners:
+            f.write("No invalid miners found.\n")
+        else:
+            f.write("Invalid Miners Report\n")
+            f.write("=====================\n")
+            for miner in invalid_miners:
+                f.write(f"Miner ID: {miner['miner_id']}\n")
+                f.write(f"Hotkey: {miner['hotkey']}\n")
+                f.write(f"Reason: {miner['reason']}\n")
+                f.write("---------------------\n")
+    
+    logger.info(f"Invalid miners report written to {output_file}")
+
+# Example usage
 if __name__ == "__main__":
-    update_all_miners()
+    write_invalid_miners_to_file()

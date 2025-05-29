@@ -5,9 +5,10 @@ import numpy as np
 import requests
 import os
 import tenacity
+import time
 from utils.compute_score import calculate_compute_score
 from utils.uptimedata import calculate_miner_rewards,calculate_uptime, log_uptime
-from utils.api_utils import get_miner_details, get_miner_uid_by_hotkey,check_miner_unique
+from utils.api_utils import get_miner_details, get_miner_uid_by_hotkey,check_miner_unique, _miners_data_last_fetch,_get_cached_miners_data
 from neurons.utils.pow import  perform_ssh_tasks
 from neurons.utils.gpu_specs import get_gpu_weight
 
@@ -67,11 +68,13 @@ async def process_miners(
         - container_updates: Dict mapping miner UID to list of container IDs to update.
         - uptime_rewards_dict: Dict mapping miner UID to uptime reward details.
     """
+    _get_cached_miners_data(force_refresh=True)
     raw_results = {}  # Store raw scores before normalization
     container_updates = {}
     uptime_rewards_dict = {}
     subnet_to_miner_map = create_subnet_to_miner_map(miner_resources)
     active_miners = list(subnet_to_miner_map.keys())
+
     # Get current block number
     try:
         import bittensor as bt
@@ -96,13 +99,10 @@ async def process_miners(
         if not miner_info:
             logger.warning(f"No resource info for miner_id {miner_id}")
             continue
-
-        
-
         try:
             # Execute SSH tasks and check for valid results
-            resource_type = miner_info.get("compute_resource_details", [{}])[0].get("resource_type")
-            wrk = miner_info.get("compute_resource_details", [{}])[0].get("network", {}).get("ssh")
+            resource_type = miner_info.get("compute_resources_details", [{}])[0].get("resource_type")
+            wrk = miner_info.get("compute_resources_details", [{}])[0].get("network", {}).get("ssh")
             result = await perform_ssh_tasks(wrk)
             if not result or "task_results" not in result:
                 await _reject_miner(miner_id, "SSH tasks failed or returned no results", update_status_func)
@@ -279,6 +279,7 @@ async def verify_miners(
         update_status_func: Function to update miner status with ID, status, and percentage.
     """
     logger.info(f"Received {len(miners)} miner IDs for verification")
+    _get_cached_miners_data(force_refresh=True)
     unverified_miners = get_unverified_func()
     if not unverified_miners:
         logger.info("No unverified miners found, skipping verification")
@@ -309,16 +310,6 @@ async def verify_miners(
             await _reject_miner(miner, "Missing hotkey or miner_uid", update_status_func)
             continue
 
-        # Verify UID using hotkey on subnet 49
-        network_uid = get_miner_uid_by_hotkey(hotkey, netuid=49, network="finney")
-        logger.info(f"Network UID for miner {miner}: {network_uid}")
-        if network_uid is None or network_uid != miner_uid:
-            await _reject_miner(
-                miner,
-                f"UID mismatch: metagraph UID {network_uid}, reported UID {miner_uid}",
-                update_status_func
-            )
-            continue
 
         # Verify miner uniqueness with retries
         try:

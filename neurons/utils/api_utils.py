@@ -15,7 +15,7 @@ _metagraph = None
 # Cache for miners data from the common API endpoint
 _miners_data_cache: Dict = {}
 _miners_data_last_fetch: float = 0
-_miners_data_cache_interval: float = 3600  # 1 hour in seconds
+_miners_data_cache_interval: float = 600  # 1 hour in seconds
 
 def _sync_miners_data() -> None:
     """Fetches and caches miners data from the common API endpoint."""
@@ -39,10 +39,10 @@ def _sync_miners_data() -> None:
         _miners_data_cache = []
         _miners_data_last_fetch = time.time()
 
-def _get_cached_miners_data() -> List[dict]:
-    """Returns cached miners data, refreshing if necessary."""
+def _get_cached_miners_data(force_refresh: bool = False) -> List[dict]:
+    """Returns cached miners data, refreshing if necessary or forced."""
     global _miners_data_last_fetch
-    if time.time() - _miners_data_last_fetch > _miners_data_cache_interval or not _miners_data_cache:
+    if force_refresh or time.time() - _miners_data_last_fetch > _miners_data_cache_interval or not _miners_data_cache:
         _sync_miners_data()
     return _miners_data_cache
 
@@ -142,7 +142,7 @@ def get_miner_list_with_resources(miner_commune_map: Dict[str, str]) -> Dict[str
         # Construct and return the desired output
         return {
             miner['id']: {
-                "compute_resource_details": miner.get("compute_resources_details", []),
+                "compute_resources_details": miner.get("compute_resources_details", []),
                 "miner_uid": miner_commune_map.get(miner["id"])
             }
             for miner in miners
