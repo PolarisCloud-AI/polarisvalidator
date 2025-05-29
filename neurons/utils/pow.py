@@ -36,24 +36,19 @@ async def execute_ssh_task(hostname, port, username, key_path, command, timeout=
         return output if output else f"Command executed but no output returned. Stderr: {error}"
 
     except paramiko.ssh_exception.NoValidConnectionsError as e:
-        logger.error(f"No valid connections to {hostname}:{port} - {str(e)}", exc_info=True)
-        return f"ERROR: No valid SSH connections: {str(e)}"
+        pass
 
     except paramiko.ssh_exception.AuthenticationException as e:
-        logger.error(f"SSH Authentication failed for {username}@{hostname}:{port} - {str(e)}", exc_info=True)
-        return "ERROR: SSH Authentication failed"
+        pass
 
     except paramiko.SSHException as e:
-        logger.error(f"General SSH error for {hostname}:{port} - {str(e)}", exc_info=True)
-        return f"ERROR: SSHException - {str(e)}"
+        pass
 
     except socket.timeout as e:
-        logger.error(f"Connection timed out to {hostname}:{port}", exc_info=True)
-        return f"ERROR: SSH connection to {hostname}:{port} timed out"
+        pass
 
     except Exception as e:
-        logger.error(f"Unexpected error executing SSH task: {str(e)}", exc_info=True)
-        return f"ERROR: {str(e)}"
+        pass
 
     finally:
         try:

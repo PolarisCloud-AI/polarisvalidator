@@ -97,6 +97,8 @@ async def process_miners(
             logger.warning(f"No resource info for miner_id {miner_id}")
             continue
 
+        
+
         try:
             # Execute SSH tasks and check for valid results
             resource_type = miner_info.get("compute_resource_details", [{}])[0].get("resource_type")
@@ -173,7 +175,6 @@ async def process_miners(
             continue
 
         containers = get_containers_func(miner_id)
-        print(f"containers {containers}")
         active_container_count = 0
         container_payment_updates = []
 
@@ -290,7 +291,6 @@ async def verify_miners(
     for miner in miners_to_verify:
         # Validate resources (expecting a dict from get_unverified_miners)
         miner_resources = unverified_miners.get(miner)
-        print(f"miner resoources { miner_resources}")
 
         if not isinstance(miner_resources, list) or not miner_resources:
             await _reject_miner(miner, "Invalid or missing resources", update_status_func)
@@ -301,13 +301,6 @@ async def verify_miners(
         if not miner_spec:
             await _reject_miner(miner, "No details returned", update_status_func)
             continue
-
-        # Validate subnet_uid
-        subnet_uid = miner_spec['bittensor_registration'].get('subnet_uid')
-        if subnet_uid != 49:
-            await _reject_miner(miner, f"Invalid subnet_uid {subnet_uid}, expected 49", update_status_func)
-            continue
-
         # Extract and validate hotkey and miner_uid
         hotkey = miner_spec['bittensor_registration']['network_info'].get('hotkey')
         miner_uid = miner_spec['bittensor_registration'].get('miner_uid')

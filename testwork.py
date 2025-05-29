@@ -311,7 +311,7 @@ logger = logging.getLogger("remote_access")
 # from neurons.utils.compute_score import pow_tasks
 # from neurons.utils.pogs import compare_compute_resources
 # import asyncio
-data={'7RnrqmhcC8Nr5rD1YmLO': 134}
+data={'074rZehlXjTmxVH7ePRR': 114, '0e8CRALWdml3Pnf27Z4C': 1, '0icypK4pgzlAuTS9c5Kl': 117}
 # data={'04bwZkkZpSP1ioavmVRe': 158, '081Oqu75ZFkm7S6EO9LN': 240, '0FMSrY4xx62xMy9KN6xd': 158, '0WKTOGat9IUVDWIvbynF': 49, '0e8CRALWdml3Pnf27Z4C': 1, '0icypK4pgzlAuTS9c5Kl': 117, '0riqI6Q4Y9CIcqFA8tgO': 186, '0rny3Vhvmne8DKEDHVsa': 192, '0sy5sozr8YlBQGYU0OuV': 47, '0tsNfjpKviJ6jZrG2WUh': 203, '0uUAe3aeK2QDcYbUxzQj': 99, '0wPkDVmtwb1WYqdga71i': 66, '1Eg7uR28urM0AlEFSpj8': 231, '1EhIkNvpPubXZGd573Zm': 97, '1arXF3eSoXrzJbdsYFFC': 19, '1eYBryIJWdHV76gmxT2S': 73, '1jycXfgBunIv7GqFSDgV': 164, '1spnC8cxYgcncqvU73qo': 0, '1wEnm0ZcnWF3JuW355NT': 88, '22LJtOsYm93BY9FRegek': 233, '2DKFzsg0gaaIOvyP9nhL': 97, '2LpLqWHWf7AUVY2vPy7i': 46, '2N3MuHHWoq0AHxwm2Ut2': 49, '2T8Yono9z7HeuBiFC5lc': 84, '2dsYOnw7cY4ARdcX4yyx': 29, '2jN2m0492M9YMpfWKoxA': 251, '2pDgM79QuL0TJ8BV0kq7': 170, '340NevUIWzoVhiYh669j': 37, '3APsdH6RIYoiyd9JYbTS': 50, '3BkSOPHggi9Abw7PSvcE': 175, '3UiPMCOaMqheCmfUCfQv': 63, '3joc5Z84xzObVFnG7FKg': 39, '41SxnzgjAOGtaL5ePiMi': 249, '4EhchXbVdDeizxHJlK4e': 243, '4FRdZepSee2MaufETcDe': 63, '4aYGEHCAIZfs9eqW6Zyq': 103, '4cus7Od9UxkhAd3b2J74': 223, '4eQQsfwqiVsa2Tq2jRS5': 199, '4k2AITwc5ssFsXbpQots': 85, '4r6R71dJ4vyvErClkd9x': 18, '4xegUUWQnAcydIapQR4a': 30, '4zZvLl5pFfbydvcJ1rjH': 209, '53x5q3zIeSrE54LhUmqk': 232, '5FXy6x6R8wPgMBuRtGqc': 203, '5KSVBePo35qH2ABQbCdt': 166, '5Y4fAuTMNEdLZmQkzh5b': 97, '5lOdoOA3VCXy8DB77oet': 152, '5nhKJm3EpPbNOi9B9n5c': 77, '5tOL7jdpat6sMG1kdGHz': 115, '5yTOuv18ptPzPiN06VzG': 104, '66RkSt5JP8FLEASg9Btd': 118, '6W3hfViUMTvrucL4AkmW': 158, '6Zm3qP907FBS0rUE6Whd': 223, '6iHkv8kHiqzsyebxe9dP': 211, '6lqIN9A4fVM23b1YBNBf': 63, '6osulq8hR6oHSCbYY7Kw': 80, '6sIevKH8rfPwK8XxWQcF': 222, '6tPieGNxlh6f9oCcF6Kh': 0, '6ta26nyLZIwg6Qj2cxCR': 94, '6vwYtiUcSz3PWTCYjXMr': 200, '73MouZ0VbVM5hqSxvYz1': 27, '7RnrqmhcC8Nr5rD1YmLO': 134, '7vNTj807zMbJdcxhGe05': 112, '882LN53XUHv9JXpD6WU7': 252, '8Ol1o9uSYf1DYj0cKFIL': 213, '8fuPYK7hsDxtf4aFRogn': 103, '8hvxxUmM16AAouBqmRsr': 61, '8iqtRaIv1TaBMqf6xsbe': 219, '9ASVBbVjvD1DGWYPSmyB': 12, '9NHamtJ2qfZiTYDuFzQy': 250, '9bNKURPAgAt0leX2o9eU': 39, '9d4KAfmPhXNhfsqlltq3': 179, 'A0bel7PDzm5KbjWaPxsg': 184, 'A91HlSx28B5yJfUCHXEz': 63, 'AH3KEUkoQeuTaruKYcHj': 232, 'AJjmbYUdYwBRfQRs2WeX': 99, 'AOoep8Z84sMW3V57Mclc': 106, 'AWWiwutnp7O7XIBNFdf2': 12, 'B14zFYQjX1kD2STC308b': 141, 'BATNDvNCJKvzBgKEOr1n': 166, 'Bb4VubdZMok1cfXBUR6w': 90, 'BgyLLm5JvzmQbEjHZYa8': 107, 'C7KRZtz9ddSJjqMbqEA3': 233, 'CAeObeERUS5JMpYVwlIp': 27, 'CNrPZc8dmBIYe9qcvyX8': 80, 'CQcHZz7sWxptocMqV5bS': 13, 'CbbtTIRzXzbVumXOpj1J': 105, 'D2UxBEP6BkNC3nMTugQ7': 248, 'D63CYkdLlWMaIf5i8Yh8': 103, 'DaPaRHc26J9TKwV4QDZe': 139, 'DnA8lTBnRTPu2d1dURMb': 17, 'DsuQIsNllCNIamVIveqs': 187, 'E4QpIamMLoYsNffk2Izw': 106, 'EIimoD7nnKPLUMdtDWDX': 152, 'EMOvwLoypHqa9V1vcncZ': 229, 'EMPcUVp4WgSrX22ZgVxI': 0, 'Ehu9NHoswgfKePLbTkj0': 191, 'EsFaFAb8RFvX8quj0SZ9': 78, 'EuTWQ1utRSlmhsqyOxCJ': 85, 'F0wy6QD9MnSSHwFf8eil': 230, 'FFVyjiDrdC2p0DNIRooE': 176, 'GMkAHTWBFArdzciK7f9f': 128, 'GYcaqFyVvm3TAkImFYFF': 109, 'GataupE9Is4vwJeIBu4g': 233, 'GccnlU0H3RGR5s5BP6rP': 226, 'GjhCaWtT4CIf1piSoFkU': 63, 'H77hxM1S9cfko0BFqae1': 216, 'HAE7ML6SC5owGWFycHCx': 233, 'HCTiOLS6a6X7qYdMHCmA': 71, 'HDyTezxTLaPF0xwtTZWQ': 76, 'HNeGZT1fO6MMiaFvQXig': 76, 'HgPiXlvOvqYmpct3moTo': 16, 'HnFnHAaZvVFphMnudjnt': 222, 'HnKXNUjoF6oRPnA4bom2': 38, 'IEj6xad3k98Hv7LssVS1': 237, 'IHkLesAOka0VDC0oUM1F': 84, 'IOMcdoI0mY2gLE3H3USf': 63, 'IZDOmm6Xxs5LysowIEi8': 199, 'IxMgfuxMUlhKGzIy9bJk': 13, 'Iyi5dOU30VZxcERR13dC': 55, 'J4wqKHpewMbvp8yaU8Rs': 76, 'JVwomKQkGgyRX6lxxwy6': 62, 'JWxHOLyH6WBrFp00VNHm': 232, 'Jm0yRjsnfmwivZmV4bns': 239, 'JsYvMK8xtKY4lx9mPqfm': 158, 'JynmRVdFw2wYYTgFOaZa': 184, 'KJaxiKrZDEmcFMnKSbnB': 225, 'KOrqZobxXpvxA7T6byoY': 227, 'Kb3SlbFxGNAinDQCbOLq': 144, 'KeGnUMSNssqgSAoDiHwK': 145, 'KmPadhTTI9dozBvXP8F5': 133, 'KsEqoQFRsmKRetueH2aF': 7, 'LB2E7VEtqchGri0Bl2qB': 0, 'LDToI07GM3y89vPmg1kt': 116, 'LUXVnefVWTBlVVQuzyLv': 0, 'LtAopv9otDEnR1TcdEHL': 203, 'LvPSJbE9kIyBvTONrEc2': 195, 'M1kMP40ZaaAuX3s5ciCz': 146, 'M4XIJeiCThGaxZQcN5H9': 13, 'M60nA9uDZMLDT3V6a1Ak': 218, 'MFHh8lRpWKL4ucFkxZZX': 218, 'MPf2Xl4mwNpXJToWsuHo': 230, 'MQ96vMXYB6J37ZV9llJm': 63, 'MT4O1PvKSDOcR5qOLuOW': 197, 'MflXMI4aMWNLoyC8z8HI': 162, 'N4jfmWUvQ1Yfd24dBUeM': 117, 'ND0e3MtUuukQR2PflDgL': 40, 'NKq72ntMqp6878pGWv1a': 3, 'NTOadeiCOeRPj8vwoo9e': 22, 'Nis8zIqgXUCISj8SMo8G': 177, 'NuOZRx0KMk7F81Hqxtco': 38, 'NyKoFh9xhRzKERPBuft2': 217, 'OGyw7st2uWf3d5CUbyUk': 158, 'OavzlQhRKlbZWOplNoBU': 227, 'OlAcCHLSkxjEZwWYgKhn': 0, 'P8vw6BuadZrqKEsoSsfP': 4, 'PIDnNGShw3UlvGnst2VI': 211, 'PYOdznWwjqtfhGUmUw5W': 124, 'Pe9I9QyTs4nbQyTjJrzc': 87, 'PrANARGCTPJ5PDtaEh0I': 172, 'Q1uWqH7MwBPXxcBApYgv': 97, 'Q6qlifLxb88jgm3N3P1n': 64, 'QL2Pj9Bz2rBkGxAriGni': 99, 'QP7Y8pm9xiJfMxymWTGc': 143, 'QPqj8HRJaKH7IxWCccho': 29, 'QXb08OOxpADaMj7Xb7uV': 167, 'Qo58fb85M23qr3xrJXpx': 64, 'REMtH6wUkFLIivmlGdF2': 27, 'RtY9gpCjlllu8bmmh85H': 210, 'Rtl3qvMWMvPIZv8D8UcQ': 21, 'S6fWiD5yjreK3xw0h5kf': 97, 'SCJ2kuYzFhzQtEiTzAJ8': 0, 'SUlQ0XyDJAj3b5yjIQi8': 253, 'T2h1RxfnUwWrGVKmuFla': 79, 'TMWgtEf4S5lp14mC1BbM': 233, 'Th91HEEhtWhC4ylJnPMt': 101, 'TuLi2e3paFDt1KrFy8EB': 127, 'TueHEDGFxt9KCdJXA3PB': 121, 'UlFpSbz5Rv7uoUmC4l0V': 166, 'UqU9m4BXeBw4bOYkp8br': 233, 'VIv5j5ZtU0iOgUEemmps': 217, 'VPtE5Eb2sGJmnwT0LW4M': 31, 'VTFxMIrze1deRrZGDGKj': 87, 'VraUo9eCGiAmCTdnz9eC': 154, 'Vt3EtMPhsUbmBqgcuXlY': 233, 'Wbjht0arLPqeQ8ktEX0L': 173, 'WtSMNXfN9tx8B3f2D7bp': 103, 'WvOcrfWgVhJpAJiyrlHj': 96, 'XJ1ZF9XrTJsIGjgQ3LO1': 195, 'XML66pyn1S5APUwxJydi': 23, 'XORDAt6vljYsR31xowvj': 203, 'XaaJ0RSTMA5gDbWK29Sp': 3, 'Xc8tfUJj2VYSuDGY905Y': 249, 'YILsF8Qxxr8UlKkwLzKt': 33, 'YlMRUaBYi1ZZJ0Kg8Pjj': 97, 'ZM7CwG22glJLuVKpK0Ur': 85, 'ZPSZNsOyHFHCise636vu': 250, 'ZPhSU58HYfff2cCFqyJ5': 233, 'ZmtqC29ZCqhDYQCpHaIG': 6, 'ZpV5O1EbJhVEWXW9rMvr': 186, 'ZqjWKfL0feEaAfWQyqiG': 224, 'aBid5pRnNo7Jv68Di2OZ': 62, 'aETz6JkF5PdrZaAN0Htw': 35, 'aPEICXX6LBgjZDieNTJd': 84, 'afyeqT9XaCz6iSCrqNb5': 112, 'aqHZLmhcXhYInfnGqNWu': 206, 'au71Fozydjb6XxEzbT1D': 241, 'b7q1mnJYeAkMm0eeyIEa': 53, 'bMMGWXnSb7b80bCecKwm': 131, 'bqrUXvmfmOps40bO97xH': 164, 'c6vri8OZpxYDvktmyDXZ': 112, 'c92FHnjhUWSvscCkbFG8': 117, 'cPCN9jRRePOJww4ZxO08': 181, 'cbWF3ko52Xf2KuN9RxsT': 65, 'cfjDdlCpsupcq0eCl4z0': 238, 'ciobv0ZWgzMlvxBNMmLv': 230, 'csuWox5RtI11d73TBbbF': 212, 'ctQ2N2txxCQbrTU1Tmwn': 221, 'd2QnTaOwVGXDcM4AYvQI': 158, 'd3HHbWnbkCvll1lURxTF': 157, 'drtLwtVkV8q1njADEBm1': 22, 'e3jNfF4eaVCM1RZRDcWQ': 105, 'eIkiUFkJgSPBoF4kXkvV': 84, 'eKScaWF2H96SAdPk774y': 19, 'eURPmpf42Pee8rxGCj89': 0, 'egl7lBFHIGfJttPEiEPh': 21, 'eibn4Ho4E2JTgjYqEMTQ': 212, 'fJGaHD2t22KZjU9hab0o': 76, 'fSlqfnLbecubkrOpAw8Q': 120, 'fWOw3kQSeopsQnpnnkWL': 255, 'fWZZgVAVj2Ho1qCiL7E0': 203, 'fZJJYjQrCV9e2uneeR2Q': 0, 'fhqLSC5WHn8oA7aVDxLd': 202, 'fqrKl4j5SAnFqwt71BVj': 75, 'gTOo7rTfzpIkxLeXfU94': 0, 'gUqbUnjFxhsuCABDO7cM': 30, 'gaJ4IiCvWxEPeKm0oVXC': 107, 'gniIpn1OZaGgcB2TrKFh': 158, 'grYwTA7fnZatSR3qcezS': 249, 'gvpnUzp1qVdmJO8KH6do': 30, 'gwk7FImD0Yl0ZdZ0dBWc': 106, 'gzgBaIfgmDWE1knCxKe4': 166, 'h1nYxCo2xom42gkiP0lu': 182, 'hLoV2OXPw60SFHF51vYE': 197, 'hNYuhTB3g6bosNUe1pHn': 155, 'hUarPqf7f0DppiuYa0co': 112, 'hyQdy1k8Z4igoyxi5N2F': 65, 'i5entoHTdTjC1HucVYcH': 3, 'iArUCOD1ylnGEgrKVDKV': 60, 'iE0kLc88vWpz1qzOiSS6': 191, 'iH1SFIA8nAtF8lEWDCey': 0, 'iIMd28uY1pMa3pBQPeLV': 108, 'iZZ5mjvP7VfLorGOlT0s': 24, 'idHHih1nFoOhKEIBUxRt': 150, 'izx2TS5ZXjKgLHdwQbj6': 75, 'jJhod5DBG7OfzLgECReE': 86, 'jXCfREtMUnWNyY5xuosp': 12, 'jermjTpker76OG3Kx65z': 97, 'jwqvKdPTL0XLY4mkMWAm': 207, 'k4nE5C4mRwcs1RJwWRUq': 21, 'kO4NiuQW6rXZveDq6VKo': 117, 'kYRKgzuoFKz5P86rwIeM': 63, 'klOBnZR1eFWtgOFOWDej': 87, 'kwDVOdlG6QCimBQWwyMJ': 112, 'l2oQm4OHla9CUI50pmlT': 0, 'l7qOkd06IC05yhPikcWZ': 235, 'lVAB77j4Bgp24Cgt0d7v': 233, 'lZ2Q9Ys6R3ynP3gfBJ9w': 27, 'm7SiNgH6hCUIaEJci335': 48, 'mLEqdYsJFfrXdHO8cC0S': 8, 'mXgKwyKmqcEQEpjhmHXp': 172, 'mZ6frccstmQ3tGqWOHmk': 97, 'md94sqyYwsm8ppbJKR6q': 117, 'mdSIRXm1x8OJJScmIn9q': 117, 'n3ly9JsfRx5PGOarpPhm': 124, 'n7S3yErH9GcHl7APSbx0': 120, 'nArXNaO53DQhMv3GSG3o': 160, 'nIasxVk4T68JkATgbtyl': 253, 'navcdCleGl4qsbRNuzZN': 3, 'nb9q0v4fmG2sKz7FJ3Sz': 91, 'nfcPkLPoTY2I8zEfeeoT': 22, 'nqqSELEP1y5kHPuG9393': 166, 'ntIXLWFaQVj1lqQwWOqe': 88, 'nzQIc2THYhLiINzEtRBb': 163, 'o5IW4Frmu8XFu80Fvv0n': 158, 'o6yYmyNsID29l7jJMqMU': 106, 'op9g21jep0DW5YsZhF6M': 112, 'ovtxvy6xXX97szRH7IMO': 2, 'p7opgZyOqn8cGPadKEZU': 28, 'p8mwFBAKYHe9pRLMyJgq': 228, 'pKqfUtgCv3D5USZFNgbU': 223, 'pPPJZQ6ZTjrYuSZDKxsP': 49, 'pWzainbPBkgA8Nag2GAI': 158, 'pbPc0b4Uf1TxjwtQHsSN': 188, 'pcMrbPzBFu8iNwZ2wint': 29, 'pdJpM3kpwNQbl8h26Q0Z': 243, 'pnaLQnPbIABhaQMNahMT': 63, 'prxBVPSzSpQGu7NLVAfF': 0, 'q192hC5vy3z4tukH1L2C': 158, 'q8oiO4OsVhPBYS2iikkA': 141, 'qGDz5Bsdc9wc1QAWKY2r': 94, 'qHbwde7rHDEjkm4ybb9M': 18, 'qIY6tpyFXTuT0zSWGNwB': 158, 'qKbLm39SqgbGAjwBjttp': 237, 'qZ5ou08lPalMTUCWT3Nn': 94, 'qmJEdNYSYaToARHVyiCb': 154, 'qtYNDsUkH0lxyLfAcmL7': 69, 'rAIWlYAyjI4g92dQKKAK': 97, 'rLQ1kttoG0nREKPizFKH': 136, 'rbC5Eo75UEZjjtKcD9JA': 16, 'ro3Jhn52pK8A7x02mJip': 214, 's663AjJ38d9YEWvrn3Kn': 57, 'sDYgGR0WT3maMom712HB': 126, 'sG3D9cMKoayIHId8Ib2h': 183, 'sHWLu91MB3QPcBYlpH7f': 112, 'sP1QXKT46E48RyIsY4kM': 106, 'tHInHJ6VnoBY2PKd5WDR': 22, 'tIlqtLp4CxG3UIYaIuYP': 47, 'tIvwvtUntMoOFmZNfUom': 148, 'tdnIlo7ZsStHVTMdFTTa': 181, 'tlw9yqs4QFX6LRNmyu9g': 166, 'tnk7nDFUqKpaQ3tcPSR0': 87, 'uWwXp6L82A3Zc0Q1nqnP': 125, 'uhbaT0mLyYgF17zxwPxN': 177, 'uuD9ZsZeYPXZu08gSa1u': 176, 'uvFkoIK2wGRaegpbZr97': 226, 'uz99VNhk2WdvF6vPicwy': 60, 'uzpc9XtPlAy27FHGShY0': 182, 'vMB61leym52C97xv2SfU': 27, 'vSuUtJs3VxpYt12UxUGL': 0, 'vU6qRuGBaSh4AuYOLAko': 243, 'vb8qYkkdJMjxs2ImI5ZO': 247, 'veZPvA20PexrpUHDPiKb': 40, 'vuCbFEiS0SbnhXwVGTQg': 164, 'vzazHtvIaPVWab976yps': 77, 'w61UzuH7I0xV5l2vVzZK': 233, 'w8FVsQszJYRHDkgEQgNR': 147, 'wQ9x3tdwKvPM9tGibz5r': 74, 'weBgVtZwsKWtmwCEPIVb': 87, 'wzPGHTJpqgQcC60zgyyK': 229, 'x5jF5TopBn1Ij4vW84q7': 234, 'x5qOPnQpyKY8NVprK8p1': 185, 'xHXtyMvHAvZ4WEKHNLM6': 111, 'xOygCIuLsMSVZh4geA39': 158, 'xSQbPSAlnbPy5z7gnWnl': 117, 'xX1j8Sl5IpzIiO7vvsrG': 22, 'xuzS80dcNyIZDWmfcmoT': 141, 'yHQj7qDWqnQVi61yqQzJ': 109, 'yRi08zQBH3NLvFcf19Bl': 75, 'ybOweO11ru3MHjlSTS3r': 63, 'ytnr9WDEcCsB53FXyUzp': 189, 'yueTiA1EIVOYEoTI5886': 174, 'z6zPZzzCgpVuCGAhOP6G': 164, 'z7ybNECH1yKh8QfllxzA': 0, 'zJ4WeDzkiakWwxi8wEqE': 83, 'zMJCmBjFQlLDupQPRGqa': 72, 'zSTDjQQL0uTH03DDvwwj': 131, 'zVxhJWFEsznmw8jRAMNL': 149, 'zaxo2ATNVsEagb6ABbug': 252, 'zexiPSfZ404mKfg5s52U': 60, 'zlGakvHqctqNDoW69or8': 145, 'zuERoymc9gRWByz6jcXs': 170}
 # import requests
 # import logging
@@ -675,26 +675,158 @@ def filter_miners_by_id(
         logger.error(f"Error filtering miners: {e}")
         return {}
 # info = filter_miners_by_id(data, netuid=49, network="finney")
+# data={'074rZehlXjTmxVH7ePRR': '114', '0e8CRALWdml3Pnf27Z4C': '1', '0icypK4pgzlAuTS9c5Kl': '117'}
+butt ={'0WKTOGat9IUVDWIvbynF': '49', '0e8CRALWdml3Pnf27Z4C': '1', '0icypK4pgzlAuTS9c5Kl': '117', '0rny3Vhvmne8DKEDHVsa': '192', '1arXF3eSoXrzJbdsYFFC': '19', '1eYBryIJWdHV76gmxT2S': '73', '1wEnm0ZcnWF3JuW355NT': '88', '2LpLqWHWf7AUVY2vPy7i': '46', '2T8Yono9z7HeuBiFC5lc': '84', '2d5ayYKanlefjvEqEjLe': '134', '2jN2m0492M9YMpfWKoxA': '251', '2mv3Z4eepUpafF1m8Ezb': '109', '2pDgM79QuL0TJ8BV0kq7': '170', '340NevUIWzoVhiYh669j': '37', '41SxnzgjAOGtaL5ePiMi': '249', '4eQQsfwqiVsa2Tq2jRS5': '199', '4r6R71dJ4vyvErClkd9x': '18', '4xegUUWQnAcydIapQR4a': '30', '5lOdoOA3VCXy8DB77oet': '152', '5nhKJm3EpPbNOi9B9n5c': '77', '6osulq8hR6oHSCbYY7Kw': '80', '7RnrqmhcC8Nr5rD1YmLO': '134', '8hvxxUmM16AAouBqmRsr': '61', '8iqtRaIv1TaBMqf6xsbe': '219', '9d4KAfmPhXNhfsqlltq3': '179', 'A0bel7PDzm5KbjWaPxsg': '184', 'A6erViSHjYOp3hYCEpfr': '48', 'AJjmbYUdYwBRfQRs2WeX': '99', 'AOoep8Z84sMW3V57Mclc': '106', 'B14zFYQjX1kD2STC308b': '141', 'CNrPZc8dmBIYe9qcvyX8': '80', 'CQcHZz7sWxptocMqV5bS': '13', 'D63CYkdLlWMaIf5i8Yh8': '103', 'DaPaRHc26J9TKwV4QDZe': '139', 'DnA8lTBnRTPu2d1dURMb': '17', 'E4QpIamMLoYsNffk2Izw': '106', 'E83NDzEkSsmSAFoLmE2t': '231', 'EsFaFAb8RFvX8quj0SZ9': '78', 'FqvzUNI5vYs0lrlF5mcy': '231', 'GMkAHTWBFArdzciK7f9f': '128', 'GYcaqFyVvm3TAkImFYFF': '109', 'H77hxM1S9cfko0BFqae1': '216', 'HDyTezxTLaPF0xwtTZWQ': '76', 'HNeGZT1fO6MMiaFvQXig': '76', 'IHkLesAOka0VDC0oUM1F': '84', 'IZDOmm6Xxs5LysowIEi8': '199', 'IxMgfuxMUlhKGzIy9bJk': '13', 'J4wqKHpewMbvp8yaU8Rs': '76', 'Kb3SlbFxGNAinDQCbOLq': '144', 'KmPadhTTI9dozBvXP8F5': '133', 'LDToI07GM3y89vPmg1kt': '116', 'LvPSJbE9kIyBvTONrEc2': '195', 'M1kMP40ZaaAuX3s5ciCz': '146', 'MQ96vMXYB6J37ZV9llJm': '63', 'MRQC5BCoFiqkteuNiw9u': '134', 'MT4O1PvKSDOcR5qOLuOW': '197', 'N4jfmWUvQ1Yfd24dBUeM': '117', 'ND0e3MtUuukQR2PflDgL': '40', 'NTOadeiCOeRPj8vwoo9e': '22', 'NyKoFh9xhRzKERPBuft2': '217', 'OlAcCHLSkxjEZwWYgKhn': '0', 'P8vw6BuadZrqKEsoSsfP': '4', 'Q6qlifLxb88jgm3N3P1n': '64', 'QL2Pj9Bz2rBkGxAriGni': '99', 'QP7Y8pm9xiJfMxymWTGc': '143', 'Qo58fb85M23qr3xrJXpx': '64', 'Rtl3qvMWMvPIZv8D8UcQ': '21', 'S2XJuMnC29rn7JQUUPIS': '231', 'SCJ2kuYzFhzQtEiTzAJ8': '0', 'SHgoiWPB5htfBs3pXjIN': '231', 'SYciHeMGsVuu55n07oKr': '231', 'T2h1RxfnUwWrGVKmuFla': '79', 'Th91HEEhtWhC4ylJnPMt': '101', 'TuLi2e3paFDt1KrFy8EB': '127', 'VTFxMIrze1deRrZGDGKj': '87', 'VraUo9eCGiAmCTdnz9eC': '154', 'WtSMNXfN9tx8B3f2D7bp': '103', 'X8szTKXH49tbgAvVJQzk': '85', 'XORDAt6vljYsR31xowvj': '203', 'XaaJ0RSTMA5gDbWK29Sp': '3', 'Xc8tfUJj2VYSuDGY905Y': '249', 'YILsF8Qxxr8UlKkwLzKt': '33', 'ZmtqC29ZCqhDYQCpHaIG': '6', 'aETz6JkF5PdrZaAN0Htw': '35', 'aPEICXX6LBgjZDieNTJd': '84', 'c92FHnjhUWSvscCkbFG8': '117', 'cPCN9jRRePOJww4ZxO08': '181', 'ctQ2N2txxCQbrTU1Tmwn': '221', 'diBAfIGiwBUJSNODpgkP': '37', 'eIkiUFkJgSPBoF4kXkvV': '84', 'eKScaWF2H96SAdPk774y': '19', 'eURPmpf42Pee8rxGCj89': '0', 'egl7lBFHIGfJttPEiEPh': '21', 'fJGaHD2t22KZjU9hab0o': '76', 'grYwTA7fnZatSR3qcezS': '249', 'gwk7FImD0Yl0ZdZ0dBWc': '106', 'h1nYxCo2xom42gkiP0lu': '182', 'hLoV2OXPw60SFHF51vYE': '197', 'hUarPqf7f0DppiuYa0co': '112', 'iArUCOD1ylnGEgrKVDKV': '60', 'iE0kLc88vWpz1qzOiSS6': '191', 'iH1SFIA8nAtF8lEWDCey': '0', 'jJhod5DBG7OfzLgECReE': '86', 'kO4NiuQW6rXZveDq6VKo': '117', 'klOBnZR1eFWtgOFOWDej': '87', 'l2oQm4OHla9CUI50pmlT': '0', 'lZ2Q9Ys6R3ynP3gfBJ9w': '27', 'md94sqyYwsm8ppbJKR6q': '117', 'mdSIRXm1x8OJJScmIn9q': '117', 'navcdCleGl4qsbRNuzZN': '3', 'nzQIc2THYhLiINzEtRBb': '163', 'o6yYmyNsID29l7jJMqMU': '106', 'ovtxvy6xXX97szRH7IMO': '2', 'pbPc0b4Uf1TxjwtQHsSN': '188', 'pcMrbPzBFu8iNwZ2wint': '29', 'ph5UdhtGyj6RDcJZn94S': '231', 'q8oiO4OsVhPBYS2iikkA': '141', 'qmJEdNYSYaToARHVyiCb': '154', 'qtYNDsUkH0lxyLfAcmL7': '69', 'rLQ1kttoG0nREKPizFKH': '136', 'sG3D9cMKoayIHId8Ib2h': '183', 'sP1QXKT46E48RyIsY4kM': '106', 'tIvwvtUntMoOFmZNfUom': '148', 'tdnIlo7ZsStHVTMdFTTa': '181', 'tlw9yqs4QFX6LRNmyu9g': '166', 'uWwXp6L82A3Zc0Q1nqnP': '125', 'uuD9ZsZeYPXZu08gSa1u': '176', 'veZPvA20PexrpUHDPiKb': '40', 'vzazHtvIaPVWab976yps': '77', 'w8FVsQszJYRHDkgEQgNR': '147', 'xHXtyMvHAvZ4WEKHNLM6': '111', 'xOygCIuLsMSVZh4geA39': '158', 'xSQbPSAlnbPy5z7gnWnl': '117', 'xuzS80dcNyIZDWmfcmoT': '141', 'yHQj7qDWqnQVi61yqQzJ': '109', 'yRi08zQBH3NLvFcf19Bl': '75', 'yueTiA1EIVOYEoTI5886': '174', 'zMJCmBjFQlLDupQPRGqa': '72', 'zexiPSfZ404mKfg5s52U': '60', 'zlGakvHqctqNDoW69or8': '145', 'zuERoymc9gRWByz6jcXs': '170'}
+# def get_miner_list_with_resources(miner_commune_map: Dict[str, str], miner_id: Optional[str] = None) -> List[str]:
+#     try:
+#         # Get cached miners data
+#         miners = _get_cached_miners_data()
+#         print(f"commune_gpt list { list(miner_commune_map.keys())}")
+#         print(f"map data {miner_commune_map}")
+#         print(f"Total miners in data: {len(miners)}")
+#         print(f"Total IDs in miner_commune_map: {len(miner_commune_map)}")
+
+#         # If a specific miner_id is provided, check if it's verified and in the map
+#         if miner_id:
+#             matched_miner = None
+#             for miner in miners:
+#                 if miner["id"] == miner_id and miner["status"] == "verified" and miner_id in miner_commune_map:
+#                     matched_miner = miner
+#                     print(f"miner id {miner["id"]}")
+#                     break
+            
+#             if matched_miner:
+#                 print(f"Matched miner: {miner_id}")
+#                 print(f"Compute resources: {matched_miner['compute_resources_details']}")
+#                 print(f"miner id {miner_id}")
+#                 return [miner_id]
+
+#         # If no miner_id is provided, return keys of all verified miners in miner_commune_map
+#         verified_miner_keys = [
+#             miner["id"]
+#             for miner in miners
+#             if miner["status"] == "verified" and miner["id"] in list(miner_commune_map.keys())
+#         ]
+
+#         # Debugging: Print status of all miners
+#         verified_count = 0
+#         matched_count = 0
+#         for miner in miners:
+#             if miner["status"] != "verified":
+#                 print(f"Miner {miner['id']} skipped: status is {miner['status']}")
+#             elif miner["id"] not in miner_commune_map:
+#                 print(f"Miner {miner['id']} skipped: not in miner_commune_map")
+#             else:
+#                 print(f"Matched miner: {miner['id']}")
+#                 print(f"Compute resources: {miner['compute_resources_details']}")
+#                 matched_count += 1
+#             if miner["status"] == "verified":
+#                 verified_count += 1
+
+#         print(f"Total verified miners: {verified_count}")
+#         print(f"Total matched miners: {matched_count}")
+#         print(f"Result contains {len(verified_miner_keys)} miner keys")
+
+#         return verified_miner_keys
+
+#     except Exception as e:
+#         logger.error(f"Error fetching miner list with resources: {e}")
+#         return []
 
 
-def get_miner_list_with_resources(miner_commune_map: Dict[str, str]) -> Dict[str, dict]:
+# def get_all_verified_miners() -> List[str]:
+#     try:
+#         miners = _get_cached_miners_data()
+#         verified_miners = [miner["id"] for miner in miners if miner["status"] == "verified"]
+        
+#         print(f"Total verified miners: {len(verified_miners)}")
+#         for miner_id in verified_miners:
+#             print(f"Verified miner: {miner_id}")
+        
+#         return verified_miners
+
+#     except Exception as e:
+#         logger.error(f"Error fetching verified miners: {e}")
+#         return []
+# info = get_all_verified_miners()
+# ree = ['0WKTOGat9IUVDWIvbynF', '0e8CRALWdml3Pnf27Z4C', '0icypK4pgzlAuTS9c5Kl', '0rny3Vhvmne8DKEDHVsa', '1arXF3eSoXrzJbdsYFFC', '1eYBryIJWdHV76gmxT2S', '1wEnm0ZcnWF3JuW355NT', '2LpLqWHWf7AUVY2vPy7i', '2T8Yono9z7HeuBiFC5lc', '2d5ayYKanlefjvEqEjLe', '2jN2m0492M9YMpfWKoxA', '2mv3Z4eepUpafF1m8Ezb', '2pDgM79QuL0TJ8BV0kq7', '340NevUIWzoVhiYh669j', '41SxnzgjAOGtaL5ePiMi', '4eQQsfwqiVsa2Tq2jRS5', '4r6R71dJ4vyvErClkd9x', '4xegUUWQnAcydIapQR4a', '5lOdoOA3VCXy8DB77oet', '5nhKJm3EpPbNOi9B9n5c', '6osulq8hR6oHSCbYY7Kw', '7RnrqmhcC8Nr5rD1YmLO', '8hvxxUmM16AAouBqmRsr', '8iqtRaIv1TaBMqf6xsbe', '9d4KAfmPhXNhfsqlltq3', 'A0bel7PDzm5KbjWaPxsg', 'A6erViSHjYOp3hYCEpfr', 'AJjmbYUdYwBRfQRs2WeX', 'AOoep8Z84sMW3V57Mclc', 'B14zFYQjX1kD2STC308b', 'CNrPZc8dmBIYe9qcvyX8', 'CQcHZz7sWxptocMqV5bS', 'D63CYkdLlWMaIf5i8Yh8', 'DaPaRHc26J9TKwV4QDZe', 'DnA8lTBnRTPu2d1dURMb', 'E4QpIamMLoYsNffk2Izw', 'E83NDzEkSsmSAFoLmE2t', 'EsFaFAb8RFvX8quj0SZ9', 'FqvzUNI5vYs0lrlF5mcy', 'GMkAHTWBFArdzciK7f9f', 'GYcaqFyVvm3TAkImFYFF', 'H77hxM1S9cfko0BFqae1', 'HDyTezxTLaPF0xwtTZWQ', 'HNeGZT1fO6MMiaFvQXig', 'IHkLesAOka0VDC0oUM1F', 'IZDOmm6Xxs5LysowIEi8', 'IxMgfuxMUlhKGzIy9bJk', 'J4wqKHpewMbvp8yaU8Rs', 'Kb3SlbFxGNAinDQCbOLq', 'KmPadhTTI9dozBvXP8F5', 'LDToI07GM3y89vPmg1kt', 'LvPSJbE9kIyBvTONrEc2', 'M1kMP40ZaaAuX3s5ciCz', 'MQ96vMXYB6J37ZV9llJm', 'MRQC5BCoFiqkteuNiw9u', 'MT4O1PvKSDOcR5qOLuOW', 'N4jfmWUvQ1Yfd24dBUeM', 'ND0e3MtUuukQR2PflDgL', 'NTOadeiCOeRPj8vwoo9e', 'NyKoFh9xhRzKERPBuft2', 'OlAcCHLSkxjEZwWYgKhn', 'P8vw6BuadZrqKEsoSsfP', 'Q6qlifLxb88jgm3N3P1n', 'QL2Pj9Bz2rBkGxAriGni', 'QP7Y8pm9xiJfMxymWTGc', 'Qo58fb85M23qr3xrJXpx', 'Rtl3qvMWMvPIZv8D8UcQ', 'S2XJuMnC29rn7JQUUPIS', 'SCJ2kuYzFhzQtEiTzAJ8', 'SHgoiWPB5htfBs3pXjIN', 'SYciHeMGsVuu55n07oKr', 'T2h1RxfnUwWrGVKmuFla', 'Th91HEEhtWhC4ylJnPMt', 'TuLi2e3paFDt1KrFy8EB', 'VTFxMIrze1deRrZGDGKj', 'VraUo9eCGiAmCTdnz9eC', 'WtSMNXfN9tx8B3f2D7bp', 'X8szTKXH49tbgAvVJQzk', 'XORDAt6vljYsR31xowvj', 'XaaJ0RSTMA5gDbWK29Sp', 'Xc8tfUJj2VYSuDGY905Y', 'YILsF8Qxxr8UlKkwLzKt', 'ZmtqC29ZCqhDYQCpHaIG', 'aETz6JkF5PdrZaAN0Htw', 'aPEICXX6LBgjZDieNTJd', 'c92FHnjhUWSvscCkbFG8', 'cPCN9jRRePOJww4ZxO08', 'ctQ2N2txxCQbrTU1Tmwn', 'diBAfIGiwBUJSNODpgkP', 'eIkiUFkJgSPBoF4kXkvV', 'eKScaWF2H96SAdPk774y', 'eURPmpf42Pee8rxGCj89', 'egl7lBFHIGfJttPEiEPh', 'fJGaHD2t22KZjU9hab0o', 'grYwTA7fnZatSR3qcezS', 'gwk7FImD0Yl0ZdZ0dBWc', 'h1nYxCo2xom42gkiP0lu', 'hLoV2OXPw60SFHF51vYE', 'hUarPqf7f0DppiuYa0co', 'iArUCOD1ylnGEgrKVDKV', 'iE0kLc88vWpz1qzOiSS6', 'iH1SFIA8nAtF8lEWDCey', 'jJhod5DBG7OfzLgECReE', 'kO4NiuQW6rXZveDq6VKo', 'klOBnZR1eFWtgOFOWDej', 'l2oQm4OHla9CUI50pmlT', 'lZ2Q9Ys6R3ynP3gfBJ9w', 'md94sqyYwsm8ppbJKR6q', 'mdSIRXm1x8OJJScmIn9q', 'navcdCleGl4qsbRNuzZN', 'nzQIc2THYhLiINzEtRBb', 'o6yYmyNsID29l7jJMqMU', 'ovtxvy6xXX97szRH7IMO', 'pbPc0b4Uf1TxjwtQHsSN', 'pcMrbPzBFu8iNwZ2wint', 'ph5UdhtGyj6RDcJZn94S', 'q8oiO4OsVhPBYS2iikkA', 'qmJEdNYSYaToARHVyiCb', 'qtYNDsUkH0lxyLfAcmL7', 'rLQ1kttoG0nREKPizFKH', 'sG3D9cMKoayIHId8Ib2h', 'sP1QXKT46E48RyIsY4kM', 'tIvwvtUntMoOFmZNfUom', 'tdnIlo7ZsStHVTMdFTTa', 'tlw9yqs4QFX6LRNmyu9g', 'uWwXp6L82A3Zc0Q1nqnP', 'uuD9ZsZeYPXZu08gSa1u', 'veZPvA20PexrpUHDPiKb', 'vzazHtvIaPVWab976yps', 'w8FVsQszJYRHDkgEQgNR', 'xHXtyMvHAvZ4WEKHNLM6', 'xOygCIuLsMSVZh4geA39', 'xSQbPSAlnbPy5z7gnWnl', 'xuzS80dcNyIZDWmfcmoT', 'yHQj7qDWqnQVi61yqQzJ', 'yRi08zQBH3NLvFcf19Bl', 'yueTiA1EIVOYEoTI5886', 'zMJCmBjFQlLDupQPRGqa', 'zexiPSfZ404mKfg5s52U', 'zlGakvHqctqNDoW69or8', 'zuERoymc9gRWByz6jcXs']
+# # print(f"new data {info}")
+
+def get_unverified_miners() -> Dict[str, dict]:
     try:
         # Get cached miners data
         miners = _get_cached_miners_data()
 
-        # Construct and return the desired output
+        # Return only unverified miners
         return {
-            miner.get("id"): {
-                "compute_resource_details": miner.get("compute_resources_details", []),
-                "miner_uid": miner_commune_map.get(miner.get("id"))
-            }
+            miner.get("id"): miner.get("compute_resources_details", {})
             for miner in miners
-            if miner.get("status") == "verified" and miner.get("id") in miner_commune_map
+            if miner.get("status") == "pending_verification"
         }
 
     except Exception as e:
-        logger.error(f"Error fetching miner list with resources: {e}")
+        logger.error(f"Error fetching unverified miners: {e}")
         return {}
-info = get_miner_list_with_resources(data)
-print(f"new data {info}")
-# print("Miners to Reject:", miners_to_reject)
+
+rejected = get_unverified_miners()
+print(f"rejected miners {list(rejected.keys())}")
+def update_miner_status(miner_id: str, status: str, percentage: float, reason: str) -> Optional[str]:
+    """
+    Updates a miner's full status using the new PUT endpoint.
+
+    Args:
+        miner_id: The ID of the miner to update.
+        status: New status string (e.g. 'active', 'inactive').
+        percentage: Completion or activity percentage.
+        reason: Reason for the status change.
+
+    Returns:
+        The updated status from the server or None if failed.
+    """
+    headers = {
+            "Connection": "keep-alive",
+            "x-api-key": "dev-services-key",
+            "x-use-encryption": "true",
+            "service-key": "53c8f1eba578f46cd3361d243a62c2c46e2852f80acaf5ccc35eaf16304bc60b",
+            "service-name": "miner_service",
+            "Content-Type": "application/json"
+        }
+    updated_at = datetime.utcnow()
+    url = f"https://polaris-interface.onrender.com/api/v1/services/miner/miners/{miner_id}"
+    payload = {
+        "status": status,
+        "percentage": percentage,
+        "reason": reason,
+        "updated_at": updated_at.isoformat() + "Z"
+    }
+
+    try:
+        response = requests.put(url, json=payload, headers=headers)
+        response.raise_for_status()
+        logger.info(f"Miner {miner_id} successfully updated to {status} ({percentage}%) - Reason: {reason}")
+        return response.json().get("status", "unknown")
+    except Exception as e:
+        logger.error(f"Failed to update miner {miner_id}: {e}")
+        return None
+    
+def update_all_miners():
+    status = "pending_verification"
+    reason = "Verified through batch update process"
+    
+    for miner_id in rejected:
+        try:
+            # Convert percentage string to float
+            # Call the update function
+            result = update_miner_status(miner_id, status, 0.0, reason)
+            if result:
+                logger.info(f"Successfully updated miner {miner_id} with status {result}")
+            else:
+                logger.warning(f"Update for miner {miner_id} returned no status")
+        except ValueError as e:
+            logger.error(f"Invalid percentage value for miner {miner_id}")
+        except Exception as e:
+            logger.error(f"Error processing miner {miner_id}: {e}")
+
+# Execute the update
+if __name__ == "__main__":
+    update_all_miners()

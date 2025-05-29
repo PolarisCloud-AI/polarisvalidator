@@ -267,7 +267,7 @@ class PolarisNode(BaseValidatorNeuron):
                 miners = self.get_registered_miners()
                 logger.debug("Filtering miners based on allowed UIDs")
                 bittensor_miners,miners_to_reject, = get_filtered_miners(miners)
-                logger.debug(f"Verifying {len(bittensor_miners)} Bittensor miners")
+                logger.debug(f"Selecting through {len(bittensor_miners)} Bittensor miners")
                 await verify_miners(list(bittensor_miners.keys()), get_unverified_miners, update_miner_status)
                 await asyncio.sleep(400)
             except Exception as e:
@@ -281,8 +281,7 @@ class PolarisNode(BaseValidatorNeuron):
                 logger.info("Starting process_miners_loop...")
                 miners= self.get_registered_miners()
                 white_list= get_filtered_miners_val(miners)
-                bittensor_miners = filter_miners_by_id(white_list, netuid=self.config.netuid, network=self.config.subtensor.network)
-                miner_resources = get_miner_list_with_resources(bittensor_miners)
+                miner_resources = get_miner_list_with_resources(white_list)
                 # Pass update_status_func (assuming self.update_miner_status exists)
                 results, container_updates, uptime_rewards_dict = await process_miners(
                     miners=miners,
@@ -292,7 +291,6 @@ class PolarisNode(BaseValidatorNeuron):
                     tempo=self.tempo,
                     max_score=self.max_allowed_weights
                 )
-
                 await self.update_validator_weights(results, container_updates, uptime_rewards_dict)
                 current_block = self.subtensor.block
                 blocks_since_last = current_block - self.last_weight_update_block

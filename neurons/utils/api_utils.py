@@ -11,7 +11,6 @@ _hotkey_to_uid_cache: Dict[str, int] = {}
 _last_metagraph_sync: float = 0
 _metagraph_sync_interval: float = 300  # 5 minutes in seconds
 _metagraph = None
-_miner_details_cache: Dict[str, dict] = {}
 
 # Cache for miners data from the common API endpoint
 _miners_data_cache: Dict = {}
@@ -25,7 +24,6 @@ def _sync_miners_data() -> None:
         headers = {
             "Connection": "keep-alive",
             "x-api-key": "dev-services-key",
-            "x-use-encryption": "true",
             "service-key": "53c8f1eba578f46cd3361d243a62c2c46e2852f80acaf5ccc35eaf16304bc60b",
             "service-name": "miner_service",
             "Content-Type": "application/json"
@@ -56,6 +54,7 @@ def _sync_metagraph(netuid: int, network: str = "finney") -> None:
             subtensor = bt.subtensor(network=network)
             _metagraph = subtensor.metagraph(netuid=netuid)
             _hotkey_to_uid_cache = {hotkey: uid for uid, hotkey in enumerate(_metagraph.hotkeys)}
+            logger.info(f"miner information {_hotkey_to_uid_cache}")
             _last_metagraph_sync = time.time()
             logger.info(f"Synced metagraph for netuid {netuid}, total nodes: {len(_metagraph.hotkeys)}")
     except Exception as e:
@@ -98,12 +97,11 @@ def get_filtered_miners_val(allowed_uids: List[int]) -> Dict[str, str]:
     try:
         # Get cached miners data
         miners = _get_cached_miners_data()
-
         # Filter and return valid miners
         return {
             miner.get("id"): str(miner.get("bittensor_registration", {}).get("miner_uid"))
             for miner in miners
-            if miner.get("bittensor_registration") and
+            if miner.get("bittensor_registration") and miner["status"] == "verified" and
                miner["bittensor_registration"].get("miner_uid") is not None and
                int(miner["bittensor_registration"]["miner_uid"]) in allowed_uids
         }
@@ -143,12 +141,12 @@ def get_miner_list_with_resources(miner_commune_map: Dict[str, str]) -> Dict[str
 
         # Construct and return the desired output
         return {
-            miner.get("id"): {
-                "compute_resource_details": miner.get("compute_resources_details", {}),
-                "miner_uid": miner_commune_map.get(miner.get("id"))
+            miner['id']: {
+                "compute_resource_details": miner.get("compute_resources_details", []),
+                "miner_uid": miner_commune_map.get(miner["id"])
             }
             for miner in miners
-            if miner.get("status") == "verified" and miner.get("id") in miner_commune_map
+            if miner["id"] in miner_commune_map
         }
 
     except Exception as e:
@@ -162,7 +160,7 @@ def get_unverified_miners() -> Dict[str, dict]:
 
         # Return only unverified miners
         return {
-            miner.get("id"): miner.get("compute_resources", {})
+            miner.get("id"): miner.get("compute_resources_details", {})
             for miner in miners
             if miner.get("status") == "pending_verification"
         }
@@ -488,6 +486,10 @@ def filter_miners_by_id(
 
         # Use provided hotkey_to_uid cache or sync metagraph
         uid_cache = hotkey_to_uid if hotkey_to_uid is not None else _hotkey_to_uid_cache
+        if not uid_cache:  # Check if cache is empty
+            _sync_metagraph(netuid, network)
+            uid_cache = _hotkey_to_uid_cache
+
         if hotkey_to_uid is None:
             _sync_metagraph(netuid, network)
 
@@ -500,6 +502,7 @@ def filter_miners_by_id(
             # Get miner details
             miner_details = get_miner_details(miner_id)
             hotkey = miner_details.get("bittensor_registration", {}).get("hotkey")
+            print(f"Node key {hotkey}")
             if not hotkey or hotkey == "default":
                 logger.warning(f"Invalid or missing hotkey for miner {miner_id}, skipping")
                 continue
