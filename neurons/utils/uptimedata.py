@@ -148,9 +148,9 @@ def calculate_miner_rewards(miner_id: str, miner_score: float, current_block: in
 
         # Calculate reward
         base_reward = 0
-        status_multiplier = 1.0 if current_status in ["active", "initial_active"] else 0.25
+        status_multiplier = 2.0 if current_status in ["active", "initial_active"] else 0.25
         if blocks_active > 0:
-            hourly_rate = 0.02  # Tokens per hour
+            hourly_rate = 0.2  # Tokens per hour
             uptime_hours = (blocks_active * tempo) / 3600
             base_reward = uptime_hours * hourly_rate * miner_score
             base_reward *= first_time_discount

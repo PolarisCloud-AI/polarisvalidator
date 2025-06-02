@@ -13,11 +13,7 @@ from template.base.utils.weight_utils import (
     process_weights_for_netuid
 )
 from utils.api_utils import (
-    get_filtered_miners,
-    get_miner_list_with_resources,
     get_containers_for_miner,
-    get_unverified_miners,
-    get_filtered_miners_val,
     update_miner_status,filter_miners_by_id
 
 )
@@ -191,7 +187,7 @@ class PolarisNode(BaseValidatorNeuron):
             logger.error(f"Error checking subnet readiness: {e}")
             return False
 
-    async def update_validator_weights(self, results: dict[int, float], container_updates: dict[int, list[str]], uptime_rewards_dict: dict[int, dict]):
+    async def update_validator_weights(self, results: dict[int, float]):
         """Updates validator weights based on miner scores."""
         logger.info("Starting update_validator_weights...")
         async with self.lock:
@@ -265,10 +261,8 @@ class PolarisNode(BaseValidatorNeuron):
 
                 logger.debug("Fetching registered miners")
                 miners = self.get_registered_miners()
-                logger.debug("Filtering miners based on allowed UIDs")
-                bittensor_miners,miners_to_reject, = get_filtered_miners(miners)
-                logger.debug(f"Selecting through {len(bittensor_miners)} Bittensor miners")
-                await verify_miners(list(bittensor_miners.keys()), get_unverified_miners, update_miner_status)
+                logger.debug(f"Selecting through {len(miners)} Bittensor miners")
+                await verify_miners(miners)
                 await asyncio.sleep(400)
             except Exception as e:
                 logger.error(f"Error in verify_miners_loop: {e}")
@@ -280,18 +274,9 @@ class PolarisNode(BaseValidatorNeuron):
             try:
                 logger.info("Starting process_miners_loop...")
                 miners= self.get_registered_miners()
-                white_list= get_filtered_miners_val(miners)
-                miner_resources = get_miner_list_with_resources(white_list)
                 # Pass update_status_func (assuming self.update_miner_status exists)
-                results, container_updates, uptime_rewards_dict = await process_miners(
-                    miners=miners,
-                    miner_resources=miner_resources,
-                    get_containers_func=get_containers_for_miner,
-                    update_status_func=update_miner_status,
-                    tempo=self.tempo,
-                    max_score=self.max_allowed_weights
-                )
-                await self.update_validator_weights(results, container_updates, uptime_rewards_dict)
+                results= await process_miners(miners=miners,tempo=self.tempo,max_score=self.max_allowed_weights)
+                await self.update_validator_weights(results)
                 current_block = self.subtensor.block
                 blocks_since_last = current_block - self.last_weight_update_block
                 effective_rate_limit = max(self.tempo, self.weights_rate_limit)

@@ -1,0 +1,938 @@
+DEBUG:paramiko.transport:server compress: none, zlib@openssh.com
+DEBUG:paramiko.transport:client lang: <none>
+DEBUG:paramiko.transport:server lang: <none>
+DEBUG:paramiko.transport:kex follows: False
+DEBUG:paramiko.transport:=== Key exchange agreements ===
+DEBUG:paramiko.transport:Strict kex mode: True
+DEBUG:paramiko.transport:Kex: curve25519-sha256@libssh.org
+DEBUG:paramiko.transport:HostKey: ssh-ed25519
+DEBUG:paramiko.transport:Cipher: aes128-ctr
+DEBUG:paramiko.transport:MAC: hmac-sha2-256
+DEBUG:paramiko.transport:Compression: none
+DEBUG:paramiko.transport:=== End of kex handshake ===
+DEBUG:paramiko.transport:Resetting outbound seqno after NEWKEYS due to strict mode
+DEBUG:paramiko.transport:kex engine KexCurve25519 specified hash_algo <built-in function openssl_sha256>
+DEBUG:paramiko.transport:Switch to new keys ...
+DEBUG:paramiko.transport:Resetting inbound seqno after NEWKEYS due to strict mode
+DEBUG:paramiko.transport:Adding ssh-ed25519 host key for 65.109.22.24: b'fff32959b869b50611aaa037cc1039a1'
+DEBUG:paramiko.transport:Got EXT_INFO: {'server-sig-algs': b'ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256', 'publickey-hostbound@openssh.com': b'0', 'ping@openssh.com': b'0'}
+DEBUG:paramiko.transport:Trying discovered key b'0085b355aaaa98ded61521cf23066317' in /Users/user/Documents/Jarvis/polaris_bittensor/neurons/utils/ssh_host_key
+DEBUG:paramiko.transport:userauth is OK
+DEBUG:paramiko.transport:Finalizing pubkey algorithm for key of type 'ssh-rsa'
+DEBUG:paramiko.transport:Our pubkey algorithm list: ['rsa-sha2-512', 'rsa-sha2-256', 'ssh-rsa']
+DEBUG:paramiko.transport:Server-side algorithm list: ['ssh-ed25519', 'ecdsa-sha2-nistp256', 'ecdsa-sha2-nistp384', 'ecdsa-sha2-nistp521', 'sk-ssh-ed25519@openssh.com', 'sk-ecdsa-sha2-nistp256@openssh.com', 'rsa-sha2-512', 'rsa-sha2-256']
+DEBUG:paramiko.transport:Agreed upon 'rsa-sha2-512' pubkey algorithm
+INFO:paramiko.transport:Authentication (publickey) successful!
+DEBUG:paramiko.transport:[chan 0] Max packet in: 32768 bytes
+DEBUG:paramiko.transport:Received global request "hostkeys-00@openssh.com"
+DEBUG:paramiko.transport:Rejecting "hostkeys-00@openssh.com" global request from server.
+DEBUG:paramiko.transport:Debug msg: b'/root/.ssh/authorized_keys:1: key options: agent-forwarding port-forwarding pty user-rc x11-forwarding'
+DEBUG:paramiko.transport:[chan 0] Max packet out: 32768 bytes
+DEBUG:paramiko.transport:Secsh channel 0 opened.
+DEBUG:paramiko.transport:[chan 0] Sesch channel 0 request ok
+DEBUG:paramiko.transport:[chan 0] EOF received (0)
+DEBUG:paramiko.transport:[chan 0] EOF sent (0)
+DEBUG:paramiko.transport:Dropping user packet because connection is dead.
+DEBUG:paramiko.transport:starting thread (client mode): 0x154fe930
+DEBUG:paramiko.transport:Local version/idstring: SSH-2.0-paramiko_3.5.1
+DEBUG:paramiko.transport:Remote version/idstring: SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.11
+INFO:paramiko.transport:Connected (version 2.0, client OpenSSH_9.6p1)
+DEBUG:paramiko.transport:=== Key exchange possibilities ===
+DEBUG:paramiko.transport:kex algos: sntrup761x25519-sha512@openssh.com, curve25519-sha256, curve25519-sha256@libssh.org, ecdh-sha2-nistp256, ecdh-sha2-nistp384, ecdh-sha2-nistp521, diffie-hellman-group-exchange-sha256, diffie-hellman-group16-sha512, diffie-hellman-group18-sha512, diffie-hellman-group14-sha256, ext-info-s, kex-strict-s-v00@openssh.com
+DEBUG:paramiko.transport:server key: rsa-sha2-512, rsa-sha2-256, ecdsa-sha2-nistp256, ssh-ed25519
+DEBUG:paramiko.transport:client encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+DEBUG:paramiko.transport:server encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+DEBUG:paramiko.transport:client mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+DEBUG:paramiko.transport:server mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+DEBUG:paramiko.transport:client compress: none, zlib@openssh.com
+DEBUG:paramiko.transport:server compress: none, zlib@openssh.com
+DEBUG:paramiko.transport:client lang: <none>
+DEBUG:paramiko.transport:server lang: <none>
+DEBUG:paramiko.transport:kex follows: False
+DEBUG:paramiko.transport:=== Key exchange agreements ===
+DEBUG:paramiko.transport:Strict kex mode: True
+DEBUG:paramiko.transport:Kex: curve25519-sha256@libssh.org
+DEBUG:paramiko.transport:HostKey: ssh-ed25519
+DEBUG:paramiko.transport:Cipher: aes128-ctr
+DEBUG:paramiko.transport:MAC: hmac-sha2-256
+DEBUG:paramiko.transport:Compression: none
+DEBUG:paramiko.transport:=== End of kex handshake ===
+DEBUG:paramiko.transport:Resetting outbound seqno after NEWKEYS due to strict mode
+DEBUG:paramiko.transport:kex engine KexCurve25519 specified hash_algo <built-in function openssl_sha256>
+DEBUG:paramiko.transport:Switch to new keys ...
+DEBUG:paramiko.transport:Resetting inbound seqno after NEWKEYS due to strict mode
+DEBUG:paramiko.transport:Adding ssh-ed25519 host key for 65.109.22.24: b'fff32959b869b50611aaa037cc1039a1'
+DEBUG:paramiko.transport:Got EXT_INFO: {'server-sig-algs': b'ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256', 'publickey-hostbound@openssh.com': b'0', 'ping@openssh.com': b'0'}
+DEBUG:paramiko.transport:Trying discovered key b'0085b355aaaa98ded61521cf23066317' in /Users/user/Documents/Jarvis/polaris_bittensor/neurons/utils/ssh_host_key
+DEBUG:paramiko.transport:userauth is OK
+DEBUG:paramiko.transport:Finalizing pubkey algorithm for key of type 'ssh-rsa'
+DEBUG:paramiko.transport:Our pubkey algorithm list: ['rsa-sha2-512', 'rsa-sha2-256', 'ssh-rsa']
+DEBUG:paramiko.transport:Server-side algorithm list: ['ssh-ed25519', 'ecdsa-sha2-nistp256', 'ecdsa-sha2-nistp384', 'ecdsa-sha2-nistp521', 'sk-ssh-ed25519@openssh.com', 'sk-ecdsa-sha2-nistp256@openssh.com', 'rsa-sha2-512', 'rsa-sha2-256']
+DEBUG:paramiko.transport:Agreed upon 'rsa-sha2-512' pubkey algorithm
+INFO:paramiko.transport:Authentication (publickey) successful!
+DEBUG:paramiko.transport:[chan 0] Max packet in: 32768 bytes
+DEBUG:paramiko.transport:Received global request "hostkeys-00@openssh.com"
+DEBUG:paramiko.transport:Rejecting "hostkeys-00@openssh.com" global request from server.
+DEBUG:paramiko.transport:Debug msg: b'/root/.ssh/authorized_keys:1: key options: agent-forwarding port-forwarding pty user-rc x11-forwarding'
+DEBUG:paramiko.transport:[chan 0] Max packet out: 32768 bytes
+DEBUG:paramiko.transport:Secsh channel 0 opened.
+DEBUG:paramiko.transport:[chan 0] Sesch channel 0 request ok
+DEBUG:websockets.client:< PING '' [0 bytes]
+DEBUG:websockets.client:> PONG '' [0 bytes]
+DEBUG:websockets.client:> PING 09 f7 61 60 [binary, 4 bytes]
+DEBUG:websockets.client:% sent keepalive ping
+DEBUG:paramiko.transport:[chan 0] EOF received (0)
+DEBUG:paramiko.transport:[chan 0] EOF sent (0)
+DEBUG:paramiko.transport:Dropping user packet because connection is dead.
+2025-05-31 17:54:27.717 | INFO     | __main__:get_filtered_miners_val:438 - Resource 92a012a7-c4f7-4cc0-8aee-98006f2e1989 compute score: 0.0000
+2025-05-31 17:54:27.718 | WARNING  | __main__:get_filtered_miners_val:445 - Resource 92a012a7-c4f7-4cc0-8aee-98006f2e1989 score 0.0000 below threshold
+2025-05-31 17:54:27.719 | INFO     | neurons.utils.api_utils:update_miner_compute_resource:590 - Preparing to update compute resource 92a012a7-c4f7-4cc0-8aee-98006f2e1989 for miner FqvzUNI5vYs0lrlF5mcy at ('https://polaris-interface.onrender.com/api/v1/services/miner/miners',)/FqvzUNI5vYs0lrlF5mcy
+2025-05-31 17:54:27.719 | INFO     | neurons.utils.api_utils:update_miner_compute_resource:613 - Sending PUT request with payload: {'compute_resource_updates': [{'id': '92a012a7-c4f7-4cc0-8aee-98006f2e1989', 'validation_status': 'rejected', 'reason': 'Low compute score: 0.0000'}]}
+2025-05-31 17:54:27.720 | ERROR    | neurons.utils.api_utils:update_miner_compute_resource:626 - Network error while updating compute resource 92a012a7-c4f7-4cc0-8aee-98006f2e1989 for miner FqvzUNI5vYs0lrlF5mcy: Header part (('dev-services-key',)) from ('x-api-key', ('dev-services-key',)) must be of type str or bytes, not <class 'tuple'>
+2025-05-31 17:54:27.720 | WARNING  | __main__:get_filtered_miners_val:452 - Failed to update status for resource 92a012a7-c4f7-4cc0-8aee-98006f2e1989
+2025-05-31 17:54:27.720 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner H77hxM1S9cfko0BFqae1 due to invalid registration or UID
+2025-05-31 17:54:27.720 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner IHkLesAOka0VDC0oUM1F due to invalid registration or UID
+2025-05-31 17:54:27.721 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner LDToI07GM3y89vPmg1kt due to invalid registration or UID
+2025-05-31 17:54:27.721 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner N4jfmWUvQ1Yfd24dBUeM due to invalid registration or UID
+2025-05-31 17:54:27.721 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner P8vw6BuadZrqKEsoSsfP due to invalid registration or UID
+2025-05-31 17:54:27.721 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner Q6qlifLxb88jgm3N3P1n due to invalid registration or UID
+2025-05-31 17:54:27.724 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner QVnnh3RCXl2KyDQyI5hF due to invalid registration or UID
+2025-05-31 17:54:27.724 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner Qo58fb85M23qr3xrJXpx due to invalid registration or UID
+2025-05-31 17:54:27.725 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner RpfuX4WZY4B4Dw0t7xID due to invalid registration or UID
+2025-05-31 17:54:27.725 | INFO     | __main__:get_filtered_miners_val:393 - Processing miner S2XJuMnC29rn7JQUUPIS (UID: 231)
+2025-05-31 17:54:27.725 | INFO     | __main__:get_filtered_miners_val:396 - Verifying hotkey 5Fqf8QzacNSU91v3ibnkd1pw2fbNsHucrSpw73uSpbhh2XAN on subnet 49
+2025-05-31 17:54:27.725 | INFO     | __main__:get_miner_uid_by_hotkey:332 - Found hotkey 5Fqf8QzacNSU91v3ibnkd1pw2fbNsHucrSpw73uSpbhh2XAN with UID 231 in cache for subnet 49
+2025-05-31 17:54:27.726 | INFO     | __main__:get_filtered_miners_val:424 - Miner S2XJuMnC29rn7JQUUPIS has 1 compute resource(s)
+2025-05-31 17:54:27.726 | INFO     | __main__:get_filtered_miners_val:428 - Processing resource 1 (ID: 53d07943-77ba-45c4-9921-886bc34bbf4c)
+2025-05-31 17:54:27.728 | INFO     | __main__:get_filtered_miners_val:432 - SSH value: ssh://root@65.109.22.24:22
+DEBUG:websockets.client:< PONG 09 f7 61 60 [binary, 4 bytes]
+DEBUG:websockets.client:% received keepalive pong
+DEBUG:paramiko.transport:starting thread (client mode): 0x154fc2c0
+DEBUG:paramiko.transport:Local version/idstring: SSH-2.0-paramiko_3.5.1
+DEBUG:paramiko.transport:Remote version/idstring: SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.11
+INFO:paramiko.transport:Connected (version 2.0, client OpenSSH_9.6p1)
+DEBUG:paramiko.transport:=== Key exchange possibilities ===
+DEBUG:paramiko.transport:kex algos: sntrup761x25519-sha512@openssh.com, curve25519-sha256, curve25519-sha256@libssh.org, ecdh-sha2-nistp256, ecdh-sha2-nistp384, ecdh-sha2-nistp521, diffie-hellman-group-exchange-sha256, diffie-hellman-group16-sha512, diffie-hellman-group18-sha512, diffie-hellman-group14-sha256, ext-info-s, kex-strict-s-v00@openssh.com
+DEBUG:paramiko.transport:server key: rsa-sha2-512, rsa-sha2-256, ecdsa-sha2-nistp256, ssh-ed25519
+DEBUG:paramiko.transport:client encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+DEBUG:paramiko.transport:server encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+DEBUG:paramiko.transport:client mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+DEBUG:paramiko.transport:server mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+DEBUG:paramiko.transport:client compress: none, zlib@openssh.com
+DEBUG:paramiko.transport:server compress: none, zlib@openssh.com
+DEBUG:paramiko.transport:client lang: <none>
+DEBUG:paramiko.transport:server lang: <none>
+DEBUG:paramiko.transport:kex follows: False
+DEBUG:paramiko.transport:=== Key exchange agreements ===
+DEBUG:paramiko.transport:Strict kex mode: True
+DEBUG:paramiko.transport:Kex: curve25519-sha256@libssh.org
+DEBUG:paramiko.transport:HostKey: ssh-ed25519
+DEBUG:paramiko.transport:Cipher: aes128-ctr
+DEBUG:paramiko.transport:MAC: hmac-sha2-256
+DEBUG:paramiko.transport:Compression: none
+DEBUG:paramiko.transport:=== End of kex handshake ===
+DEBUG:paramiko.transport:Resetting outbound seqno after NEWKEYS due to strict mode
+DEBUG:paramiko.transport:kex engine KexCurve25519 specified hash_algo <built-in function openssl_sha256>
+DEBUG:paramiko.transport:Switch to new keys ...
+DEBUG:paramiko.transport:Resetting inbound seqno after NEWKEYS due to strict mode
+DEBUG:paramiko.transport:Adding ssh-ed25519 host key for 65.109.22.24: b'fff32959b869b50611aaa037cc1039a1'
+DEBUG:paramiko.transport:Got EXT_INFO: {'server-sig-algs': b'ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256', 'publickey-hostbound@openssh.com': b'0', 'ping@openssh.com': b'0'}
+DEBUG:paramiko.transport:Trying discovered key b'0085b355aaaa98ded61521cf23066317' in /Users/user/Documents/Jarvis/polaris_bittensor/neurons/utils/ssh_host_key
+DEBUG:paramiko.transport:userauth is OK
+DEBUG:paramiko.transport:Finalizing pubkey algorithm for key of type 'ssh-rsa'
+DEBUG:paramiko.transport:Our pubkey algorithm list: ['rsa-sha2-512', 'rsa-sha2-256', 'ssh-rsa']
+DEBUG:paramiko.transport:Server-side algorithm list: ['ssh-ed25519', 'ecdsa-sha2-nistp256', 'ecdsa-sha2-nistp384', 'ecdsa-sha2-nistp521', 'sk-ssh-ed25519@openssh.com', 'sk-ecdsa-sha2-nistp256@openssh.com', 'rsa-sha2-512', 'rsa-sha2-256']
+DEBUG:paramiko.transport:Agreed upon 'rsa-sha2-512' pubkey algorithm
+INFO:paramiko.transport:Authentication (publickey) successful!
+DEBUG:paramiko.transport:[chan 0] Max packet in: 32768 bytes
+DEBUG:paramiko.transport:Received global request "hostkeys-00@openssh.com"
+DEBUG:paramiko.transport:Rejecting "hostkeys-00@openssh.com" global request from server.
+DEBUG:paramiko.transport:Debug msg: b'/root/.ssh/authorized_keys:1: key options: agent-forwarding port-forwarding pty user-rc x11-forwarding'
+DEBUG:paramiko.transport:[chan 0] Max packet out: 32768 bytes
+DEBUG:paramiko.transport:Secsh channel 0 opened.
+DEBUG:paramiko.transport:[chan 0] Sesch channel 0 request ok
+DEBUG:paramiko.transport:[chan 0] EOF received (0)
+DEBUG:paramiko.transport:[chan 0] EOF sent (0)
+DEBUG:paramiko.transport:Dropping user packet because connection is dead.
+DEBUG:paramiko.transport:starting thread (client mode): 0x154fcc50
+DEBUG:paramiko.transport:Local version/idstring: SSH-2.0-paramiko_3.5.1
+DEBUG:paramiko.transport:Remote version/idstring: SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.11
+INFO:paramiko.transport:Connected (version 2.0, client OpenSSH_9.6p1)
+DEBUG:paramiko.transport:EOF in transport thread
+DEBUG:paramiko.transport:starting thread (client mode): 0x154fe0c0
+DEBUG:paramiko.transport:Local version/idstring: SSH-2.0-paramiko_3.5.1
+DEBUG:paramiko.transport:Remote version/idstring: SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.11
+INFO:paramiko.transport:Connected (version 2.0, client OpenSSH_9.6p1)
+DEBUG:paramiko.transport:=== Key exchange possibilities ===
+DEBUG:paramiko.transport:kex algos: sntrup761x25519-sha512@openssh.com, curve25519-sha256, curve25519-sha256@libssh.org, ecdh-sha2-nistp256, ecdh-sha2-nistp384, ecdh-sha2-nistp521, diffie-hellman-group-exchange-sha256, diffie-hellman-group16-sha512, diffie-hellman-group18-sha512, diffie-hellman-group14-sha256, ext-info-s, kex-strict-s-v00@openssh.com
+DEBUG:paramiko.transport:server key: rsa-sha2-512, rsa-sha2-256, ecdsa-sha2-nistp256, ssh-ed25519
+DEBUG:paramiko.transport:client encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+DEBUG:paramiko.transport:server encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+DEBUG:paramiko.transport:client mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+DEBUG:paramiko.transport:server mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+DEBUG:paramiko.transport:client compress: none, zlib@openssh.com
+DEBUG:paramiko.transport:server compress: none, zlib@openssh.com
+DEBUG:paramiko.transport:client lang: <none>
+DEBUG:paramiko.transport:server lang: <none>
+DEBUG:paramiko.transport:kex follows: False
+DEBUG:paramiko.transport:=== Key exchange agreements ===
+DEBUG:paramiko.transport:Strict kex mode: True
+DEBUG:paramiko.transport:Kex: curve25519-sha256@libssh.org
+DEBUG:paramiko.transport:HostKey: ssh-ed25519
+DEBUG:paramiko.transport:Cipher: aes128-ctr
+DEBUG:paramiko.transport:MAC: hmac-sha2-256
+DEBUG:paramiko.transport:Compression: none
+DEBUG:paramiko.transport:=== End of kex handshake ===
+DEBUG:paramiko.transport:EOF in transport thread
+DEBUG:paramiko.transport:starting thread (client mode): 0x154ffec0
+DEBUG:paramiko.transport:Local version/idstring: SSH-2.0-paramiko_3.5.1
+DEBUG:paramiko.transport:Remote version/idstring: SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.11
+INFO:paramiko.transport:Connected (version 2.0, client OpenSSH_9.6p1)
+DEBUG:paramiko.transport:=== Key exchange possibilities ===
+DEBUG:paramiko.transport:kex algos: sntrup761x25519-sha512@openssh.com, curve25519-sha256, curve25519-sha256@libssh.org, ecdh-sha2-nistp256, ecdh-sha2-nistp384, ecdh-sha2-nistp521, diffie-hellman-group-exchange-sha256, diffie-hellman-group16-sha512, diffie-hellman-group18-sha512, diffie-hellman-group14-sha256, ext-info-s, kex-strict-s-v00@openssh.com
+DEBUG:paramiko.transport:server key: rsa-sha2-512, rsa-sha2-256, ecdsa-sha2-nistp256, ssh-ed25519
+DEBUG:paramiko.transport:client encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+DEBUG:paramiko.transport:server encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+DEBUG:paramiko.transport:client mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+DEBUG:paramiko.transport:server mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+DEBUG:paramiko.transport:client compress: none, zlib@openssh.com
+DEBUG:paramiko.transport:server compress: none, zlib@openssh.com
+DEBUG:paramiko.transport:client lang: <none>
+DEBUG:paramiko.transport:server lang: <none>
+DEBUG:paramiko.transport:kex follows: False
+DEBUG:paramiko.transport:=== Key exchange agreements ===
+DEBUG:paramiko.transport:Strict kex mode: True
+DEBUG:paramiko.transport:Kex: curve25519-sha256@libssh.org
+DEBUG:paramiko.transport:HostKey: ssh-ed25519
+DEBUG:paramiko.transport:Cipher: aes128-ctr
+DEBUG:paramiko.transport:MAC: hmac-sha2-256
+DEBUG:paramiko.transport:Compression: none
+DEBUG:paramiko.transport:=== End of kex handshake ===
+DEBUG:paramiko.transport:Resetting outbound seqno after NEWKEYS due to strict mode
+DEBUG:paramiko.transport:kex engine KexCurve25519 specified hash_algo <built-in function openssl_sha256>
+DEBUG:paramiko.transport:Switch to new keys ...
+DEBUG:paramiko.transport:Resetting inbound seqno after NEWKEYS due to strict mode
+DEBUG:paramiko.transport:Adding ssh-ed25519 host key for 65.109.22.24: b'fff32959b869b50611aaa037cc1039a1'
+DEBUG:paramiko.transport:Got EXT_INFO: {'server-sig-algs': b'ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256', 'publickey-hostbound@openssh.com': b'0', 'ping@openssh.com': b'0'}
+DEBUG:paramiko.transport:Trying discovered key b'0085b355aaaa98ded61521cf23066317' in /Users/user/Documents/Jarvis/polaris_bittensor/neurons/utils/ssh_host_key
+DEBUG:paramiko.transport:userauth is OK
+DEBUG:paramiko.transport:Finalizing pubkey algorithm for key of type 'ssh-rsa'
+DEBUG:paramiko.transport:Our pubkey algorithm list: ['rsa-sha2-512', 'rsa-sha2-256', 'ssh-rsa']
+DEBUG:paramiko.transport:Server-side algorithm list: ['ssh-ed25519', 'ecdsa-sha2-nistp256', 'ecdsa-sha2-nistp384', 'ecdsa-sha2-nistp521', 'sk-ssh-ed25519@openssh.com', 'sk-ecdsa-sha2-nistp256@openssh.com', 'rsa-sha2-512', 'rsa-sha2-256']
+DEBUG:paramiko.transport:Agreed upon 'rsa-sha2-512' pubkey algorithm
+INFO:paramiko.transport:Authentication (publickey) successful!
+DEBUG:paramiko.transport:[chan 0] Max packet in: 32768 bytes
+DEBUG:paramiko.transport:Received global request "hostkeys-00@openssh.com"
+DEBUG:paramiko.transport:Rejecting "hostkeys-00@openssh.com" global request from server.
+DEBUG:paramiko.transport:Debug msg: b'/root/.ssh/authorized_keys:1: key options: agent-forwarding port-forwarding pty user-rc x11-forwarding'
+DEBUG:paramiko.transport:[chan 0] Max packet out: 32768 bytes
+DEBUG:paramiko.transport:Secsh channel 0 opened.
+DEBUG:paramiko.transport:[chan 0] Sesch channel 0 request ok
+DEBUG:paramiko.transport:[chan 0] EOF received (0)
+DEBUG:paramiko.transport:EOF in transport thread
+DEBUG:paramiko.transport:[chan 0] EOF sent (0)
+DEBUG:paramiko.transport:Dropping user packet because connection is dead.
+DEBUG:paramiko.transport:starting thread (client mode): 0x154fccb0
+DEBUG:paramiko.transport:Local version/idstring: SSH-2.0-paramiko_3.5.1
+DEBUG:paramiko.transport:Remote version/idstring: SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.11
+INFO:paramiko.transport:Connected (version 2.0, client OpenSSH_9.6p1)
+DEBUG:paramiko.transport:=== Key exchange possibilities ===
+DEBUG:paramiko.transport:kex algos: sntrup761x25519-sha512@openssh.com, curve25519-sha256, curve25519-sha256@libssh.org, ecdh-sha2-nistp256, ecdh-sha2-nistp384, ecdh-sha2-nistp521, diffie-hellman-group-exchange-sha256, diffie-hellman-group16-sha512, diffie-hellman-group18-sha512, diffie-hellman-group14-sha256, ext-info-s, kex-strict-s-v00@openssh.com
+DEBUG:paramiko.transport:server key: rsa-sha2-512, rsa-sha2-256, ecdsa-sha2-nistp256, ssh-ed25519
+DEBUG:paramiko.transport:client encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+DEBUG:paramiko.transport:server encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+DEBUG:paramiko.transport:client mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+DEBUG:paramiko.transport:server mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+DEBUG:paramiko.transport:client compress: none, zlib@openssh.com
+DEBUG:paramiko.transport:server compress: none, zlib@openssh.com
+DEBUG:paramiko.transport:client lang: <none>
+DEBUG:paramiko.transport:server lang: <none>
+DEBUG:paramiko.transport:kex follows: False
+DEBUG:paramiko.transport:=== Key exchange agreements ===
+DEBUG:paramiko.transport:Strict kex mode: True
+DEBUG:paramiko.transport:Kex: curve25519-sha256@libssh.org
+DEBUG:paramiko.transport:HostKey: ssh-ed25519
+DEBUG:paramiko.transport:Cipher: aes128-ctr
+DEBUG:paramiko.transport:MAC: hmac-sha2-256
+DEBUG:paramiko.transport:Compression: none
+DEBUG:paramiko.transport:=== End of kex handshake ===
+DEBUG:paramiko.transport:Resetting outbound seqno after NEWKEYS due to strict mode
+DEBUG:paramiko.transport:kex engine KexCurve25519 specified hash_algo <built-in function openssl_sha256>
+DEBUG:paramiko.transport:Switch to new keys ...
+DEBUG:paramiko.transport:Resetting inbound seqno after NEWKEYS due to strict mode
+DEBUG:paramiko.transport:Adding ssh-ed25519 host key for 65.109.22.24: b'fff32959b869b50611aaa037cc1039a1'
+DEBUG:paramiko.transport:Got EXT_INFO: {'server-sig-algs': b'ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256', 'publickey-hostbound@openssh.com': b'0', 'ping@openssh.com': b'0'}
+DEBUG:paramiko.transport:Trying discovered key b'0085b355aaaa98ded61521cf23066317' in /Users/user/Documents/Jarvis/polaris_bittensor/neurons/utils/ssh_host_key
+DEBUG:paramiko.transport:userauth is OK
+DEBUG:paramiko.transport:Finalizing pubkey algorithm for key of type 'ssh-rsa'
+DEBUG:paramiko.transport:Our pubkey algorithm list: ['rsa-sha2-512', 'rsa-sha2-256', 'ssh-rsa']
+DEBUG:paramiko.transport:Server-side algorithm list: ['ssh-ed25519', 'ecdsa-sha2-nistp256', 'ecdsa-sha2-nistp384', 'ecdsa-sha2-nistp521', 'sk-ssh-ed25519@openssh.com', 'sk-ecdsa-sha2-nistp256@openssh.com', 'rsa-sha2-512', 'rsa-sha2-256']
+DEBUG:paramiko.transport:Agreed upon 'rsa-sha2-512' pubkey algorithm
+INFO:paramiko.transport:Authentication (publickey) successful!
+DEBUG:paramiko.transport:[chan 0] Max packet in: 32768 bytes
+DEBUG:paramiko.transport:Received global request "hostkeys-00@openssh.com"
+DEBUG:paramiko.transport:Rejecting "hostkeys-00@openssh.com" global request from server.
+DEBUG:paramiko.transport:Debug msg: b'/root/.ssh/authorized_keys:1: key options: agent-forwarding port-forwarding pty user-rc x11-forwarding'
+DEBUG:paramiko.transport:[chan 0] Max packet out: 32768 bytes
+DEBUG:paramiko.transport:Secsh channel 0 opened.
+DEBUG:paramiko.transport:[chan 0] Sesch channel 0 request ok
+DEBUG:websockets.client:> PING a5 b4 34 61 [binary, 4 bytes]
+DEBUG:websockets.client:% sent keepalive ping
+DEBUG:websockets.client:< PONG a5 b4 34 61 [binary, 4 bytes]
+DEBUG:websockets.client:% received keepalive pong
+DEBUG:paramiko.transport:[chan 0] EOF received (0)
+DEBUG:paramiko.transport:EOF in transport thread
+DEBUG:paramiko.transport:[chan 0] EOF sent (0)
+DEBUG:paramiko.transport:Dropping user packet because connection is dead.
+2025-05-31 17:54:51.282 | INFO     | __main__:get_filtered_miners_val:438 - Resource 53d07943-77ba-45c4-9921-886bc34bbf4c compute score: 0.0000
+2025-05-31 17:54:51.282 | WARNING  | __main__:get_filtered_miners_val:445 - Resource 53d07943-77ba-45c4-9921-886bc34bbf4c score 0.0000 below threshold
+2025-05-31 17:54:51.283 | INFO     | neurons.utils.api_utils:update_miner_compute_resource:590 - Preparing to update compute resource 53d07943-77ba-45c4-9921-886bc34bbf4c for miner S2XJuMnC29rn7JQUUPIS at ('https://polaris-interface.onrender.com/api/v1/services/miner/miners',)/S2XJuMnC29rn7JQUUPIS
+2025-05-31 17:54:51.283 | INFO     | neurons.utils.api_utils:update_miner_compute_resource:613 - Sending PUT request with payload: {'compute_resource_updates': [{'id': '53d07943-77ba-45c4-9921-886bc34bbf4c', 'validation_status': 'rejected', 'reason': 'Low compute score: 0.0000'}]}
+2025-05-31 17:54:51.284 | ERROR    | neurons.utils.api_utils:update_miner_compute_resource:626 - Network error while updating compute resource 53d07943-77ba-45c4-9921-886bc34bbf4c for miner S2XJuMnC29rn7JQUUPIS: Header part (('dev-services-key',)) from ('x-api-key', ('dev-services-key',)) must be of type str or bytes, not <class 'tuple'>
+2025-05-31 17:54:51.284 | WARNING  | __main__:get_filtered_miners_val:452 - Failed to update status for resource 53d07943-77ba-45c4-9921-886bc34bbf4c
+2025-05-31 17:54:51.284 | INFO     | __main__:get_filtered_miners_val:393 - Processing miner SHgoiWPB5htfBs3pXjIN (UID: 231)
+2025-05-31 17:54:51.284 | INFO     | __main__:get_filtered_miners_val:396 - Verifying hotkey 5Fqf8QzacNSU91v3ibnkd1pw2fbNsHucrSpw73uSpbhh2XAN on subnet 49
+2025-05-31 17:54:51.284 | INFO     | __main__:get_miner_uid_by_hotkey:332 - Found hotkey 5Fqf8QzacNSU91v3ibnkd1pw2fbNsHucrSpw73uSpbhh2XAN with UID 231 in cache for subnet 49
+2025-05-31 17:54:51.285 | INFO     | __main__:get_filtered_miners_val:424 - Miner SHgoiWPB5htfBs3pXjIN has 1 compute resource(s)
+2025-05-31 17:54:51.285 | INFO     | __main__:get_filtered_miners_val:428 - Processing resource 1 (ID: b012b334-ca0d-47aa-9777-f16ef502894f)
+2025-05-31 17:54:51.285 | INFO     | __main__:get_filtered_miners_val:432 - SSH value: ssh://root@65.109.22.24:22
+DEBUG:paramiko.transport:starting thread (client mode): 0x154df290
+DEBUG:paramiko.transport:Local version/idstring: SSH-2.0-paramiko_3.5.1
+DEBUG:paramiko.transport:Remote version/idstring: SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.11
+INFO:paramiko.transport:Connected (version 2.0, client OpenSSH_9.6p1)
+DEBUG:paramiko.transport:=== Key exchange possibilities ===
+DEBUG:paramiko.transport:kex algos: sntrup761x25519-sha512@openssh.com, curve25519-sha256, curve25519-sha256@libssh.org, ecdh-sha2-nistp256, ecdh-sha2-nistp384, ecdh-sha2-nistp521, diffie-hellman-group-exchange-sha256, diffie-hellman-group16-sha512, diffie-hellman-group18-sha512, diffie-hellman-group14-sha256, ext-info-s, kex-strict-s-v00@openssh.com
+DEBUG:paramiko.transport:server key: rsa-sha2-512, rsa-sha2-256, ecdsa-sha2-nistp256, ssh-ed25519
+DEBUG:paramiko.transport:client encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+DEBUG:paramiko.transport:server encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+DEBUG:paramiko.transport:client mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+DEBUG:paramiko.transport:server mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+DEBUG:paramiko.transport:client compress: none, zlib@openssh.com
+DEBUG:paramiko.transport:server compress: none, zlib@openssh.com
+DEBUG:paramiko.transport:client lang: <none>
+DEBUG:paramiko.transport:server lang: <none>
+DEBUG:paramiko.transport:kex follows: False
+DEBUG:paramiko.transport:=== Key exchange agreements ===
+DEBUG:paramiko.transport:Strict kex mode: True
+DEBUG:paramiko.transport:Kex: curve25519-sha256@libssh.org
+DEBUG:paramiko.transport:HostKey: ssh-ed25519
+DEBUG:paramiko.transport:Cipher: aes128-ctr
+DEBUG:paramiko.transport:MAC: hmac-sha2-256
+DEBUG:paramiko.transport:Compression: none
+DEBUG:paramiko.transport:=== End of kex handshake ===
+DEBUG:paramiko.transport:Resetting outbound seqno after NEWKEYS due to strict mode
+DEBUG:paramiko.transport:kex engine KexCurve25519 specified hash_algo <built-in function openssl_sha256>
+DEBUG:paramiko.transport:Switch to new keys ...
+DEBUG:paramiko.transport:Resetting inbound seqno after NEWKEYS due to strict mode
+DEBUG:paramiko.transport:Adding ssh-ed25519 host key for 65.109.22.24: b'fff32959b869b50611aaa037cc1039a1'
+DEBUG:paramiko.transport:Got EXT_INFO: {'server-sig-algs': b'ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256', 'publickey-hostbound@openssh.com': b'0', 'ping@openssh.com': b'0'}
+DEBUG:paramiko.transport:Trying discovered key b'0085b355aaaa98ded61521cf23066317' in /Users/user/Documents/Jarvis/polaris_bittensor/neurons/utils/ssh_host_key
+DEBUG:paramiko.transport:userauth is OK
+DEBUG:paramiko.transport:Finalizing pubkey algorithm for key of type 'ssh-rsa'
+DEBUG:paramiko.transport:Our pubkey algorithm list: ['rsa-sha2-512', 'rsa-sha2-256', 'ssh-rsa']
+DEBUG:paramiko.transport:Server-side algorithm list: ['ssh-ed25519', 'ecdsa-sha2-nistp256', 'ecdsa-sha2-nistp384', 'ecdsa-sha2-nistp521', 'sk-ssh-ed25519@openssh.com', 'sk-ecdsa-sha2-nistp256@openssh.com', 'rsa-sha2-512', 'rsa-sha2-256']
+DEBUG:paramiko.transport:Agreed upon 'rsa-sha2-512' pubkey algorithm
+INFO:paramiko.transport:Authentication (publickey) successful!
+DEBUG:paramiko.transport:[chan 0] Max packet in: 32768 bytes
+DEBUG:paramiko.transport:Received global request "hostkeys-00@openssh.com"
+DEBUG:paramiko.transport:Rejecting "hostkeys-00@openssh.com" global request from server.
+DEBUG:paramiko.transport:Debug msg: b'/root/.ssh/authorized_keys:1: key options: agent-forwarding port-forwarding pty user-rc x11-forwarding'
+DEBUG:paramiko.transport:[chan 0] Max packet out: 32768 bytes
+DEBUG:paramiko.transport:Secsh channel 0 opened.
+DEBUG:paramiko.transport:[chan 0] Sesch channel 0 request ok
+DEBUG:paramiko.transport:[chan 0] EOF received (0)
+DEBUG:paramiko.transport:EOF in transport thread
+DEBUG:paramiko.transport:[chan 0] EOF sent (0)
+DEBUG:paramiko.transport:Dropping user packet because connection is dead.
+DEBUG:paramiko.transport:starting thread (client mode): 0x154fc7a0
+DEBUG:paramiko.transport:Local version/idstring: SSH-2.0-paramiko_3.5.1
+DEBUG:paramiko.transport:Remote version/idstring: SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.11
+INFO:paramiko.transport:Connected (version 2.0, client OpenSSH_9.6p1)
+DEBUG:paramiko.transport:=== Key exchange possibilities ===
+DEBUG:paramiko.transport:kex algos: sntrup761x25519-sha512@openssh.com, curve25519-sha256, curve25519-sha256@libssh.org, ecdh-sha2-nistp256, ecdh-sha2-nistp384, ecdh-sha2-nistp521, diffie-hellman-group-exchange-sha256, diffie-hellman-group16-sha512, diffie-hellman-group18-sha512, diffie-hellman-group14-sha256, ext-info-s, kex-strict-s-v00@openssh.com
+DEBUG:paramiko.transport:server key: rsa-sha2-512, rsa-sha2-256, ecdsa-sha2-nistp256, ssh-ed25519
+DEBUG:paramiko.transport:client encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+DEBUG:paramiko.transport:server encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+DEBUG:paramiko.transport:client mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+DEBUG:paramiko.transport:server mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+DEBUG:paramiko.transport:client compress: none, zlib@openssh.com
+DEBUG:paramiko.transport:server compress: none, zlib@openssh.com
+DEBUG:paramiko.transport:client lang: <none>
+DEBUG:paramiko.transport:server lang: <none>
+DEBUG:paramiko.transport:kex follows: False
+DEBUG:paramiko.transport:=== Key exchange agreements ===
+DEBUG:paramiko.transport:Strict kex mode: True
+DEBUG:paramiko.transport:Kex: curve25519-sha256@libssh.org
+DEBUG:paramiko.transport:HostKey: ssh-ed25519
+DEBUG:paramiko.transport:Cipher: aes128-ctr
+DEBUG:paramiko.transport:MAC: hmac-sha2-256
+DEBUG:paramiko.transport:Compression: none
+DEBUG:paramiko.transport:=== End of kex handshake ===
+DEBUG:paramiko.transport:Resetting outbound seqno after NEWKEYS due to strict mode
+DEBUG:paramiko.transport:kex engine KexCurve25519 specified hash_algo <built-in function openssl_sha256>
+DEBUG:paramiko.transport:Switch to new keys ...
+DEBUG:paramiko.transport:Resetting inbound seqno after NEWKEYS due to strict mode
+DEBUG:paramiko.transport:Got EXT_INFO: {'server-sig-algs': b'ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256', 'publickey-hostbound@openssh.com': b'0', 'ping@openssh.com': b'0'}
+DEBUG:paramiko.transport:Adding ssh-ed25519 host key for 65.109.22.24: b'fff32959b869b50611aaa037cc1039a1'
+DEBUG:paramiko.transport:Trying discovered key b'0085b355aaaa98ded61521cf23066317' in /Users/user/Documents/Jarvis/polaris_bittensor/neurons/utils/ssh_host_key
+DEBUG:paramiko.transport:userauth is OK
+DEBUG:paramiko.transport:Finalizing pubkey algorithm for key of type 'ssh-rsa'
+DEBUG:paramiko.transport:Our pubkey algorithm list: ['rsa-sha2-512', 'rsa-sha2-256', 'ssh-rsa']
+DEBUG:paramiko.transport:Server-side algorithm list: ['ssh-ed25519', 'ecdsa-sha2-nistp256', 'ecdsa-sha2-nistp384', 'ecdsa-sha2-nistp521', 'sk-ssh-ed25519@openssh.com', 'sk-ecdsa-sha2-nistp256@openssh.com', 'rsa-sha2-512', 'rsa-sha2-256']
+DEBUG:paramiko.transport:Agreed upon 'rsa-sha2-512' pubkey algorithm
+INFO:paramiko.transport:Authentication (publickey) successful!
+DEBUG:paramiko.transport:[chan 0] Max packet in: 32768 bytes
+DEBUG:paramiko.transport:Received global request "hostkeys-00@openssh.com"
+DEBUG:paramiko.transport:Rejecting "hostkeys-00@openssh.com" global request from server.
+DEBUG:paramiko.transport:Debug msg: b'/root/.ssh/authorized_keys:1: key options: agent-forwarding port-forwarding pty user-rc x11-forwarding'
+DEBUG:paramiko.transport:[chan 0] Max packet out: 32768 bytes
+DEBUG:paramiko.transport:Secsh channel 0 opened.
+DEBUG:paramiko.transport:[chan 0] Sesch channel 0 request ok
+DEBUG:paramiko.transport:[chan 0] EOF received (0)
+DEBUG:paramiko.transport:[chan 0] EOF sent (0)
+DEBUG:paramiko.transport:EOF in transport thread
+DEBUG:paramiko.transport:starting thread (client mode): 0x154feb40
+DEBUG:paramiko.transport:Local version/idstring: SSH-2.0-paramiko_3.5.1
+DEBUG:paramiko.transport:Remote version/idstring: SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.11
+INFO:paramiko.transport:Connected (version 2.0, client OpenSSH_9.6p1)
+DEBUG:paramiko.transport:=== Key exchange possibilities ===
+DEBUG:paramiko.transport:kex algos: sntrup761x25519-sha512@openssh.com, curve25519-sha256, curve25519-sha256@libssh.org, ecdh-sha2-nistp256, ecdh-sha2-nistp384, ecdh-sha2-nistp521, diffie-hellman-group-exchange-sha256, diffie-hellman-group16-sha512, diffie-hellman-group18-sha512, diffie-hellman-group14-sha256, ext-info-s, kex-strict-s-v00@openssh.com
+DEBUG:paramiko.transport:server key: rsa-sha2-512, rsa-sha2-256, ecdsa-sha2-nistp256, ssh-ed25519
+DEBUG:paramiko.transport:client encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+DEBUG:paramiko.transport:server encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+DEBUG:paramiko.transport:client mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+DEBUG:paramiko.transport:server mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+DEBUG:paramiko.transport:client compress: none, zlib@openssh.com
+DEBUG:paramiko.transport:server compress: none, zlib@openssh.com
+DEBUG:paramiko.transport:client lang: <none>
+DEBUG:paramiko.transport:server lang: <none>
+DEBUG:paramiko.transport:kex follows: False
+DEBUG:paramiko.transport:=== Key exchange agreements ===
+DEBUG:paramiko.transport:Strict kex mode: True
+DEBUG:paramiko.transport:Kex: curve25519-sha256@libssh.org
+DEBUG:paramiko.transport:HostKey: ssh-ed25519
+DEBUG:paramiko.transport:Cipher: aes128-ctr
+DEBUG:paramiko.transport:MAC: hmac-sha2-256
+DEBUG:paramiko.transport:Compression: none
+DEBUG:paramiko.transport:=== End of kex handshake ===
+DEBUG:websockets.client:< PING '' [0 bytes]
+DEBUG:websockets.client:> PONG '' [0 bytes]
+DEBUG:paramiko.transport:Resetting outbound seqno after NEWKEYS due to strict mode
+DEBUG:paramiko.transport:kex engine KexCurve25519 specified hash_algo <built-in function openssl_sha256>
+DEBUG:paramiko.transport:Switch to new keys ...
+DEBUG:paramiko.transport:Resetting inbound seqno after NEWKEYS due to strict mode
+DEBUG:paramiko.transport:Adding ssh-ed25519 host key for 65.109.22.24: b'fff32959b869b50611aaa037cc1039a1'
+DEBUG:paramiko.transport:Got EXT_INFO: {'server-sig-algs': b'ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256', 'publickey-hostbound@openssh.com': b'0', 'ping@openssh.com': b'0'}
+DEBUG:paramiko.transport:Trying discovered key b'0085b355aaaa98ded61521cf23066317' in /Users/user/Documents/Jarvis/polaris_bittensor/neurons/utils/ssh_host_key
+DEBUG:paramiko.transport:userauth is OK
+DEBUG:paramiko.transport:Finalizing pubkey algorithm for key of type 'ssh-rsa'
+DEBUG:paramiko.transport:Our pubkey algorithm list: ['rsa-sha2-512', 'rsa-sha2-256', 'ssh-rsa']
+DEBUG:paramiko.transport:Server-side algorithm list: ['ssh-ed25519', 'ecdsa-sha2-nistp256', 'ecdsa-sha2-nistp384', 'ecdsa-sha2-nistp521', 'sk-ssh-ed25519@openssh.com', 'sk-ecdsa-sha2-nistp256@openssh.com', 'rsa-sha2-512', 'rsa-sha2-256']
+DEBUG:paramiko.transport:Agreed upon 'rsa-sha2-512' pubkey algorithm
+INFO:paramiko.transport:Authentication (publickey) successful!
+DEBUG:paramiko.transport:[chan 0] Max packet in: 32768 bytes
+DEBUG:paramiko.transport:Received global request "hostkeys-00@openssh.com"
+DEBUG:paramiko.transport:Rejecting "hostkeys-00@openssh.com" global request from server.
+DEBUG:paramiko.transport:Debug msg: b'/root/.ssh/authorized_keys:1: key options: agent-forwarding port-forwarding pty user-rc x11-forwarding'
+DEBUG:paramiko.transport:[chan 0] Max packet out: 32768 bytes
+DEBUG:paramiko.transport:Secsh channel 0 opened.
+DEBUG:paramiko.transport:[chan 0] Sesch channel 0 request ok
+DEBUG:paramiko.transport:[chan 0] EOF received (0)
+DEBUG:paramiko.transport:[chan 0] EOF sent (0)
+DEBUG:paramiko.transport:EOF in transport thread
+DEBUG:paramiko.transport:starting thread (client mode): 0x154fd100
+DEBUG:paramiko.transport:Local version/idstring: SSH-2.0-paramiko_3.5.1
+DEBUG:paramiko.transport:Remote version/idstring: SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.11
+INFO:paramiko.transport:Connected (version 2.0, client OpenSSH_9.6p1)
+DEBUG:paramiko.transport:=== Key exchange possibilities ===
+DEBUG:paramiko.transport:kex algos: sntrup761x25519-sha512@openssh.com, curve25519-sha256, curve25519-sha256@libssh.org, ecdh-sha2-nistp256, ecdh-sha2-nistp384, ecdh-sha2-nistp521, diffie-hellman-group-exchange-sha256, diffie-hellman-group16-sha512, diffie-hellman-group18-sha512, diffie-hellman-group14-sha256, ext-info-s, kex-strict-s-v00@openssh.com
+DEBUG:paramiko.transport:server key: rsa-sha2-512, rsa-sha2-256, ecdsa-sha2-nistp256, ssh-ed25519
+DEBUG:paramiko.transport:client encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+DEBUG:paramiko.transport:server encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+DEBUG:paramiko.transport:client mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+DEBUG:paramiko.transport:server mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+DEBUG:paramiko.transport:client compress: none, zlib@openssh.com
+DEBUG:paramiko.transport:server compress: none, zlib@openssh.com
+DEBUG:paramiko.transport:client lang: <none>
+DEBUG:paramiko.transport:server lang: <none>
+DEBUG:paramiko.transport:kex follows: False
+DEBUG:paramiko.transport:=== Key exchange agreements ===
+DEBUG:paramiko.transport:Strict kex mode: True
+DEBUG:paramiko.transport:Kex: curve25519-sha256@libssh.org
+DEBUG:paramiko.transport:HostKey: ssh-ed25519
+DEBUG:paramiko.transport:Cipher: aes128-ctr
+DEBUG:paramiko.transport:MAC: hmac-sha2-256
+DEBUG:paramiko.transport:Compression: none
+DEBUG:paramiko.transport:=== End of kex handshake ===
+DEBUG:paramiko.transport:Resetting outbound seqno after NEWKEYS due to strict mode
+DEBUG:paramiko.transport:kex engine KexCurve25519 specified hash_algo <built-in function openssl_sha256>
+DEBUG:paramiko.transport:Switch to new keys ...
+DEBUG:paramiko.transport:Resetting inbound seqno after NEWKEYS due to strict mode
+DEBUG:paramiko.transport:Adding ssh-ed25519 host key for 65.109.22.24: b'fff32959b869b50611aaa037cc1039a1'
+DEBUG:paramiko.transport:Got EXT_INFO: {'server-sig-algs': b'ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256', 'publickey-hostbound@openssh.com': b'0', 'ping@openssh.com': b'0'}
+DEBUG:paramiko.transport:Trying discovered key b'0085b355aaaa98ded61521cf23066317' in /Users/user/Documents/Jarvis/polaris_bittensor/neurons/utils/ssh_host_key
+DEBUG:paramiko.transport:userauth is OK
+DEBUG:paramiko.transport:Finalizing pubkey algorithm for key of type 'ssh-rsa'
+DEBUG:paramiko.transport:Our pubkey algorithm list: ['rsa-sha2-512', 'rsa-sha2-256', 'ssh-rsa']
+DEBUG:paramiko.transport:Server-side algorithm list: ['ssh-ed25519', 'ecdsa-sha2-nistp256', 'ecdsa-sha2-nistp384', 'ecdsa-sha2-nistp521', 'sk-ssh-ed25519@openssh.com', 'sk-ecdsa-sha2-nistp256@openssh.com', 'rsa-sha2-512', 'rsa-sha2-256']
+DEBUG:paramiko.transport:Agreed upon 'rsa-sha2-512' pubkey algorithm
+INFO:paramiko.transport:Authentication (publickey) successful!
+DEBUG:paramiko.transport:[chan 0] Max packet in: 32768 bytes
+DEBUG:paramiko.transport:Received global request "hostkeys-00@openssh.com"
+DEBUG:paramiko.transport:Rejecting "hostkeys-00@openssh.com" global request from server.
+DEBUG:paramiko.transport:Debug msg: b'/root/.ssh/authorized_keys:1: key options: agent-forwarding port-forwarding pty user-rc x11-forwarding'
+DEBUG:paramiko.transport:[chan 0] Max packet out: 32768 bytes
+DEBUG:paramiko.transport:Secsh channel 0 opened.
+DEBUG:paramiko.transport:[chan 0] Sesch channel 0 request ok
+DEBUG:paramiko.transport:[chan 0] EOF received (0)
+DEBUG:paramiko.transport:[chan 0] EOF sent (0)
+DEBUG:paramiko.transport:Dropping user packet because connection is dead.
+DEBUG:paramiko.transport:starting thread (client mode): 0x154dd520
+DEBUG:paramiko.transport:Local version/idstring: SSH-2.0-paramiko_3.5.1
+DEBUG:paramiko.transport:Remote version/idstring: SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.11
+INFO:paramiko.transport:Connected (version 2.0, client OpenSSH_9.6p1)
+DEBUG:paramiko.transport:=== Key exchange possibilities ===
+DEBUG:paramiko.transport:kex algos: sntrup761x25519-sha512@openssh.com, curve25519-sha256, curve25519-sha256@libssh.org, ecdh-sha2-nistp256, ecdh-sha2-nistp384, ecdh-sha2-nistp521, diffie-hellman-group-exchange-sha256, diffie-hellman-group16-sha512, diffie-hellman-group18-sha512, diffie-hellman-group14-sha256, ext-info-s, kex-strict-s-v00@openssh.com
+DEBUG:paramiko.transport:server key: rsa-sha2-512, rsa-sha2-256, ecdsa-sha2-nistp256, ssh-ed25519
+DEBUG:paramiko.transport:client encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+DEBUG:paramiko.transport:server encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+DEBUG:paramiko.transport:client mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+DEBUG:paramiko.transport:server mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+DEBUG:paramiko.transport:client compress: none, zlib@openssh.com
+DEBUG:paramiko.transport:server compress: none, zlib@openssh.com
+DEBUG:paramiko.transport:client lang: <none>
+DEBUG:paramiko.transport:server lang: <none>
+DEBUG:paramiko.transport:kex follows: False
+DEBUG:paramiko.transport:=== Key exchange agreements ===
+DEBUG:paramiko.transport:Strict kex mode: True
+DEBUG:paramiko.transport:Kex: curve25519-sha256@libssh.org
+DEBUG:paramiko.transport:HostKey: ssh-ed25519
+DEBUG:paramiko.transport:Cipher: aes128-ctr
+DEBUG:paramiko.transport:MAC: hmac-sha2-256
+DEBUG:paramiko.transport:Compression: none
+DEBUG:paramiko.transport:=== End of kex handshake ===
+DEBUG:paramiko.transport:Resetting outbound seqno after NEWKEYS due to strict mode
+DEBUG:paramiko.transport:kex engine KexCurve25519 specified hash_algo <built-in function openssl_sha256>
+DEBUG:paramiko.transport:Switch to new keys ...
+DEBUG:paramiko.transport:Resetting inbound seqno after NEWKEYS due to strict mode
+DEBUG:paramiko.transport:Adding ssh-ed25519 host key for 65.109.22.24: b'fff32959b869b50611aaa037cc1039a1'
+DEBUG:paramiko.transport:Got EXT_INFO: {'server-sig-algs': b'ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256', 'publickey-hostbound@openssh.com': b'0', 'ping@openssh.com': b'0'}
+DEBUG:paramiko.transport:Trying discovered key b'0085b355aaaa98ded61521cf23066317' in /Users/user/Documents/Jarvis/polaris_bittensor/neurons/utils/ssh_host_key
+DEBUG:paramiko.transport:userauth is OK
+DEBUG:paramiko.transport:Finalizing pubkey algorithm for key of type 'ssh-rsa'
+DEBUG:paramiko.transport:Our pubkey algorithm list: ['rsa-sha2-512', 'rsa-sha2-256', 'ssh-rsa']
+DEBUG:paramiko.transport:Server-side algorithm list: ['ssh-ed25519', 'ecdsa-sha2-nistp256', 'ecdsa-sha2-nistp384', 'ecdsa-sha2-nistp521', 'sk-ssh-ed25519@openssh.com', 'sk-ecdsa-sha2-nistp256@openssh.com', 'rsa-sha2-512', 'rsa-sha2-256']
+DEBUG:paramiko.transport:Agreed upon 'rsa-sha2-512' pubkey algorithm
+INFO:paramiko.transport:Authentication (publickey) successful!
+DEBUG:paramiko.transport:[chan 0] Max packet in: 32768 bytes
+DEBUG:paramiko.transport:Received global request "hostkeys-00@openssh.com"
+DEBUG:paramiko.transport:Rejecting "hostkeys-00@openssh.com" global request from server.
+DEBUG:paramiko.transport:Debug msg: b'/root/.ssh/authorized_keys:1: key options: agent-forwarding port-forwarding pty user-rc x11-forwarding'
+DEBUG:paramiko.transport:[chan 0] Max packet out: 32768 bytes
+DEBUG:paramiko.transport:Secsh channel 0 opened.
+DEBUG:paramiko.transport:[chan 0] Sesch channel 0 request ok
+DEBUG:paramiko.transport:[chan 0] EOF received (0)
+DEBUG:paramiko.transport:EOF in transport thread
+DEBUG:paramiko.transport:[chan 0] EOF sent (0)
+DEBUG:paramiko.transport:Dropping user packet because connection is dead.
+DEBUG:paramiko.transport:starting thread (client mode): 0x154dfd40
+DEBUG:paramiko.transport:Local version/idstring: SSH-2.0-paramiko_3.5.1
+DEBUG:paramiko.transport:Remote version/idstring: SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.11
+INFO:paramiko.transport:Connected (version 2.0, client OpenSSH_9.6p1)
+DEBUG:paramiko.transport:=== Key exchange possibilities ===
+DEBUG:paramiko.transport:kex algos: sntrup761x25519-sha512@openssh.com, curve25519-sha256, curve25519-sha256@libssh.org, ecdh-sha2-nistp256, ecdh-sha2-nistp384, ecdh-sha2-nistp521, diffie-hellman-group-exchange-sha256, diffie-hellman-group16-sha512, diffie-hellman-group18-sha512, diffie-hellman-group14-sha256, ext-info-s, kex-strict-s-v00@openssh.com
+DEBUG:paramiko.transport:server key: rsa-sha2-512, rsa-sha2-256, ecdsa-sha2-nistp256, ssh-ed25519
+DEBUG:paramiko.transport:client encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+DEBUG:paramiko.transport:server encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+DEBUG:paramiko.transport:client mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+DEBUG:paramiko.transport:server mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+DEBUG:paramiko.transport:client compress: none, zlib@openssh.com
+DEBUG:paramiko.transport:server compress: none, zlib@openssh.com
+DEBUG:paramiko.transport:client lang: <none>
+DEBUG:paramiko.transport:server lang: <none>
+DEBUG:paramiko.transport:kex follows: False
+DEBUG:paramiko.transport:=== Key exchange agreements ===
+DEBUG:paramiko.transport:Strict kex mode: True
+DEBUG:paramiko.transport:Kex: curve25519-sha256@libssh.org
+DEBUG:paramiko.transport:HostKey: ssh-ed25519
+DEBUG:paramiko.transport:Cipher: aes128-ctr
+DEBUG:paramiko.transport:MAC: hmac-sha2-256
+DEBUG:paramiko.transport:Compression: none
+DEBUG:paramiko.transport:=== End of kex handshake ===
+DEBUG:paramiko.transport:Resetting outbound seqno after NEWKEYS due to strict mode
+DEBUG:paramiko.transport:kex engine KexCurve25519 specified hash_algo <built-in function openssl_sha256>
+DEBUG:paramiko.transport:Switch to new keys ...
+DEBUG:paramiko.transport:Resetting inbound seqno after NEWKEYS due to strict mode
+DEBUG:paramiko.transport:Got EXT_INFO: {'server-sig-algs': b'ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256', 'publickey-hostbound@openssh.com': b'0', 'ping@openssh.com': b'0'}
+DEBUG:paramiko.transport:Adding ssh-ed25519 host key for 65.109.22.24: b'fff32959b869b50611aaa037cc1039a1'
+DEBUG:paramiko.transport:Trying discovered key b'0085b355aaaa98ded61521cf23066317' in /Users/user/Documents/Jarvis/polaris_bittensor/neurons/utils/ssh_host_key
+DEBUG:websockets.client:> PING '`\x0e\x14E' [text, 4 bytes]
+DEBUG:websockets.client:% sent keepalive ping
+DEBUG:paramiko.transport:userauth is OK
+DEBUG:paramiko.transport:Finalizing pubkey algorithm for key of type 'ssh-rsa'
+DEBUG:paramiko.transport:Our pubkey algorithm list: ['rsa-sha2-512', 'rsa-sha2-256', 'ssh-rsa']
+DEBUG:paramiko.transport:Server-side algorithm list: ['ssh-ed25519', 'ecdsa-sha2-nistp256', 'ecdsa-sha2-nistp384', 'ecdsa-sha2-nistp521', 'sk-ssh-ed25519@openssh.com', 'sk-ecdsa-sha2-nistp256@openssh.com', 'rsa-sha2-512', 'rsa-sha2-256']
+DEBUG:paramiko.transport:Agreed upon 'rsa-sha2-512' pubkey algorithm
+DEBUG:websockets.client:< PONG '`\x0e\x14E' [text, 4 bytes]
+DEBUG:websockets.client:% received keepalive pong
+INFO:paramiko.transport:Authentication (publickey) successful!
+DEBUG:paramiko.transport:[chan 0] Max packet in: 32768 bytes
+DEBUG:paramiko.transport:Received global request "hostkeys-00@openssh.com"
+DEBUG:paramiko.transport:Rejecting "hostkeys-00@openssh.com" global request from server.
+DEBUG:paramiko.transport:Debug msg: b'/root/.ssh/authorized_keys:1: key options: agent-forwarding port-forwarding pty user-rc x11-forwarding'
+DEBUG:paramiko.transport:[chan 0] Max packet out: 32768 bytes
+DEBUG:paramiko.transport:Secsh channel 0 opened.
+DEBUG:paramiko.transport:[chan 0] Sesch channel 0 request ok
+DEBUG:paramiko.transport:[chan 0] EOF received (0)
+DEBUG:paramiko.transport:EOF in transport thread
+DEBUG:paramiko.transport:[chan 0] EOF sent (0)
+DEBUG:paramiko.transport:Dropping user packet because connection is dead.
+2025-05-31 17:55:18.572 | INFO     | __main__:get_filtered_miners_val:438 - Resource b012b334-ca0d-47aa-9777-f16ef502894f compute score: 0.1420
+2025-05-31 17:55:18.573 | INFO     | __main__:get_filtered_miners_val:457 - Scaled compute score: 1.33
+INFO:neurons.utils.uptimedata:No valid logs for miner b012b334-ca0d-47aa-9777-f16ef502894f. Uptime: 0%
+2025-05-31 17:55:18.577 | INFO     | __main__:get_filtered_miners_val:491 - Resource b012b334-ca0d-47aa-9777-f16ef502894f reward: 0.002386
+2025-05-31 17:55:18.579 | INFO     | __main__:get_containers_for_resource:596 - Fetching containers for resource_id: b012b334-ca0d-47aa-9777-f16ef502894f from https://polaris-interface.onrender.com/api/v1/services/container/container/containers
+2025-05-31 17:55:19.981 | INFO     | __main__:get_containers_for_resource:604 - Retrieved 38 containers for resource_id: b012b334-ca0d-47aa-9777-f16ef502894f
+2025-05-31 17:55:19.982 | INFO     | __main__:get_containers_for_resource:610 - Found 0 containers for resource_id b012b334-ca0d-47aa-9777-f16ef502894f, 0 in 'running' status
+2025-05-31 17:55:19.982 | INFO     | __main__:get_filtered_miners_val:512 - Resource b012b334-ca0d-47aa-9777-f16ef502894f has 0 running containers
+2025-05-31 17:55:19.982 | INFO     | __main__:get_filtered_miners_val:524 - Resource b012b334-ca0d-47aa-9777-f16ef502894f: containers=0, score=120.53
+2025-05-31 17:55:19.983 | INFO     | __main__:get_filtered_miners_val:533 - Miner SHgoiWPB5htfBs3pXjIN total: score=120.53, reward=0.002386
+2025-05-31 17:55:19.983 | INFO     | __main__:get_filtered_miners_val:393 - Processing miner SYciHeMGsVuu55n07oKr (UID: 231)
+2025-05-31 17:55:19.983 | INFO     | __main__:get_filtered_miners_val:396 - Verifying hotkey 5Fqf8QzacNSU91v3ibnkd1pw2fbNsHucrSpw73uSpbhh2XAN on subnet 49
+2025-05-31 17:55:19.983 | INFO     | __main__:get_miner_uid_by_hotkey:332 - Found hotkey 5Fqf8QzacNSU91v3ibnkd1pw2fbNsHucrSpw73uSpbhh2XAN with UID 231 in cache for subnet 49
+2025-05-31 17:55:19.983 | INFO     | __main__:get_filtered_miners_val:424 - Miner SYciHeMGsVuu55n07oKr has 1 compute resource(s)
+2025-05-31 17:55:19.983 | INFO     | __main__:get_filtered_miners_val:428 - Processing resource 1 (ID: 5d09f7ae-5601-4779-ac07-1508b6e45a01)
+2025-05-31 17:55:19.983 | INFO     | __main__:get_filtered_miners_val:432 - SSH value: ssh://root@65.109.22.24:22
+DEBUG:paramiko.transport:starting thread (client mode): 0x154dcda0
+DEBUG:paramiko.transport:Local version/idstring: SSH-2.0-paramiko_3.5.1
+DEBUG:paramiko.transport:Remote version/idstring: SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.11
+INFO:paramiko.transport:Connected (version 2.0, client OpenSSH_9.6p1)
+DEBUG:paramiko.transport:=== Key exchange possibilities ===
+DEBUG:paramiko.transport:kex algos: sntrup761x25519-sha512@openssh.com, curve25519-sha256, curve25519-sha256@libssh.org, ecdh-sha2-nistp256, ecdh-sha2-nistp384, ecdh-sha2-nistp521, diffie-hellman-group-exchange-sha256, diffie-hellman-group16-sha512, diffie-hellman-group18-sha512, diffie-hellman-group14-sha256, ext-info-s, kex-strict-s-v00@openssh.com
+DEBUG:paramiko.transport:server key: rsa-sha2-512, rsa-sha2-256, ecdsa-sha2-nistp256, ssh-ed25519
+DEBUG:paramiko.transport:client encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+DEBUG:paramiko.transport:server encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+DEBUG:paramiko.transport:client mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+DEBUG:paramiko.transport:server mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+DEBUG:paramiko.transport:client compress: none, zlib@openssh.com
+DEBUG:paramiko.transport:server compress: none, zlib@openssh.com
+DEBUG:paramiko.transport:client lang: <none>
+DEBUG:paramiko.transport:server lang: <none>
+DEBUG:paramiko.transport:kex follows: False
+DEBUG:paramiko.transport:=== Key exchange agreements ===
+DEBUG:paramiko.transport:Strict kex mode: True
+DEBUG:paramiko.transport:Kex: curve25519-sha256@libssh.org
+DEBUG:paramiko.transport:HostKey: ssh-ed25519
+DEBUG:paramiko.transport:Cipher: aes128-ctr
+DEBUG:paramiko.transport:MAC: hmac-sha2-256
+DEBUG:paramiko.transport:Compression: none
+DEBUG:paramiko.transport:=== End of kex handshake ===
+DEBUG:paramiko.transport:Resetting outbound seqno after NEWKEYS due to strict mode
+DEBUG:paramiko.transport:kex engine KexCurve25519 specified hash_algo <built-in function openssl_sha256>
+DEBUG:paramiko.transport:Switch to new keys ...
+DEBUG:paramiko.transport:Resetting inbound seqno after NEWKEYS due to strict mode
+DEBUG:paramiko.transport:Adding ssh-ed25519 host key for 65.109.22.24: b'fff32959b869b50611aaa037cc1039a1'
+DEBUG:paramiko.transport:Got EXT_INFO: {'server-sig-algs': b'ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256', 'publickey-hostbound@openssh.com': b'0', 'ping@openssh.com': b'0'}
+DEBUG:paramiko.transport:Trying discovered key b'0085b355aaaa98ded61521cf23066317' in /Users/user/Documents/Jarvis/polaris_bittensor/neurons/utils/ssh_host_key
+DEBUG:paramiko.transport:userauth is OK
+DEBUG:paramiko.transport:Finalizing pubkey algorithm for key of type 'ssh-rsa'
+DEBUG:paramiko.transport:Our pubkey algorithm list: ['rsa-sha2-512', 'rsa-sha2-256', 'ssh-rsa']
+DEBUG:paramiko.transport:Server-side algorithm list: ['ssh-ed25519', 'ecdsa-sha2-nistp256', 'ecdsa-sha2-nistp384', 'ecdsa-sha2-nistp521', 'sk-ssh-ed25519@openssh.com', 'sk-ecdsa-sha2-nistp256@openssh.com', 'rsa-sha2-512', 'rsa-sha2-256']
+DEBUG:paramiko.transport:Agreed upon 'rsa-sha2-512' pubkey algorithm
+INFO:paramiko.transport:Authentication (publickey) successful!
+DEBUG:paramiko.transport:[chan 0] Max packet in: 32768 bytes
+DEBUG:paramiko.transport:Received global request "hostkeys-00@openssh.com"
+DEBUG:paramiko.transport:Rejecting "hostkeys-00@openssh.com" global request from server.
+DEBUG:paramiko.transport:Debug msg: b'/root/.ssh/authorized_keys:1: key options: agent-forwarding port-forwarding pty user-rc x11-forwarding'
+DEBUG:paramiko.transport:[chan 0] Max packet out: 32768 bytes
+DEBUG:paramiko.transport:Secsh channel 0 opened.
+DEBUG:paramiko.transport:[chan 0] Sesch channel 0 request ok
+DEBUG:paramiko.transport:[chan 0] EOF received (0)
+DEBUG:paramiko.transport:[chan 0] EOF sent (0)
+DEBUG:paramiko.transport:Dropping user packet because connection is dead.
+DEBUG:paramiko.transport:starting thread (client mode): 0x154df560
+DEBUG:paramiko.transport:Local version/idstring: SSH-2.0-paramiko_3.5.1
+DEBUG:paramiko.transport:Remote version/idstring: SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.11
+INFO:paramiko.transport:Connected (version 2.0, client OpenSSH_9.6p1)
+DEBUG:paramiko.transport:=== Key exchange possibilities ===
+DEBUG:paramiko.transport:kex algos: sntrup761x25519-sha512@openssh.com, curve25519-sha256, curve25519-sha256@libssh.org, ecdh-sha2-nistp256, ecdh-sha2-nistp384, ecdh-sha2-nistp521, diffie-hellman-group-exchange-sha256, diffie-hellman-group16-sha512, diffie-hellman-group18-sha512, diffie-hellman-group14-sha256, ext-info-s, kex-strict-s-v00@openssh.com
+DEBUG:paramiko.transport:server key: rsa-sha2-512, rsa-sha2-256, ecdsa-sha2-nistp256, ssh-ed25519
+DEBUG:paramiko.transport:client encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+DEBUG:paramiko.transport:server encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+DEBUG:paramiko.transport:client mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+DEBUG:paramiko.transport:server mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+DEBUG:paramiko.transport:client compress: none, zlib@openssh.com
+DEBUG:paramiko.transport:server compress: none, zlib@openssh.com
+DEBUG:paramiko.transport:client lang: <none>
+DEBUG:paramiko.transport:server lang: <none>
+DEBUG:paramiko.transport:kex follows: False
+DEBUG:paramiko.transport:=== Key exchange agreements ===
+DEBUG:paramiko.transport:Strict kex mode: True
+DEBUG:paramiko.transport:Kex: curve25519-sha256@libssh.org
+DEBUG:paramiko.transport:HostKey: ssh-ed25519
+DEBUG:paramiko.transport:Cipher: aes128-ctr
+DEBUG:paramiko.transport:MAC: hmac-sha2-256
+DEBUG:paramiko.transport:Compression: none
+DEBUG:paramiko.transport:=== End of kex handshake ===
+DEBUG:paramiko.transport:Resetting outbound seqno after NEWKEYS due to strict mode
+DEBUG:paramiko.transport:kex engine KexCurve25519 specified hash_algo <built-in function openssl_sha256>
+DEBUG:paramiko.transport:Switch to new keys ...
+DEBUG:paramiko.transport:Resetting inbound seqno after NEWKEYS due to strict mode
+DEBUG:paramiko.transport:Adding ssh-ed25519 host key for 65.109.22.24: b'fff32959b869b50611aaa037cc1039a1'
+DEBUG:paramiko.transport:Got EXT_INFO: {'server-sig-algs': b'ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256', 'publickey-hostbound@openssh.com': b'0', 'ping@openssh.com': b'0'}
+DEBUG:paramiko.transport:Trying discovered key b'0085b355aaaa98ded61521cf23066317' in /Users/user/Documents/Jarvis/polaris_bittensor/neurons/utils/ssh_host_key
+DEBUG:paramiko.transport:userauth is OK
+DEBUG:paramiko.transport:Finalizing pubkey algorithm for key of type 'ssh-rsa'
+DEBUG:paramiko.transport:Our pubkey algorithm list: ['rsa-sha2-512', 'rsa-sha2-256', 'ssh-rsa']
+DEBUG:paramiko.transport:Server-side algorithm list: ['ssh-ed25519', 'ecdsa-sha2-nistp256', 'ecdsa-sha2-nistp384', 'ecdsa-sha2-nistp521', 'sk-ssh-ed25519@openssh.com', 'sk-ecdsa-sha2-nistp256@openssh.com', 'rsa-sha2-512', 'rsa-sha2-256']
+DEBUG:paramiko.transport:Agreed upon 'rsa-sha2-512' pubkey algorithm
+INFO:paramiko.transport:Authentication (publickey) successful!
+DEBUG:paramiko.transport:[chan 0] Max packet in: 32768 bytes
+DEBUG:paramiko.transport:Received global request "hostkeys-00@openssh.com"
+DEBUG:paramiko.transport:Rejecting "hostkeys-00@openssh.com" global request from server.
+DEBUG:paramiko.transport:Debug msg: b'/root/.ssh/authorized_keys:1: key options: agent-forwarding port-forwarding pty user-rc x11-forwarding'
+DEBUG:paramiko.transport:[chan 0] Max packet out: 32768 bytes
+DEBUG:paramiko.transport:Secsh channel 0 opened.
+DEBUG:paramiko.transport:[chan 0] Sesch channel 0 request ok
+DEBUG:paramiko.transport:[chan 0] EOF received (0)
+DEBUG:paramiko.transport:[chan 0] EOF sent (0)
+DEBUG:paramiko.transport:Dropping user packet because connection is dead.
+DEBUG:paramiko.transport:starting thread (client mode): 0x154dcbc0
+DEBUG:paramiko.transport:Local version/idstring: SSH-2.0-paramiko_3.5.1
+DEBUG:paramiko.transport:Remote version/idstring: SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.11
+INFO:paramiko.transport:Connected (version 2.0, client OpenSSH_9.6p1)
+DEBUG:paramiko.transport:=== Key exchange possibilities ===
+DEBUG:paramiko.transport:kex algos: sntrup761x25519-sha512@openssh.com, curve25519-sha256, curve25519-sha256@libssh.org, ecdh-sha2-nistp256, ecdh-sha2-nistp384, ecdh-sha2-nistp521, diffie-hellman-group-exchange-sha256, diffie-hellman-group16-sha512, diffie-hellman-group18-sha512, diffie-hellman-group14-sha256, ext-info-s, kex-strict-s-v00@openssh.com
+DEBUG:paramiko.transport:server key: rsa-sha2-512, rsa-sha2-256, ecdsa-sha2-nistp256, ssh-ed25519
+DEBUG:paramiko.transport:client encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+DEBUG:paramiko.transport:server encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+DEBUG:paramiko.transport:client mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+DEBUG:paramiko.transport:server mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+DEBUG:paramiko.transport:client compress: none, zlib@openssh.com
+DEBUG:paramiko.transport:server compress: none, zlib@openssh.com
+DEBUG:paramiko.transport:client lang: <none>
+DEBUG:paramiko.transport:server lang: <none>
+DEBUG:paramiko.transport:kex follows: False
+DEBUG:paramiko.transport:=== Key exchange agreements ===
+DEBUG:paramiko.transport:Strict kex mode: True
+DEBUG:paramiko.transport:Kex: curve25519-sha256@libssh.org
+DEBUG:paramiko.transport:HostKey: ssh-ed25519
+DEBUG:paramiko.transport:Cipher: aes128-ctr
+DEBUG:paramiko.transport:MAC: hmac-sha2-256
+DEBUG:paramiko.transport:Compression: none
+DEBUG:paramiko.transport:=== End of kex handshake ===
+DEBUG:paramiko.transport:Resetting outbound seqno after NEWKEYS due to strict mode
+DEBUG:paramiko.transport:kex engine KexCurve25519 specified hash_algo <built-in function openssl_sha256>
+DEBUG:paramiko.transport:Switch to new keys ...
+DEBUG:paramiko.transport:Resetting inbound seqno after NEWKEYS due to strict mode
+DEBUG:paramiko.transport:Adding ssh-ed25519 host key for 65.109.22.24: b'fff32959b869b50611aaa037cc1039a1'
+DEBUG:paramiko.transport:Got EXT_INFO: {'server-sig-algs': b'ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256', 'publickey-hostbound@openssh.com': b'0', 'ping@openssh.com': b'0'}
+DEBUG:paramiko.transport:Trying discovered key b'0085b355aaaa98ded61521cf23066317' in /Users/user/Documents/Jarvis/polaris_bittensor/neurons/utils/ssh_host_key
+DEBUG:websockets.client:< PING '' [0 bytes]
+DEBUG:websockets.client:> PONG '' [0 bytes]
+DEBUG:websockets.client:> PING 6a d8 f4 55 [binary, 4 bytes]
+DEBUG:websockets.client:% sent keepalive ping
+DEBUG:paramiko.transport:userauth is OK
+DEBUG:paramiko.transport:Finalizing pubkey algorithm for key of type 'ssh-rsa'
+DEBUG:paramiko.transport:Our pubkey algorithm list: ['rsa-sha2-512', 'rsa-sha2-256', 'ssh-rsa']
+DEBUG:paramiko.transport:Server-side algorithm list: ['ssh-ed25519', 'ecdsa-sha2-nistp256', 'ecdsa-sha2-nistp384', 'ecdsa-sha2-nistp521', 'sk-ssh-ed25519@openssh.com', 'sk-ecdsa-sha2-nistp256@openssh.com', 'rsa-sha2-512', 'rsa-sha2-256']
+DEBUG:paramiko.transport:Agreed upon 'rsa-sha2-512' pubkey algorithm
+DEBUG:websockets.client:< PONG 6a d8 f4 55 [binary, 4 bytes]
+DEBUG:websockets.client:% received keepalive pong
+INFO:paramiko.transport:Authentication (publickey) successful!
+DEBUG:paramiko.transport:[chan 0] Max packet in: 32768 bytes
+DEBUG:paramiko.transport:Received global request "hostkeys-00@openssh.com"
+DEBUG:paramiko.transport:Rejecting "hostkeys-00@openssh.com" global request from server.
+DEBUG:paramiko.transport:Debug msg: b'/root/.ssh/authorized_keys:1: key options: agent-forwarding port-forwarding pty user-rc x11-forwarding'
+DEBUG:paramiko.transport:[chan 0] Max packet out: 32768 bytes
+DEBUG:paramiko.transport:Secsh channel 0 opened.
+DEBUG:paramiko.transport:[chan 0] Sesch channel 0 request ok
+DEBUG:paramiko.transport:[chan 0] EOF received (0)
+DEBUG:paramiko.transport:[chan 0] EOF sent (0)
+DEBUG:paramiko.transport:Dropping user packet because connection is dead.
+DEBUG:paramiko.transport:starting thread (client mode): 0x154df5f0
+DEBUG:paramiko.transport:Local version/idstring: SSH-2.0-paramiko_3.5.1
+DEBUG:paramiko.transport:Remote version/idstring: SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.11
+INFO:paramiko.transport:Connected (version 2.0, client OpenSSH_9.6p1)
+DEBUG:paramiko.transport:=== Key exchange possibilities ===
+DEBUG:paramiko.transport:kex algos: sntrup761x25519-sha512@openssh.com, curve25519-sha256, curve25519-sha256@libssh.org, ecdh-sha2-nistp256, ecdh-sha2-nistp384, ecdh-sha2-nistp521, diffie-hellman-group-exchange-sha256, diffie-hellman-group16-sha512, diffie-hellman-group18-sha512, diffie-hellman-group14-sha256, ext-info-s, kex-strict-s-v00@openssh.com
+DEBUG:paramiko.transport:server key: rsa-sha2-512, rsa-sha2-256, ecdsa-sha2-nistp256, ssh-ed25519
+DEBUG:paramiko.transport:client encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+DEBUG:paramiko.transport:server encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+DEBUG:paramiko.transport:client mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+DEBUG:paramiko.transport:server mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+DEBUG:paramiko.transport:client compress: none, zlib@openssh.com
+DEBUG:paramiko.transport:server compress: none, zlib@openssh.com
+DEBUG:paramiko.transport:client lang: <none>
+DEBUG:paramiko.transport:server lang: <none>
+DEBUG:paramiko.transport:kex follows: False
+DEBUG:paramiko.transport:=== Key exchange agreements ===
+DEBUG:paramiko.transport:Strict kex mode: True
+DEBUG:paramiko.transport:Kex: curve25519-sha256@libssh.org
+DEBUG:paramiko.transport:HostKey: ssh-ed25519
+DEBUG:paramiko.transport:Cipher: aes128-ctr
+DEBUG:paramiko.transport:MAC: hmac-sha2-256
+DEBUG:paramiko.transport:Compression: none
+DEBUG:paramiko.transport:=== End of kex handshake ===
+DEBUG:paramiko.transport:Resetting outbound seqno after NEWKEYS due to strict mode
+DEBUG:paramiko.transport:kex engine KexCurve25519 specified hash_algo <built-in function openssl_sha256>
+DEBUG:paramiko.transport:Switch to new keys ...
+DEBUG:paramiko.transport:Resetting inbound seqno after NEWKEYS due to strict mode
+DEBUG:paramiko.transport:Adding ssh-ed25519 host key for 65.109.22.24: b'fff32959b869b50611aaa037cc1039a1'
+DEBUG:paramiko.transport:Got EXT_INFO: {'server-sig-algs': b'ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256', 'publickey-hostbound@openssh.com': b'0', 'ping@openssh.com': b'0'}
+DEBUG:paramiko.transport:Trying discovered key b'0085b355aaaa98ded61521cf23066317' in /Users/user/Documents/Jarvis/polaris_bittensor/neurons/utils/ssh_host_key
+DEBUG:paramiko.transport:userauth is OK
+DEBUG:paramiko.transport:Finalizing pubkey algorithm for key of type 'ssh-rsa'
+DEBUG:paramiko.transport:Our pubkey algorithm list: ['rsa-sha2-512', 'rsa-sha2-256', 'ssh-rsa']
+DEBUG:paramiko.transport:Server-side algorithm list: ['ssh-ed25519', 'ecdsa-sha2-nistp256', 'ecdsa-sha2-nistp384', 'ecdsa-sha2-nistp521', 'sk-ssh-ed25519@openssh.com', 'sk-ecdsa-sha2-nistp256@openssh.com', 'rsa-sha2-512', 'rsa-sha2-256']
+DEBUG:paramiko.transport:Agreed upon 'rsa-sha2-512' pubkey algorithm
+INFO:paramiko.transport:Authentication (publickey) successful!
+DEBUG:paramiko.transport:[chan 0] Max packet in: 32768 bytes
+DEBUG:paramiko.transport:Received global request "hostkeys-00@openssh.com"
+DEBUG:paramiko.transport:Rejecting "hostkeys-00@openssh.com" global request from server.
+DEBUG:paramiko.transport:Debug msg: b'/root/.ssh/authorized_keys:1: key options: agent-forwarding port-forwarding pty user-rc x11-forwarding'
+DEBUG:paramiko.transport:[chan 0] Max packet out: 32768 bytes
+DEBUG:paramiko.transport:Secsh channel 0 opened.
+DEBUG:paramiko.transport:[chan 0] Sesch channel 0 request ok
+DEBUG:paramiko.transport:[chan 0] EOF received (0)
+DEBUG:paramiko.transport:[chan 0] EOF sent (0)
+DEBUG:paramiko.transport:Dropping user packet because connection is dead.
+DEBUG:paramiko.transport:starting thread (client mode): 0x154ddca0
+DEBUG:paramiko.transport:Local version/idstring: SSH-2.0-paramiko_3.5.1
+DEBUG:paramiko.transport:Remote version/idstring: SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.11
+INFO:paramiko.transport:Connected (version 2.0, client OpenSSH_9.6p1)
+DEBUG:paramiko.transport:=== Key exchange possibilities ===
+DEBUG:paramiko.transport:kex algos: sntrup761x25519-sha512@openssh.com, curve25519-sha256, curve25519-sha256@libssh.org, ecdh-sha2-nistp256, ecdh-sha2-nistp384, ecdh-sha2-nistp521, diffie-hellman-group-exchange-sha256, diffie-hellman-group16-sha512, diffie-hellman-group18-sha512, diffie-hellman-group14-sha256, ext-info-s, kex-strict-s-v00@openssh.com
+DEBUG:paramiko.transport:server key: rsa-sha2-512, rsa-sha2-256, ecdsa-sha2-nistp256, ssh-ed25519
+DEBUG:paramiko.transport:client encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+DEBUG:paramiko.transport:server encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+DEBUG:paramiko.transport:client mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+DEBUG:paramiko.transport:server mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+DEBUG:paramiko.transport:client compress: none, zlib@openssh.com
+DEBUG:paramiko.transport:server compress: none, zlib@openssh.com
+DEBUG:paramiko.transport:client lang: <none>
+DEBUG:paramiko.transport:server lang: <none>
+DEBUG:paramiko.transport:kex follows: False
+DEBUG:paramiko.transport:=== Key exchange agreements ===
+DEBUG:paramiko.transport:Strict kex mode: True
+DEBUG:paramiko.transport:Kex: curve25519-sha256@libssh.org
+DEBUG:paramiko.transport:HostKey: ssh-ed25519
+DEBUG:paramiko.transport:Cipher: aes128-ctr
+DEBUG:paramiko.transport:MAC: hmac-sha2-256
+DEBUG:paramiko.transport:Compression: none
+DEBUG:paramiko.transport:=== End of kex handshake ===
+DEBUG:paramiko.transport:EOF in transport thread
+DEBUG:paramiko.transport:starting thread (client mode): 0x154de4e0
+DEBUG:paramiko.transport:Local version/idstring: SSH-2.0-paramiko_3.5.1
+DEBUG:paramiko.transport:Remote version/idstring: SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.11
+INFO:paramiko.transport:Connected (version 2.0, client OpenSSH_9.6p1)
+DEBUG:paramiko.transport:=== Key exchange possibilities ===
+DEBUG:paramiko.transport:kex algos: sntrup761x25519-sha512@openssh.com, curve25519-sha256, curve25519-sha256@libssh.org, ecdh-sha2-nistp256, ecdh-sha2-nistp384, ecdh-sha2-nistp521, diffie-hellman-group-exchange-sha256, diffie-hellman-group16-sha512, diffie-hellman-group18-sha512, diffie-hellman-group14-sha256, ext-info-s, kex-strict-s-v00@openssh.com
+DEBUG:paramiko.transport:server key: rsa-sha2-512, rsa-sha2-256, ecdsa-sha2-nistp256, ssh-ed25519
+DEBUG:paramiko.transport:client encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+DEBUG:paramiko.transport:server encrypt: chacha20-poly1305@openssh.com, aes128-ctr, aes192-ctr, aes256-ctr, aes128-gcm@openssh.com, aes256-gcm@openssh.com
+DEBUG:paramiko.transport:client mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+DEBUG:paramiko.transport:server mac: umac-64-etm@openssh.com, umac-128-etm@openssh.com, hmac-sha2-256-etm@openssh.com, hmac-sha2-512-etm@openssh.com, hmac-sha1-etm@openssh.com, umac-64@openssh.com, umac-128@openssh.com, hmac-sha2-256, hmac-sha2-512, hmac-sha1
+DEBUG:paramiko.transport:client compress: none, zlib@openssh.com
+DEBUG:paramiko.transport:server compress: none, zlib@openssh.com
+DEBUG:paramiko.transport:client lang: <none>
+DEBUG:paramiko.transport:server lang: <none>
+DEBUG:paramiko.transport:kex follows: False
+DEBUG:paramiko.transport:=== Key exchange agreements ===
+DEBUG:paramiko.transport:Strict kex mode: True
+DEBUG:paramiko.transport:Kex: curve25519-sha256@libssh.org
+DEBUG:paramiko.transport:HostKey: ssh-ed25519
+DEBUG:paramiko.transport:Cipher: aes128-ctr
+DEBUG:paramiko.transport:MAC: hmac-sha2-256
+DEBUG:paramiko.transport:Compression: none
+DEBUG:paramiko.transport:=== End of kex handshake ===
+2025-05-31 17:55:34.332 | INFO     | __main__:get_filtered_miners_val:438 - Resource 5d09f7ae-5601-4779-ac07-1508b6e45a01 compute score: 0.0000
+2025-05-31 17:55:34.332 | WARNING  | __main__:get_filtered_miners_val:445 - Resource 5d09f7ae-5601-4779-ac07-1508b6e45a01 score 0.0000 below threshold
+2025-05-31 17:55:34.333 | INFO     | neurons.utils.api_utils:update_miner_compute_resource:590 - Preparing to update compute resource 5d09f7ae-5601-4779-ac07-1508b6e45a01 for miner SYciHeMGsVuu55n07oKr at ('https://polaris-interface.onrender.com/api/v1/services/miner/miners',)/SYciHeMGsVuu55n07oKr
+2025-05-31 17:55:34.333 | INFO     | neurons.utils.api_utils:update_miner_compute_resource:613 - Sending PUT request with payload: {'compute_resource_updates': [{'id': '5d09f7ae-5601-4779-ac07-1508b6e45a01', 'validation_status': 'rejected', 'reason': 'Low compute score: 0.0000'}]}
+2025-05-31 17:55:34.334 | ERROR    | neurons.utils.api_utils:update_miner_compute_resource:626 - Network error while updating compute resource 5d09f7ae-5601-4779-ac07-1508b6e45a01 for miner SYciHeMGsVuu55n07oKr: Header part (('dev-services-key',)) from ('x-api-key', ('dev-services-key',)) must be of type str or bytes, not <class 'tuple'>
+2025-05-31 17:55:34.334 | WARNING  | __main__:get_filtered_miners_val:452 - Failed to update status for resource 5d09f7ae-5601-4779-ac07-1508b6e45a01
+2025-05-31 17:55:34.334 | INFO     | __main__:get_filtered_miners_val:533 - Miner SYciHeMGsVuu55n07oKr total: score=120.53, reward=0.002386
+2025-05-31 17:55:34.334 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner TPz19IPRa1NjUsXsx6QZ due to invalid registration or UID
+2025-05-31 17:55:34.335 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner TQOBZfp7O5yu1nZPKrNG due to invalid registration or UID
+2025-05-31 17:55:34.335 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner Th91HEEhtWhC4ylJnPMt due to invalid registration or UID
+2025-05-31 17:55:34.335 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner TuLi2e3paFDt1KrFy8EB due to invalid registration or UID
+2025-05-31 17:55:34.335 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner VraUo9eCGiAmCTdnz9eC due to invalid registration or UID
+2025-05-31 17:55:34.335 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner X8szTKXH49tbgAvVJQzk due to invalid registration or UID
+2025-05-31 17:55:34.335 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner Xc8tfUJj2VYSuDGY905Y due to invalid registration or UID
+2025-05-31 17:55:34.336 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner XicbsYpZLqvVUv7g3XjE due to invalid registration or UID
+2025-05-31 17:55:34.336 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner YILsF8Qxxr8UlKkwLzKt due to invalid registration or UID
+2025-05-31 17:55:34.336 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner aPEICXX6LBgjZDieNTJd due to invalid registration or UID
+2025-05-31 17:55:34.336 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner bdkam8JgcT9a50bnv8gg due to invalid registration or UID
+2025-05-31 17:55:34.336 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner c92FHnjhUWSvscCkbFG8 due to invalid registration or UID
+2025-05-31 17:55:34.336 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner ctQ2N2txxCQbrTU1Tmwn due to invalid registration or UID
+2025-05-31 17:55:34.337 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner dGl2aIISHkXCzjjKUqXQ due to invalid registration or UID
+2025-05-31 17:55:34.337 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner eIkiUFkJgSPBoF4kXkvV due to invalid registration or UID
+2025-05-31 17:55:34.337 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner grYwTA7fnZatSR3qcezS due to invalid registration or UID
+2025-05-31 17:55:34.337 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner gwk7FImD0Yl0ZdZ0dBWc due to invalid registration or UID
+2025-05-31 17:55:34.337 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner iArUCOD1ylnGEgrKVDKV due to invalid registration or UID
+2025-05-31 17:55:34.339 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner kO4NiuQW6rXZveDq6VKo due to invalid registration or UID
+DEBUG:paramiko.transport:EOF in transport thread
+2025-05-31 17:55:34.339 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner md94sqyYwsm8ppbJKR6q due to invalid registration or UID
+2025-05-31 17:55:34.340 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner mdSIRXm1x8OJJScmIn9q due to invalid registration or UID
+2025-05-31 17:55:34.340 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner mvurSlLdA9G0s3NZhDbA due to invalid registration or UID
+2025-05-31 17:55:34.340 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner navcdCleGl4qsbRNuzZN due to invalid registration or UID
+2025-05-31 17:55:34.341 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner nzQIc2THYhLiINzEtRBb due to invalid registration or UID
+2025-05-31 17:55:34.341 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner o6yYmyNsID29l7jJMqMU due to invalid registration or UID
+2025-05-31 17:55:34.341 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner ovtxvy6xXX97szRH7IMO due to invalid registration or UID
+2025-05-31 17:55:34.342 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner pbPc0b4Uf1TxjwtQHsSN due to invalid registration or UID
+2025-05-31 17:55:34.346 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner pbRQ74BiCDZp1j0eE754 due to invalid registration or UID
+2025-05-31 17:55:34.346 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner pcMrbPzBFu8iNwZ2wint due to invalid registration or UID
+2025-05-31 17:55:34.347 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner pfxj5fZtGTa4oFtJXx55 due to invalid registration or UID
+2025-05-31 17:55:34.347 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner q6L2lluz1u9zN9QoC496 due to invalid registration or UID
+2025-05-31 17:55:34.347 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner q8oiO4OsVhPBYS2iikkA due to invalid registration or UID
+2025-05-31 17:55:34.347 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner qIixWdT07862KFu87tIa due to invalid registration or UID
+2025-05-31 17:55:34.347 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner qmEdvjG1SY1Yv8hMjM0G due to invalid registration or UID
+2025-05-31 17:55:34.347 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner qmJEdNYSYaToARHVyiCb due to invalid registration or UID
+2025-05-31 17:55:34.347 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner qtYNDsUkH0lxyLfAcmL7 due to invalid registration or UID
+2025-05-31 17:55:34.347 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner rLQ1kttoG0nREKPizFKH due to invalid registration or UID
+2025-05-31 17:55:34.347 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner ruZWxFV3SMwjxmOuHCRw due to invalid registration or UID
+2025-05-31 17:55:34.348 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner s663AjJ38d9YEWvrn3Kn due to invalid registration or UID
+2025-05-31 17:55:34.348 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner sG3D9cMKoayIHId8Ib2h due to invalid registration or UID
+2025-05-31 17:55:34.348 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner sP1QXKT46E48RyIsY4kM due to invalid registration or UID
+2025-05-31 17:55:34.348 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner tIvwvtUntMoOFmZNfUom due to invalid registration or UID
+2025-05-31 17:55:34.348 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner tdnIlo7ZsStHVTMdFTTa due to invalid registration or UID
+2025-05-31 17:55:34.348 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner tjwsiLzy0hcAEHwBz07F due to invalid registration or UID
+2025-05-31 17:55:34.348 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner tlw9yqs4QFX6LRNmyu9g due to invalid registration or UID
+2025-05-31 17:55:34.349 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner u3jMD6hSIJ6E3rKiNlde due to invalid registration or UID
+2025-05-31 17:55:34.349 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner uMtcUAZUQIKS1iCtTYUv due to invalid registration or UID
+2025-05-31 17:55:34.349 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner uWwXp6L82A3Zc0Q1nqnP due to invalid registration or UID
+2025-05-31 17:55:34.349 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner urGi7sq2op6koRaO8i8z due to invalid registration or UID
+2025-05-31 17:55:34.349 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner urYqxdlzfu8bkaSJRV6z due to invalid registration or UID
+2025-05-31 17:55:34.350 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner uuD9ZsZeYPXZu08gSa1u due to invalid registration or UID
+2025-05-31 17:55:34.350 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner veZPvA20PexrpUHDPiKb due to invalid registration or UID
+2025-05-31 17:55:34.350 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner vzazHtvIaPVWab976yps due to invalid registration or UID
+2025-05-31 17:55:34.350 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner w0QpNQzOhIa5dhirD9bu due to invalid registration or UID
+2025-05-31 17:55:34.350 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner w8FVsQszJYRHDkgEQgNR due to invalid registration or UID
+2025-05-31 17:55:34.351 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner xHXtyMvHAvZ4WEKHNLM6 due to invalid registration or UID
+2025-05-31 17:55:34.351 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner xOygCIuLsMSVZh4geA39 due to invalid registration or UID
+2025-05-31 17:55:34.351 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner xSQbPSAlnbPy5z7gnWnl due to invalid registration or UID
+2025-05-31 17:55:34.352 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner xuzS80dcNyIZDWmfcmoT due to invalid registration or UID
+2025-05-31 17:55:34.352 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner yHQj7qDWqnQVi61yqQzJ due to invalid registration or UID
+2025-05-31 17:55:34.355 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner yRi08zQBH3NLvFcf19Bl due to invalid registration or UID
+2025-05-31 17:55:34.355 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner ySPr0bIgVhfTV8ccnV8J due to invalid registration or UID
+2025-05-31 17:55:34.355 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner ySb9FFhycahDElUIAhvC due to invalid registration or UID
+2025-05-31 17:55:34.355 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner yaweTSy7xUGKAgBt63xr due to invalid registration or UID
+2025-05-31 17:55:34.355 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner yueTiA1EIVOYEoTI5886 due to invalid registration or UID
+2025-05-31 17:55:34.355 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner zDt1Ctn7svVNFV0eGixD due to invalid registration or UID
+2025-05-31 17:55:34.355 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner zMJCmBjFQlLDupQPRGqa due to invalid registration or UID
+2025-05-31 17:55:34.356 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner zexiPSfZ404mKfg5s52U due to invalid registration or UID
+2025-05-31 17:55:34.356 | INFO     | __main__:get_filtered_miners_val:393 - Processing miner zgUxdd0fosPUuUqLQivY (UID: 18)
+2025-05-31 17:55:34.356 | INFO     | __main__:get_filtered_miners_val:396 - Verifying hotkey 5GpL9oHchoR5C6kr9YzfxvoWMitvqcdmS2m6NzaEEzNqigWx on subnet 49
+2025-05-31 17:55:34.356 | WARNING  | __main__:get_miner_uid_by_hotkey:335 - Hotkey 5GpL9oHchoR5C6kr9YzfxvoWMitvqcdmS2m6NzaEEzNqigWx not found in cache for subnet 49
+2025-05-31 17:55:34.356 | WARNING  | __main__:get_filtered_miners_val:399 - Hotkey verification failed for miner zgUxdd0fosPUuUqLQivY
+2025-05-31 17:55:34.356 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner zlGakvHqctqNDoW69or8 due to invalid registration or UID
+2025-05-31 17:55:34.357 | DEBUG    | __main__:get_filtered_miners_val:387 - Skipping miner zuERoymc9gRWByz6jcXs due to invalid registration or UID
+2025-05-31 17:55:34.357 | INFO     | __main__:get_filtered_miners_val:548 - Miner UID 231: raw_score=120.53, normalized_score=100.00
+2025-05-31 17:55:34.357 | INFO     | __main__:get_filtered_miners_val:558 - Processed 1 miners
+Miner Results:
+Miner UID 231: {'miner_id': 'SYciHeMGsVuu55n07oKr', 'miner_uid': '231', 'hotkey': '5Fqf8QzacNSU91v3ibnkd1pw2fbNsHucrSpw73uSpbhh2XAN', 'total_score': 100.0}
+
+Uptime Rewards:
+Miner UID 231: {'reward_amount': 0.002386, 'blocks_active': 1, 'uptime': 0.0, 'additional_details': {'blocks_since_last': 1000, 'first_time_calculation': True}}
+(base) user@USERs-MacBook-Pro polaris_bittensor % 

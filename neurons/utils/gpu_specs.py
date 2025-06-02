@@ -64,6 +64,8 @@ GPU_WEIGHTS = {
     "Arc A580": 0.02,       # Estimated, $0.05/hr
 }
 
+
+
 def get_gpu_weight(gpu_name: str) -> float:
     """
     Retrieve the weight of a specified GPU by matching the input name or its substring.
