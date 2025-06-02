@@ -13,6 +13,7 @@ import re
 import numpy as np
 import os
 import logging
+from fastapi import HTTPException
 logging.getLogger("websockets.client").setLevel(logging.WARNING)
 
 class MinerProcessingError(Exception):
@@ -244,9 +245,24 @@ async def reward_mechanism(
                 except (OSError, asyncio.TimeoutError) as e:
                     logger.error(f"Error performing SSH tasks for resource {resource_id}: {e}")
                     return None
+                except HTTPException as e:
+                    logger.error(f"HTTP error performing SSH tasks for resource {resource_id}: {e.status_code} - {e.detail}")
+                    return None
+                except Exception as e:
+                    logger.error(f"Unexpected error performing SSH tasks for resource {resource_id}: {e}")
+                    return None
 
             tasks = [process_resource(resource, idx) for idx, resource in enumerate(compute_details, 1)]
-            resource_results = [r for r in await asyncio.gather(*tasks, return_exceptions=True) if r is not None]
+            task_results = await asyncio.gather(*tasks, return_exceptions=True)
+            
+            # Filter out None results and exceptions
+            resource_results = []
+            for result in task_results:
+                if isinstance(result, Exception):
+                    logger.error(f"Resource processing task failed with exception: {result}")
+                    continue
+                if result is not None:
+                    resource_results.append(result)
 
             for resource_id, pog_score in resource_results:
                 if pog_score < SCORE_THRESHOLD:
@@ -960,8 +976,16 @@ async def sub_verification(allowed_uids: List[int]) -> Tuple[Dict[str, int], Dic
 
                 # Process resources concurrently
                 tasks = [process_resource(resource, idx) for idx, resource in enumerate(compute_details, 1)]
-                resource_results = [r for r in await asyncio.gather(*tasks, return_exceptions=True) 
-                                 if r is not None and not isinstance(r, Exception)]
+                task_results = await asyncio.gather(*tasks, return_exceptions=True)
+                
+                # Filter out None results and exceptions
+                resource_results = []
+                for result in task_results:
+                    if isinstance(result, Exception):
+                        logger.error(f"Resource processing task failed with exception: {result}")
+                        continue
+                    if result is not None:
+                        resource_results.append(result)
 
                 # Update verification results
                 for resource_id, pog_score in resource_results:
@@ -970,7 +994,7 @@ async def sub_verification(allowed_uids: List[int]) -> Tuple[Dict[str, int], Dic
                         reason = (f"Verified with score: {pog_score:.4f}" if status == "verified" 
                                 else f"Low compute score: {pog_score:.4f}")
                         
-                        update_result = await update_miner_compute_resource(
+                        update_result = update_miner_compute_resource(
                             miner_id=miner_id,
                             resource_id=resource_id,
                             status=status,

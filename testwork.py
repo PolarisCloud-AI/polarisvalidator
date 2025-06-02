@@ -13,6 +13,7 @@ from neurons.utils.api_utils import update_miner_compute_resource
 import os
 import time
 from neurons.utils.uptimedata import calculate_miner_rewards,log_uptime
+from fastapi import HTTPException
 
 # # 
 logger = logging.getLogger("remote_access")
@@ -484,9 +485,24 @@ async def get_filtered_miners_val(
                 except (OSError, asyncio.TimeoutError) as e:
                     logger.error(f"Error performing SSH tasks for resource {resource_id}: {e}")
                     return None
+                except HTTPException as e:
+                    logger.error(f"HTTP error performing SSH tasks for resource {resource_id}: {e.status_code} - {e.detail}")
+                    return None
+                except Exception as e:
+                    logger.error(f"Unexpected error performing SSH tasks for resource {resource_id}: {e}")
+                    return None
 
             tasks = [process_resource(resource, idx) for idx, resource in enumerate(compute_details, 1)]
-            resource_results = [r for r in await asyncio.gather(*tasks, return_exceptions=True) if r is not None]
+            task_results = await asyncio.gather(*tasks, return_exceptions=True)
+            
+            # Filter out None results and exceptions
+            resource_results = []
+            for result in task_results:
+                if isinstance(result, Exception):
+                    logger.error(f"Task failed with exception: {result}")
+                    continue
+                if result is not None:
+                    resource_results.append(result)
 
             for resource_id, pog_score in resource_results:
                 if pog_score < SCORE_THRESHOLD:
