@@ -128,10 +128,10 @@ def aggregate_rewards(results, uptime_rewards_dict):
 
 async def reward_mechanism(
     allowed_uids: List[int],
-    netuid: int = 100,
-    network: str = "test",
+    netuid: int = 49,
+    network: str = "finney",
     tempo: int = 4320,
-    max_score: float = 100.0,
+    max_score: float = 500.0,
     current_block: int = 0
 ) -> Tuple[Dict[str, MinerResult], Dict[str, UptimeReward]]:
     """
@@ -196,14 +196,14 @@ async def reward_mechanism(
             miner_id = miner.get("id", "unknown")
             logger.info(f"Processing miner {miner_id} (UID: {miner_uid})")
 
-            # # Verify hotkey
-            # if hotkey not in hotkey_cache:
-            #     logger.info(f"Verifying hotkey {hotkey} on subnet {netuid}")
-            #     hotkey_cache[hotkey] = get_miner_uid_by_hotkey(hotkey, netuid, network)
-            # verified_uid = hotkey_cache[hotkey]
-            # if verified_uid is None or verified_uid != miner_uid:
-            #     logger.warning(f"Hotkey verification failed for miner {miner_id}")
-            #     continue
+            # Verify hotkey
+            if hotkey not in hotkey_cache:
+                logger.info(f"Verifying hotkey {hotkey} on subnet {netuid}")
+                hotkey_cache[hotkey] = get_miner_uid_by_hotkey(hotkey, netuid, network)
+            verified_uid = hotkey_cache[hotkey]
+            if verified_uid is None or verified_uid != miner_uid:
+                logger.warning(f"Hotkey verification failed for miner {miner_id}")
+                continue
 
             # Initialize accumulators
             if miner_id not in uptime_rewards_dict:

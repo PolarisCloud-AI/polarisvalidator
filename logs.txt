@@ -1,0 +1,945 @@
+2025-06-02 23:13:04,509 - paramiko.transport - ERROR - Traceback (most recent call last):
+2025-06-02 23:13:04,509 - paramiko.transport - ERROR -   File "/Users/user/miniconda3/lib/python3.12/site-packages/paramiko/transport.py", line 2185, in run
+2025-06-02 23:13:04,510 - paramiko.transport - ERROR -     self._check_banner()
+2025-06-02 23:13:04,510 - paramiko.transport - ERROR -   File "/Users/user/miniconda3/lib/python3.12/site-packages/paramiko/transport.py", line 2373, in _check_banner
+2025-06-02 23:13:04,510 - paramiko.transport - ERROR -     raise SSHException(
+2025-06-02 23:13:04,510 - paramiko.transport - ERROR - paramiko.ssh_exception.SSHException: Error reading SSH protocol banner
+2025-06-02 23:13:04,510 - paramiko.transport - ERROR - 
+2025-06-02 23:13:04,997 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:13:08,421 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:13:11,439 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:13:14,254 - neurons.utils.proof_of_work - WARNING - SSH protocol error for 163.5.212.144:22: No existing session
+2025-06-02 23:13:15,811 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:13:18,599 - neurons.utils.proof_of_work - WARNING - SSH protocol error for 163.5.212.144:22: No existing session
+2025-06-02 23:13:19,087 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:13:21,843 - neurons.utils.proof_of_work - WARNING - SSH protocol error for 163.5.212.144:22: No existing session
+2025-06-02 23:13:24,846 - neurons.utils.proof_of_work - WARNING - SSH timeout for 10.0.2.79:22 - command may be taking too long
+2025-06-02 23:13:27,848 - neurons.utils.proof_of_work - WARNING - SSH timeout for 10.0.2.79:22 - command may be taking too long
+2025-06-02 23:13:30,850 - neurons.utils.proof_of_work - WARNING - SSH timeout for 10.0.2.79:22 - command may be taking too long
+2025-06-02 23:13:33,852 - neurons.utils.proof_of_work - WARNING - SSH timeout for 10.0.2.79:22 - command may be taking too long
+2025-06-02 23:13:36,854 - neurons.utils.proof_of_work - WARNING - SSH timeout for 10.0.2.79:22 - command may be taking too long
+2025-06-02 23:13:39,856 - neurons.utils.proof_of_work - WARNING - SSH timeout for 10.0.2.79:22 - command may be taking too long
+2025-06-02 23:13:42,858 - neurons.utils.proof_of_work - WARNING - SSH timeout for 108.175.183.16:2121 - command may be taking too long
+2025-06-02 23:13:43,660 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:13:46,939 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:13:50,481 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:13:55,345 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:14:02,196 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:14:05,471 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:14:09,364 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:14:11,020 - neurons.utils.proof_of_work - WARNING - SSH protocol error for 108.175.183.16:2121: No existing session
+2025-06-02 23:14:11,923 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:14:17,860 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:14:23,311 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:14:25,951 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:14:31.635 | INFO     | utils.api_utils:process_resource:243 - Resource cc5e3090-a267-4e73-b407-1dfb9cd50aa2: compute_score=1.0000
+2025-06-02 23:14:34,637 - neurons.utils.proof_of_work - WARNING - SSH timeout for 10.0.2.79:22 - command may be taking too long
+2025-06-02 23:14:37,640 - neurons.utils.proof_of_work - WARNING - SSH timeout for 10.0.2.79:22 - command may be taking too long
+2025-06-02 23:14:40,642 - neurons.utils.proof_of_work - WARNING - SSH timeout for 10.0.2.79:22 - command may be taking too long
+2025-06-02 23:14:43,644 - neurons.utils.proof_of_work - WARNING - SSH timeout for 10.0.2.79:22 - command may be taking too long
+2025-06-02 23:14:46,647 - neurons.utils.proof_of_work - WARNING - SSH timeout for 10.0.2.79:22 - command may be taking too long
+2025-06-02 23:14:49,649 - neurons.utils.proof_of_work - WARNING - SSH timeout for 10.0.2.79:22 - command may be taking too long
+2025-06-02 23:14:50,327 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:14:52,268 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:14:53.589 | INFO     | utils.api_utils:reward_mechanism:282 - Resource cc5e3090-a267-4e73-b407-1dfb9cd50aa2: scaled_compute_score=6.93
+2025-06-02 23:14:53,591 - neurons.utils.uptimedata - INFO - No logs within 7200 blocks for miner cc5e3090-a267-4e73-b407-1dfb9cd50aa2. Uptime: 0%
+2025-06-02 23:14:53,593 - neurons.utils.uptimedata - ERROR - Error saving payment log for miner cc5e3090-a267-4e73-b407-1dfb9cd50aa2: Extra data: line 1 column 189 (char 188)
+2025-06-02 23:14:53.593 | INFO     | utils.api_utils:reward_mechanism:319 - Resource cc5e3090-a267-4e73-b407-1dfb9cd50aa2: reward=0.000200
+2025-06-02 23:14:53.594 | INFO     | utils.api_utils:get_containers_for_resource:676 - Fetching containers for resource_id: cc5e3090-a267-4e73-b407-1dfb9cd50aa2 from https://polaris-interface.onrender.com/api/v1/services/container/container/containers
+2025-06-02 23:14:55.647 | INFO     | utils.api_utils:get_containers_for_resource:684 - Retrieved 38 containers for resource_id: cc5e3090-a267-4e73-b407-1dfb9cd50aa2
+2025-06-02 23:14:55.647 | INFO     | utils.api_utils:get_containers_for_resource:690 - Found 0 containers for resource_id cc5e3090-a267-4e73-b407-1dfb9cd50aa2, 0 in 'running' status
+2025-06-02 23:14:55.647 | INFO     | utils.api_utils:reward_mechanism:334 - Resource cc5e3090-a267-4e73-b407-1dfb9cd50aa2: running_containers=0
+2025-06-02 23:14:55.648 | INFO     | utils.api_utils:reward_mechanism:342 - Resource cc5e3090-a267-4e73-b407-1dfb9cd50aa2: containers=0, score=10.23
+2025-06-02 23:14:55.648 | INFO     | utils.api_utils:reward_mechanism:197 - Processing miner 7guIVzseS0TFjgvjgoSS (UID: 123)
+2025-06-02 23:14:55.648 | INFO     | utils.api_utils:reward_mechanism:230 - Miner 7guIVzseS0TFjgvjgoSS has 1 compute resource(s)
+2025-06-02 23:14:55.649 | INFO     | utils.api_utils:process_resource:238 - Processing resource 1 (ID: f4eee6ff-d351-4590-a330-e35558bf896b)
+2025-06-02 23:14:56,421 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:14:58,963 - neurons.utils.proof_of_work - WARNING - SSH protocol error for 108.175.183.16:2121: No existing session
+2025-06-02 23:14:58.964 | INFO     | utils.api_utils:process_resource:967 - Resource e44e86c7-b495-47e1-ba13-198e2eac1952: compute_score=0.2740
+2025-06-02 23:15:01,966 - neurons.utils.proof_of_work - WARNING - SSH timeout for 10.0.2.79:22 - command may be taking too long
+2025-06-02 23:15:04,969 - neurons.utils.proof_of_work - WARNING - SSH timeout for 10.0.2.79:22 - command may be taking too long
+2025-06-02 23:15:07,971 - neurons.utils.proof_of_work - WARNING - SSH timeout for 10.0.2.79:22 - command may be taking too long
+2025-06-02 23:15:09,107 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:15:11,502 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:15:13,155 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:15:14,692 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:15:15,709 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:15:17,661 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:15:20,221 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:15:23,018 - neurons.utils.proof_of_work - WARNING - SSH protocol error for 135.181.219.102:22: No existing session
+2025-06-02 23:15:23,448 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:15:25,956 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:15:30,871 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:15:33,674 - neurons.utils.proof_of_work - WARNING - SSH protocol error for 135.181.219.102:22: No existing session
+2025-06-02 23:15:33.675 | INFO     | utils.api_utils:update_miner_compute_resource:863 - Sending PUT request with payload: {'compute_resource_updates': [{'id': 'e44e86c7-b495-47e1-ba13-198e2eac1952', 'validation_status': 'verified', 'reason': 'Verified with score: 0.2740'}]}
+2025-06-02 23:15:37.855 | INFO     | utils.api_utils:update_miner_compute_resource:868 - Successfully updated compute resource e44e86c7-b495-47e1-ba13-198e2eac1952 for miner s663AjJ38d9YEWvrn3Kn
+2025-06-02 23:15:40,857 - neurons.utils.proof_of_work - WARNING - SSH timeout for 10.0.2.79:22 - command may be taking too long
+2025-06-02 23:15:42,749 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:15:45,830 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:15:52.296 | INFO     | utils.api_utils:process_resource:243 - Resource f4eee6ff-d351-4590-a330-e35558bf896b: compute_score=0.1420
+2025-06-02 23:15:52.297 | INFO     | utils.api_utils:reward_mechanism:282 - Resource f4eee6ff-d351-4590-a330-e35558bf896b: scaled_compute_score=1.33
+2025-06-02 23:15:52,298 - neurons.utils.uptimedata - INFO - No valid logs for miner f4eee6ff-d351-4590-a330-e35558bf896b. Uptime: 0%
+2025-06-02 23:15:52,300 - neurons.utils.uptimedata - ERROR - Error saving payment log for miner f4eee6ff-d351-4590-a330-e35558bf896b: Extra data: line 1 column 189 (char 188)
+2025-06-02 23:15:52.300 | INFO     | utils.api_utils:reward_mechanism:319 - Resource f4eee6ff-d351-4590-a330-e35558bf896b: reward=0.000028
+2025-06-02 23:15:52.301 | INFO     | utils.api_utils:get_containers_for_resource:676 - Fetching containers for resource_id: f4eee6ff-d351-4590-a330-e35558bf896b from https://polaris-interface.onrender.com/api/v1/services/container/container/containers
+2025-06-02 23:15:53.194 | INFO     | utils.api_utils:get_containers_for_resource:684 - Retrieved 38 containers for resource_id: f4eee6ff-d351-4590-a330-e35558bf896b
+2025-06-02 23:15:53.194 | INFO     | utils.api_utils:get_containers_for_resource:690 - Found 0 containers for resource_id f4eee6ff-d351-4590-a330-e35558bf896b, 0 in 'running' status
+2025-06-02 23:15:53.194 | INFO     | utils.api_utils:reward_mechanism:334 - Resource f4eee6ff-d351-4590-a330-e35558bf896b: running_containers=0
+2025-06-02 23:15:53.195 | INFO     | utils.api_utils:reward_mechanism:342 - Resource f4eee6ff-d351-4590-a330-e35558bf896b: containers=0, score=10.04
+2025-06-02 23:15:53.195 | INFO     | utils.api_utils:reward_mechanism:197 - Processing miner 8hvxxUmM16AAouBqmRsr (UID: 61)
+2025-06-02 23:15:53.195 | INFO     | utils.api_utils:reward_mechanism:230 - Miner 8hvxxUmM16AAouBqmRsr has 1 compute resource(s)
+2025-06-02 23:15:56,197 - neurons.utils.proof_of_work - WARNING - SSH timeout for 10.0.2.79:22 - command may be taking too long
+2025-06-02 23:15:56.197 | INFO     | utils.api_utils:process_resource:967 - Resource a1df2745-769a-4873-be1a-00d1e669bbdf: compute_score=0.0000
+2025-06-02 23:15:56.198 | INFO     | utils.api_utils:process_resource:238 - Processing resource 1 (ID: 314b2044-06ce-42c5-9088-a84825991dfd)
+2025-06-02 23:15:56,687 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:16:03,740 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:16:06,683 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:16:09,270 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:16:13,194 - neurons.utils.proof_of_work - WARNING - SSH timeout for 163.5.212.52:22 - command may be taking too long
+2025-06-02 23:16:15,429 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:16:24,426 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:16:30,053 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:16:31,671 - neurons.utils.proof_of_work - WARNING - SSH protocol error for 163.5.212.52:22: No existing session
+2025-06-02 23:16:32,307 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:16:34,563 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:16:35.484 | INFO     | utils.api_utils:update_miner_compute_resource:863 - Sending PUT request with payload: {'compute_resource_updates': [{'id': 'a1df2745-769a-4873-be1a-00d1e669bbdf', 'validation_status': 'rejected', 'reason': 'Low compute score: 0.0000'}]}
+2025-06-02 23:16:37.019 | INFO     | utils.api_utils:update_miner_compute_resource:868 - Successfully updated compute resource a1df2745-769a-4873-be1a-00d1e669bbdf for miner AOoep8Z84sMW3V57Mclc
+2025-06-02 23:16:37.020 | INFO     | utils.validator_utils:verify_miners:136 - Verifiction complete .........
+2025-06-02 23:16:40,334 - neurons.utils.proof_of_work - WARNING - SSH protocol error for 163.5.212.52:22: No existing session
+2025-06-02 23:16:40,360 - paramiko.transport - ERROR - Exception (client): Error reading SSH protocol banner
+2025-06-02 23:16:40,361 - paramiko.transport - ERROR - Traceback (most recent call last):
+2025-06-02 23:16:40,361 - paramiko.transport - ERROR -   File "/Users/user/miniconda3/lib/python3.12/site-packages/paramiko/transport.py", line 2369, in _check_banner
+2025-06-02 23:16:40,361 - paramiko.transport - ERROR -     buf = self.packetizer.readline(timeout)
+2025-06-02 23:16:40,362 - paramiko.transport - ERROR -           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-06-02 23:16:40,362 - paramiko.transport - ERROR -   File "/Users/user/miniconda3/lib/python3.12/site-packages/paramiko/packet.py", line 395, in readline
+2025-06-02 23:16:40,362 - paramiko.transport - ERROR -     buf += self._read_timeout(timeout)
+2025-06-02 23:16:40,362 - paramiko.transport - ERROR -            ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-06-02 23:16:40,362 - paramiko.transport - ERROR -   File "/Users/user/miniconda3/lib/python3.12/site-packages/paramiko/packet.py", line 670, in _read_timeout
+2025-06-02 23:16:40,362 - paramiko.transport - ERROR -     raise EOFError()
+2025-06-02 23:16:40,362 - paramiko.transport - ERROR - EOFError
+2025-06-02 23:16:40,362 - paramiko.transport - ERROR - 
+2025-06-02 23:16:40,362 - paramiko.transport - ERROR - During handling of the above exception, another exception occurred:
+2025-06-02 23:16:40,362 - paramiko.transport - ERROR - 
+2025-06-02 23:16:40,362 - paramiko.transport - ERROR - Traceback (most recent call last):
+2025-06-02 23:16:40,362 - paramiko.transport - ERROR -   File "/Users/user/miniconda3/lib/python3.12/site-packages/paramiko/transport.py", line 2185, in run
+2025-06-02 23:16:40,362 - paramiko.transport - ERROR -     self._check_banner()
+2025-06-02 23:16:40,362 - paramiko.transport - ERROR -   File "/Users/user/miniconda3/lib/python3.12/site-packages/paramiko/transport.py", line 2373, in _check_banner
+2025-06-02 23:16:40,362 - paramiko.transport - ERROR -     raise SSHException(
+2025-06-02 23:16:40,362 - paramiko.transport - ERROR - paramiko.ssh_exception.SSHException: Error reading SSH protocol banner
+2025-06-02 23:16:40,362 - paramiko.transport - ERROR - 
+2025-06-02 23:16:41,933 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:16:43,698 - neurons.utils.proof_of_work - WARNING - SSH protocol error for 163.5.212.52:22: No existing session
+2025-06-02 23:16:43.699 | INFO     | utils.api_utils:process_resource:243 - Resource 314b2044-06ce-42c5-9088-a84825991dfd: compute_score=0.3200
+2025-06-02 23:16:43.700 | INFO     | utils.api_utils:reward_mechanism:282 - Resource 314b2044-06ce-42c5-9088-a84825991dfd: scaled_compute_score=2.78
+2025-06-02 23:16:43,702 - neurons.utils.uptimedata - INFO - No logs within 7200 blocks for miner 314b2044-06ce-42c5-9088-a84825991dfd. Uptime: 0%
+2025-06-02 23:16:43,703 - neurons.utils.uptimedata - ERROR - Error saving payment log for miner 314b2044-06ce-42c5-9088-a84825991dfd: Extra data: line 1 column 189 (char 188)
+2025-06-02 23:16:43.703 | INFO     | utils.api_utils:reward_mechanism:319 - Resource 314b2044-06ce-42c5-9088-a84825991dfd: reward=0.000064
+2025-06-02 23:16:43.704 | INFO     | utils.api_utils:get_containers_for_resource:676 - Fetching containers for resource_id: 314b2044-06ce-42c5-9088-a84825991dfd from https://polaris-interface.onrender.com/api/v1/services/container/container/containers
+2025-06-02 23:16:44.803 | INFO     | utils.api_utils:get_containers_for_resource:684 - Retrieved 38 containers for resource_id: 314b2044-06ce-42c5-9088-a84825991dfd
+2025-06-02 23:16:44.803 | INFO     | utils.api_utils:get_containers_for_resource:690 - Found 0 containers for resource_id 314b2044-06ce-42c5-9088-a84825991dfd, 0 in 'running' status
+2025-06-02 23:16:44.804 | INFO     | utils.api_utils:reward_mechanism:334 - Resource 314b2044-06ce-42c5-9088-a84825991dfd: running_containers=0
+2025-06-02 23:16:44.806 | INFO     | utils.api_utils:reward_mechanism:342 - Resource 314b2044-06ce-42c5-9088-a84825991dfd: containers=0, score=10.09
+2025-06-02 23:16:44.806 | INFO     | utils.api_utils:reward_mechanism:197 - Processing miner AOoep8Z84sMW3V57Mclc (UID: 106)
+2025-06-02 23:16:44.807 | INFO     | utils.api_utils:reward_mechanism:230 - Miner AOoep8Z84sMW3V57Mclc has 1 compute resource(s)
+2025-06-02 23:16:44.807 | INFO     | utils.api_utils:process_resource:236 - Skipping resource a1df2745-769a-4873-be1a-00d1e669bbdf (ID: 1): validation_status=rejected
+2025-06-02 23:16:44.807 | INFO     | utils.api_utils:reward_mechanism:197 - Processing miner E83NDzEkSsmSAFoLmE2t (UID: 131)
+2025-06-02 23:16:44.807 | INFO     | utils.api_utils:reward_mechanism:230 - Miner E83NDzEkSsmSAFoLmE2t has 1 compute resource(s)
+2025-06-02 23:16:44.808 | INFO     | utils.api_utils:process_resource:238 - Processing resource 1 (ID: 2c960a4b-4462-4db0-8358-bb3abb2f24c9)
+2025-06-02 23:16:45,169 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:16:46,746 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:16:48,691 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:16:53,914 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:17:02,790 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:17:04,051 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:17:07,737 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:17:11,321 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:17:13,870 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:17:15,418 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:17:30,556 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:17:33,300 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:17:35,816 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:17:37,805 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:17:43.065 | INFO     | utils.api_utils:process_resource:243 - Resource 2c960a4b-4462-4db0-8358-bb3abb2f24c9: compute_score=0.1420
+2025-06-02 23:17:43.065 | INFO     | utils.api_utils:reward_mechanism:282 - Resource 2c960a4b-4462-4db0-8358-bb3abb2f24c9: scaled_compute_score=1.33
+2025-06-02 23:17:43,065 - neurons.utils.uptimedata - INFO - No valid logs for miner 2c960a4b-4462-4db0-8358-bb3abb2f24c9. Uptime: 0%
+2025-06-02 23:17:43.067 | INFO     | utils.api_utils:reward_mechanism:319 - Resource 2c960a4b-4462-4db0-8358-bb3abb2f24c9: reward=0.000028
+2025-06-02 23:17:43.067 | INFO     | utils.api_utils:get_containers_for_resource:676 - Fetching containers for resource_id: 2c960a4b-4462-4db0-8358-bb3abb2f24c9 from https://polaris-interface.onrender.com/api/v1/services/container/container/containers
+2025-06-02 23:17:45.619 | INFO     | utils.api_utils:get_containers_for_resource:684 - Retrieved 38 containers for resource_id: 2c960a4b-4462-4db0-8358-bb3abb2f24c9
+2025-06-02 23:17:45.619 | INFO     | utils.api_utils:get_containers_for_resource:690 - Found 0 containers for resource_id 2c960a4b-4462-4db0-8358-bb3abb2f24c9, 0 in 'running' status
+2025-06-02 23:17:45.620 | INFO     | utils.api_utils:reward_mechanism:334 - Resource 2c960a4b-4462-4db0-8358-bb3abb2f24c9: running_containers=0
+2025-06-02 23:17:45.620 | INFO     | utils.api_utils:reward_mechanism:342 - Resource 2c960a4b-4462-4db0-8358-bb3abb2f24c9: containers=0, score=10.04
+2025-06-02 23:17:45.620 | INFO     | utils.api_utils:reward_mechanism:197 - Processing miner FqvzUNI5vYs0lrlF5mcy (UID: 131)
+2025-06-02 23:17:45.620 | INFO     | utils.api_utils:reward_mechanism:230 - Miner FqvzUNI5vYs0lrlF5mcy has 1 compute resource(s)
+2025-06-02 23:17:45.621 | INFO     | utils.api_utils:process_resource:238 - Processing resource 1 (ID: 92a012a7-c4f7-4cc0-8aee-98006f2e1989)
+2025-06-02 23:17:48,622 - neurons.utils.proof_of_work - WARNING - SSH timeout for 65.109.22.24:22 - command may be taking too long
+2025-06-02 23:17:49,001 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:17:51,898 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:17:53,587 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:17:55,761 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:17:57,311 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:17:59,054 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:18:00,674 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:18:06,786 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:18:08,152 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:18:11,940 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:18:17,160 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:18:20,444 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:18:23,382 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:18:25,193 - neurons.utils.proof_of_work - WARNING - SSH protocol error for 65.109.22.24:22: No existing session
+2025-06-02 23:18:25.194 | INFO     | utils.api_utils:process_resource:243 - Resource 92a012a7-c4f7-4cc0-8aee-98006f2e1989: compute_score=0.1420
+2025-06-02 23:18:25.195 | INFO     | utils.api_utils:reward_mechanism:282 - Resource 92a012a7-c4f7-4cc0-8aee-98006f2e1989: scaled_compute_score=1.33
+2025-06-02 23:18:25,207 - neurons.utils.uptimedata - INFO - No valid logs for miner 92a012a7-c4f7-4cc0-8aee-98006f2e1989. Uptime: 0%
+2025-06-02 23:18:25.211 | INFO     | utils.api_utils:reward_mechanism:319 - Resource 92a012a7-c4f7-4cc0-8aee-98006f2e1989: reward=0.000028
+2025-06-02 23:18:25.211 | INFO     | utils.api_utils:get_containers_for_resource:676 - Fetching containers for resource_id: 92a012a7-c4f7-4cc0-8aee-98006f2e1989 from https://polaris-interface.onrender.com/api/v1/services/container/container/containers
+2025-06-02 23:18:31.088 | INFO     | utils.api_utils:get_containers_for_resource:684 - Retrieved 38 containers for resource_id: 92a012a7-c4f7-4cc0-8aee-98006f2e1989
+2025-06-02 23:18:31.088 | INFO     | utils.api_utils:get_containers_for_resource:690 - Found 0 containers for resource_id 92a012a7-c4f7-4cc0-8aee-98006f2e1989, 0 in 'running' status
+2025-06-02 23:18:31.089 | INFO     | utils.api_utils:reward_mechanism:334 - Resource 92a012a7-c4f7-4cc0-8aee-98006f2e1989: running_containers=0
+2025-06-02 23:18:31.090 | INFO     | utils.api_utils:reward_mechanism:342 - Resource 92a012a7-c4f7-4cc0-8aee-98006f2e1989: containers=0, score=10.04
+2025-06-02 23:18:31.090 | INFO     | utils.api_utils:reward_mechanism:197 - Processing miner Qo58fb85M23qr3xrJXpx (UID: 64)
+2025-06-02 23:18:31.090 | INFO     | utils.api_utils:reward_mechanism:230 - Miner Qo58fb85M23qr3xrJXpx has 1 compute resource(s)
+2025-06-02 23:18:31.091 | INFO     | utils.api_utils:process_resource:236 - Skipping resource 034450e8-a29b-4fe9-b618-5762a2879049 (ID: 1): validation_status=rejected
+2025-06-02 23:18:31.091 | INFO     | utils.api_utils:reward_mechanism:197 - Processing miner S2XJuMnC29rn7JQUUPIS (UID: 30)
+2025-06-02 23:18:31.092 | INFO     | utils.api_utils:reward_mechanism:230 - Miner S2XJuMnC29rn7JQUUPIS has 1 compute resource(s)
+2025-06-02 23:18:31.092 | INFO     | utils.api_utils:process_resource:238 - Processing resource 1 (ID: 53d07943-77ba-45c4-9921-886bc34bbf4c)
+2025-06-02 23:18:31,599 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:18:34,377 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:18:35,758 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:18:38,702 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:18:40,095 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:18:42,975 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:18:43,885 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:18:46,396 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:18:48,675 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:18:49,723 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:18:53,448 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:19:00,063 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:19:01,294 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:19:03,619 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:19:09.040 | INFO     | utils.api_utils:process_resource:243 - Resource 53d07943-77ba-45c4-9921-886bc34bbf4c: compute_score=0.1420
+2025-06-02 23:19:09.041 | INFO     | utils.api_utils:reward_mechanism:282 - Resource 53d07943-77ba-45c4-9921-886bc34bbf4c: scaled_compute_score=1.33
+2025-06-02 23:19:09,044 - neurons.utils.uptimedata - INFO - No valid logs for miner 53d07943-77ba-45c4-9921-886bc34bbf4c. Uptime: 0%
+2025-06-02 23:19:09.046 | INFO     | utils.api_utils:reward_mechanism:319 - Resource 53d07943-77ba-45c4-9921-886bc34bbf4c: reward=0.000028
+2025-06-02 23:19:09.063 | INFO     | utils.api_utils:get_containers_for_resource:676 - Fetching containers for resource_id: 53d07943-77ba-45c4-9921-886bc34bbf4c from https://polaris-interface.onrender.com/api/v1/services/container/container/containers
+2025-06-02 23:19:10.846 | INFO     | utils.api_utils:get_containers_for_resource:684 - Retrieved 38 containers for resource_id: 53d07943-77ba-45c4-9921-886bc34bbf4c
+2025-06-02 23:19:10.846 | INFO     | utils.api_utils:get_containers_for_resource:690 - Found 0 containers for resource_id 53d07943-77ba-45c4-9921-886bc34bbf4c, 0 in 'running' status
+2025-06-02 23:19:10.847 | INFO     | utils.api_utils:reward_mechanism:334 - Resource 53d07943-77ba-45c4-9921-886bc34bbf4c: running_containers=0
+2025-06-02 23:19:10.848 | INFO     | utils.api_utils:reward_mechanism:342 - Resource 53d07943-77ba-45c4-9921-886bc34bbf4c: containers=0, score=10.04
+2025-06-02 23:19:10.848 | INFO     | utils.api_utils:reward_mechanism:197 - Processing miner SHgoiWPB5htfBs3pXjIN (UID: 131)
+2025-06-02 23:19:10.848 | INFO     | utils.api_utils:reward_mechanism:230 - Miner SHgoiWPB5htfBs3pXjIN has 1 compute resource(s)
+2025-06-02 23:19:10.849 | INFO     | utils.api_utils:process_resource:238 - Processing resource 1 (ID: b012b334-ca0d-47aa-9777-f16ef502894f)
+2025-06-02 23:19:13,614 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:19:14,031 - neurons.utils.proof_of_work - WARNING - SSH protocol error for 65.109.22.24:22: No existing session
+2025-06-02 23:19:15,423 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:19:16,447 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:19:19,807 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:19:22,897 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:19:25,750 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:19:27,942 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:19:33,160 - neurons.utils.proof_of_work - WARNING - SSH timeout for 65.109.22.24:22 - command may be taking too long
+2025-06-02 23:19:35,525 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:19:37,028 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:19:38,346 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:19:40,202 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:19:41,330 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:19:45,134 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:19:53.294 | INFO     | utils.api_utils:process_resource:243 - Resource b012b334-ca0d-47aa-9777-f16ef502894f: compute_score=0.1420
+2025-06-02 23:19:53.295 | INFO     | utils.api_utils:reward_mechanism:282 - Resource b012b334-ca0d-47aa-9777-f16ef502894f: scaled_compute_score=1.33
+2025-06-02 23:19:53,319 - neurons.utils.uptimedata - INFO - No valid logs for miner b012b334-ca0d-47aa-9777-f16ef502894f. Uptime: 0%
+2025-06-02 23:19:53.322 | INFO     | utils.api_utils:reward_mechanism:319 - Resource b012b334-ca0d-47aa-9777-f16ef502894f: reward=0.000028
+2025-06-02 23:19:53.322 | INFO     | utils.api_utils:get_containers_for_resource:676 - Fetching containers for resource_id: b012b334-ca0d-47aa-9777-f16ef502894f from https://polaris-interface.onrender.com/api/v1/services/container/container/containers
+2025-06-02 23:19:54.541 | INFO     | utils.api_utils:get_containers_for_resource:684 - Retrieved 38 containers for resource_id: b012b334-ca0d-47aa-9777-f16ef502894f
+2025-06-02 23:19:54.541 | INFO     | utils.api_utils:get_containers_for_resource:690 - Found 0 containers for resource_id b012b334-ca0d-47aa-9777-f16ef502894f, 0 in 'running' status
+2025-06-02 23:19:54.541 | INFO     | utils.api_utils:reward_mechanism:334 - Resource b012b334-ca0d-47aa-9777-f16ef502894f: running_containers=0
+2025-06-02 23:19:54.542 | INFO     | utils.api_utils:reward_mechanism:342 - Resource b012b334-ca0d-47aa-9777-f16ef502894f: containers=0, score=10.04
+2025-06-02 23:19:54.542 | INFO     | utils.api_utils:reward_mechanism:197 - Processing miner SYciHeMGsVuu55n07oKr (UID: 30)
+2025-06-02 23:19:54.542 | INFO     | utils.api_utils:reward_mechanism:230 - Miner SYciHeMGsVuu55n07oKr has 1 compute resource(s)
+2025-06-02 23:19:54.543 | INFO     | utils.api_utils:process_resource:238 - Processing resource 1 (ID: 5d09f7ae-5601-4779-ac07-1508b6e45a01)
+2025-06-02 23:19:57,122 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:19:59,145 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:20:02,387 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:20:03,882 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:20:06,108 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:20:07,942 - neurons.utils.proof_of_work - WARNING - SSH protocol error for 65.109.22.24:22: No existing session
+2025-06-02 23:20:08,879 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:20:09,900 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:20:12,381 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:20:15,048 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:20:17,557 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:20:20,138 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:20:22,288 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:20:28,866 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:20:34.030 | INFO     | utils.api_utils:process_resource:243 - Resource 5d09f7ae-5601-4779-ac07-1508b6e45a01: compute_score=1.0000
+2025-06-02 23:20:34.031 | INFO     | utils.api_utils:reward_mechanism:282 - Resource 5d09f7ae-5601-4779-ac07-1508b6e45a01: scaled_compute_score=6.93
+2025-06-02 23:20:34,032 - neurons.utils.uptimedata - INFO - No valid logs for miner 5d09f7ae-5601-4779-ac07-1508b6e45a01. Uptime: 0%
+2025-06-02 23:20:34.033 | INFO     | utils.api_utils:reward_mechanism:319 - Resource 5d09f7ae-5601-4779-ac07-1508b6e45a01: reward=0.000200
+2025-06-02 23:20:34.033 | INFO     | utils.api_utils:get_containers_for_resource:676 - Fetching containers for resource_id: 5d09f7ae-5601-4779-ac07-1508b6e45a01 from https://polaris-interface.onrender.com/api/v1/services/container/container/containers
+2025-06-02 23:20:35.385 | INFO     | utils.api_utils:get_containers_for_resource:684 - Retrieved 38 containers for resource_id: 5d09f7ae-5601-4779-ac07-1508b6e45a01
+2025-06-02 23:20:35.385 | INFO     | utils.api_utils:get_containers_for_resource:690 - Found 0 containers for resource_id 5d09f7ae-5601-4779-ac07-1508b6e45a01, 0 in 'running' status
+2025-06-02 23:20:35.387 | INFO     | utils.api_utils:reward_mechanism:334 - Resource 5d09f7ae-5601-4779-ac07-1508b6e45a01: running_containers=0
+2025-06-02 23:20:35.387 | INFO     | utils.api_utils:reward_mechanism:342 - Resource 5d09f7ae-5601-4779-ac07-1508b6e45a01: containers=0, score=10.23
+2025-06-02 23:20:35.389 | INFO     | utils.api_utils:reward_mechanism:197 - Processing miner eQqjnL1LlpHw8kPBD98c (UID: 112)
+2025-06-02 23:20:35.389 | INFO     | utils.api_utils:reward_mechanism:230 - Miner eQqjnL1LlpHw8kPBD98c has 1 compute resource(s)
+2025-06-02 23:20:35.391 | INFO     | utils.api_utils:process_resource:238 - Processing resource 1 (ID: acb345d4-4c99-4630-b0b0-0217caeeb885)
+2025-06-02 23:20:35,791 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:20:39,790 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:20:42,622 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:20:45,035 - neurons.utils.proof_of_work - WARNING - SSH protocol error for 81.94.150.152:22: No existing session
+2025-06-02 23:20:45,425 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:20:48,307 - neurons.utils.proof_of_work - WARNING - SSH protocol error for 81.94.150.152:22: No existing session
+2025-06-02 23:20:48,701 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:20:50,408 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:20:51,779 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:20:54,788 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:20:56,799 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:20:59,556 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:21:01,339 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:21:03,057 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:21:07.607 | INFO     | utils.api_utils:process_resource:243 - Resource acb345d4-4c99-4630-b0b0-0217caeeb885: compute_score=1.0000
+2025-06-02 23:21:07.608 | INFO     | utils.api_utils:reward_mechanism:282 - Resource acb345d4-4c99-4630-b0b0-0217caeeb885: scaled_compute_score=6.93
+2025-06-02 23:21:07,610 - neurons.utils.uptimedata - INFO - No logs within 7200 blocks for miner acb345d4-4c99-4630-b0b0-0217caeeb885. Uptime: 0%
+2025-06-02 23:21:07,612 - neurons.utils.uptimedata - ERROR - Error saving payment log for miner acb345d4-4c99-4630-b0b0-0217caeeb885: Extra data: line 1 column 189 (char 188)
+2025-06-02 23:21:07.612 | INFO     | utils.api_utils:reward_mechanism:319 - Resource acb345d4-4c99-4630-b0b0-0217caeeb885: reward=0.000200
+2025-06-02 23:21:07.612 | INFO     | utils.api_utils:get_containers_for_resource:676 - Fetching containers for resource_id: acb345d4-4c99-4630-b0b0-0217caeeb885 from https://polaris-interface.onrender.com/api/v1/services/container/container/containers
+2025-06-02 23:21:08.813 | INFO     | utils.api_utils:get_containers_for_resource:684 - Retrieved 38 containers for resource_id: acb345d4-4c99-4630-b0b0-0217caeeb885
+2025-06-02 23:21:08.814 | INFO     | utils.api_utils:get_containers_for_resource:690 - Found 0 containers for resource_id acb345d4-4c99-4630-b0b0-0217caeeb885, 0 in 'running' status
+2025-06-02 23:21:08.814 | INFO     | utils.api_utils:reward_mechanism:334 - Resource acb345d4-4c99-4630-b0b0-0217caeeb885: running_containers=0
+2025-06-02 23:21:08.814 | INFO     | utils.api_utils:reward_mechanism:342 - Resource acb345d4-4c99-4630-b0b0-0217caeeb885: containers=0, score=10.23
+2025-06-02 23:21:08.815 | INFO     | utils.api_utils:reward_mechanism:197 - Processing miner iArUCOD1ylnGEgrKVDKV (UID: 60)
+2025-06-02 23:21:08.815 | INFO     | utils.api_utils:reward_mechanism:230 - Miner iArUCOD1ylnGEgrKVDKV has 1 compute resource(s)
+2025-06-02 23:21:08.815 | INFO     | utils.api_utils:process_resource:238 - Processing resource 1 (ID: a20cba62-0db0-46a3-b3e9-5f09ddea1d60)
+2025-06-02 23:21:09,133 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:21:11,566 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:21:13,723 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:21:14,992 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:21:17,174 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:21:19,279 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:21:21,882 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:21:24,348 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:21:26,696 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:21:28,742 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:21:29,721 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:21:30,701 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:21:32,226 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:21:34,169 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:21:37.961 | INFO     | utils.api_utils:process_resource:243 - Resource a20cba62-0db0-46a3-b3e9-5f09ddea1d60: compute_score=0.2040
+2025-06-02 23:21:37.962 | INFO     | utils.api_utils:reward_mechanism:282 - Resource a20cba62-0db0-46a3-b3e9-5f09ddea1d60: scaled_compute_score=1.86
+2025-06-02 23:21:37,963 - neurons.utils.uptimedata - INFO - No logs within 7200 blocks for miner a20cba62-0db0-46a3-b3e9-5f09ddea1d60. Uptime: 0%
+2025-06-02 23:21:37,965 - neurons.utils.uptimedata - ERROR - Error saving payment log for miner a20cba62-0db0-46a3-b3e9-5f09ddea1d60: Extra data: line 1 column 189 (char 188)
+2025-06-02 23:21:37.965 | INFO     | utils.api_utils:reward_mechanism:319 - Resource a20cba62-0db0-46a3-b3e9-5f09ddea1d60: reward=0.000041
+2025-06-02 23:21:37.965 | INFO     | utils.api_utils:get_containers_for_resource:676 - Fetching containers for resource_id: a20cba62-0db0-46a3-b3e9-5f09ddea1d60 from https://polaris-interface.onrender.com/api/v1/services/container/container/containers
+2025-06-02 23:21:39.778 | INFO     | utils.api_utils:get_containers_for_resource:684 - Retrieved 38 containers for resource_id: a20cba62-0db0-46a3-b3e9-5f09ddea1d60
+2025-06-02 23:21:39.778 | INFO     | utils.api_utils:get_containers_for_resource:690 - Found 0 containers for resource_id a20cba62-0db0-46a3-b3e9-5f09ddea1d60, 0 in 'running' status
+2025-06-02 23:21:39.778 | INFO     | utils.api_utils:reward_mechanism:334 - Resource a20cba62-0db0-46a3-b3e9-5f09ddea1d60: running_containers=0
+2025-06-02 23:21:39.779 | INFO     | utils.api_utils:reward_mechanism:342 - Resource a20cba62-0db0-46a3-b3e9-5f09ddea1d60: containers=0, score=10.06
+2025-06-02 23:21:39.779 | INFO     | utils.api_utils:reward_mechanism:197 - Processing miner nzQIc2THYhLiINzEtRBb (UID: 163)
+2025-06-02 23:21:39.780 | INFO     | utils.api_utils:reward_mechanism:230 - Miner nzQIc2THYhLiINzEtRBb has 1 compute resource(s)
+2025-06-02 23:21:39.780 | INFO     | utils.api_utils:process_resource:238 - Processing resource 1 (ID: 658b5e91-10ce-4cfe-96e5-68f57aeb012a)
+2025-06-02 23:21:40,315 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:21:43,897 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:21:45,844 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:21:47,278 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:21:49,426 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:21:52,208 - neurons.utils.proof_of_work - WARNING - SSH protocol error for 174.91.121.162:11000: No existing session
+2025-06-02 23:21:53,710 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:21:58,624 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:22:02,330 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:22:05,299 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:22:08,984 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:22:12,677 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:22:14,048 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:22:15,539 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:22:19.553 | INFO     | utils.api_utils:process_resource:243 - Resource 658b5e91-10ce-4cfe-96e5-68f57aeb012a: compute_score=0.4000
+2025-06-02 23:22:19.554 | INFO     | utils.api_utils:reward_mechanism:282 - Resource 658b5e91-10ce-4cfe-96e5-68f57aeb012a: scaled_compute_score=3.36
+2025-06-02 23:22:19,554 - neurons.utils.uptimedata - INFO - No valid logs for miner 658b5e91-10ce-4cfe-96e5-68f57aeb012a. Uptime: 0%
+2025-06-02 23:22:19,557 - neurons.utils.uptimedata - ERROR - Error saving payment log for miner 658b5e91-10ce-4cfe-96e5-68f57aeb012a: Extra data: line 1 column 187 (char 186)
+2025-06-02 23:22:19.557 | INFO     | utils.api_utils:reward_mechanism:319 - Resource 658b5e91-10ce-4cfe-96e5-68f57aeb012a: reward=0.000080
+2025-06-02 23:22:19.557 | INFO     | utils.api_utils:get_containers_for_resource:676 - Fetching containers for resource_id: 658b5e91-10ce-4cfe-96e5-68f57aeb012a from https://polaris-interface.onrender.com/api/v1/services/container/container/containers
+2025-06-02 23:22:20.352 | INFO     | utils.api_utils:get_containers_for_resource:684 - Retrieved 38 containers for resource_id: 658b5e91-10ce-4cfe-96e5-68f57aeb012a
+2025-06-02 23:22:20.352 | INFO     | utils.api_utils:get_containers_for_resource:690 - Found 0 containers for resource_id 658b5e91-10ce-4cfe-96e5-68f57aeb012a, 0 in 'running' status
+2025-06-02 23:22:20.352 | INFO     | utils.api_utils:reward_mechanism:334 - Resource 658b5e91-10ce-4cfe-96e5-68f57aeb012a: running_containers=0
+2025-06-02 23:22:20.352 | INFO     | utils.api_utils:reward_mechanism:342 - Resource 658b5e91-10ce-4cfe-96e5-68f57aeb012a: containers=0, score=10.11
+2025-06-02 23:22:20.353 | INFO     | utils.api_utils:reward_mechanism:197 - Processing miner pbPc0b4Uf1TxjwtQHsSN (UID: 188)
+2025-06-02 23:22:20.353 | INFO     | utils.api_utils:reward_mechanism:230 - Miner pbPc0b4Uf1TxjwtQHsSN has 1 compute resource(s)
+2025-06-02 23:22:20.353 | INFO     | utils.api_utils:process_resource:238 - Processing resource 1 (ID: ccd7faba-c1f3-47ff-aed2-4314f5ab9118)
+2025-06-02 23:22:20,966 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:22:24,150 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:22:26,085 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:22:28,301 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:22:31,922 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:22:34,072 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:22:38,273 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:22:41,443 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:22:44,824 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:22:46,360 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:22:47,851 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:22:50,146 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:22:52,094 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:22:54,961 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:22:58.853 | INFO     | utils.api_utils:process_resource:243 - Resource ccd7faba-c1f3-47ff-aed2-4314f5ab9118: compute_score=0.3600
+2025-06-02 23:22:58.853 | INFO     | utils.api_utils:reward_mechanism:282 - Resource ccd7faba-c1f3-47ff-aed2-4314f5ab9118: scaled_compute_score=3.07
+2025-06-02 23:22:58,854 - neurons.utils.uptimedata - INFO - No valid logs for miner ccd7faba-c1f3-47ff-aed2-4314f5ab9118. Uptime: 0%
+2025-06-02 23:22:58,855 - neurons.utils.uptimedata - ERROR - Error saving payment log for miner ccd7faba-c1f3-47ff-aed2-4314f5ab9118: Extra data: line 1 column 188 (char 187)
+2025-06-02 23:22:58.855 | INFO     | utils.api_utils:reward_mechanism:319 - Resource ccd7faba-c1f3-47ff-aed2-4314f5ab9118: reward=0.000072
+2025-06-02 23:22:58.856 | INFO     | utils.api_utils:get_containers_for_resource:676 - Fetching containers for resource_id: ccd7faba-c1f3-47ff-aed2-4314f5ab9118 from https://polaris-interface.onrender.com/api/v1/services/container/container/containers
+2025-06-02 23:23:00.900 | INFO     | utils.api_utils:get_containers_for_resource:684 - Retrieved 38 containers for resource_id: ccd7faba-c1f3-47ff-aed2-4314f5ab9118
+2025-06-02 23:23:00.900 | INFO     | utils.api_utils:get_containers_for_resource:690 - Found 0 containers for resource_id ccd7faba-c1f3-47ff-aed2-4314f5ab9118, 0 in 'running' status
+2025-06-02 23:23:00.901 | INFO     | utils.api_utils:reward_mechanism:334 - Resource ccd7faba-c1f3-47ff-aed2-4314f5ab9118: running_containers=0
+2025-06-02 23:23:00.901 | INFO     | utils.api_utils:reward_mechanism:342 - Resource ccd7faba-c1f3-47ff-aed2-4314f5ab9118: containers=0, score=10.10
+2025-06-02 23:23:00.901 | INFO     | utils.api_utils:reward_mechanism:197 - Processing miner qIixWdT07862KFu87tIa (UID: 4)
+2025-06-02 23:23:00.902 | INFO     | utils.api_utils:reward_mechanism:230 - Miner qIixWdT07862KFu87tIa has 1 compute resource(s)
+2025-06-02 23:23:00.902 | INFO     | utils.api_utils:process_resource:238 - Processing resource 1 (ID: ba4f23a7-6a32-4fbc-af0b-fcee9c06acb0)
+2025-06-02 23:23:01,291 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:23:03,407 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:23:04,790 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:23:07,454 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:23:08,760 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:23:10,813 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:23:12,810 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:23:14,008 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:23:15,074 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:23:16,728 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:23:17,795 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:23:21,686 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:23:23,223 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:23:26,602 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:23:29.981 | INFO     | utils.api_utils:process_resource:243 - Resource ba4f23a7-6a32-4fbc-af0b-fcee9c06acb0: compute_score=0.1840
+2025-06-02 23:23:29.982 | INFO     | __main__:verify_miners_loop:260 - Starting miner verification cycle
+2025-06-02 23:23:29.982 | DEBUG    | __main__:verify_miners_loop:262 - Fetching registered miners
+2025-06-02 23:23:43.272 | DEBUG    | __main__:verify_miners_loop:264 - Selecting through 256 Bittensor miners
+2025-06-02 23:23:53.111 | INFO     | utils.api_utils:_sync_miners_data:69 - Cached miners data, total miners: 28
+2025-06-02 23:23:53.112 | INFO     | utils.api_utils:sub_verification:916 - Processing 28 miners for verification
+2025-06-02 23:23:53.113 | INFO     | utils.api_utils:process_miner:934 - Processing miner 4r6R71dJ4vyvErClkd9x (UID: 18)
+2025-06-02 23:23:53.113 | INFO     | utils.api_utils:process_miner:941 - Miner 4r6R71dJ4vyvErClkd9x has 1 compute resource(s)
+2025-06-02 23:23:53.113 | WARNING  | utils.api_utils:process_miner:923 - Skipping miner 615745ac-ad47-414b-b673-85b7eb470ffc: No bittensor registration
+2025-06-02 23:23:53.114 | INFO     | utils.api_utils:process_miner:934 - Processing miner 7guIVzseS0TFjgvjgoSS (UID: 123)
+2025-06-02 23:23:53.114 | INFO     | utils.api_utils:process_miner:941 - Miner 7guIVzseS0TFjgvjgoSS has 1 compute resource(s)
+2025-06-02 23:23:53.114 | INFO     | utils.api_utils:process_miner:934 - Processing miner 8hvxxUmM16AAouBqmRsr (UID: 61)
+2025-06-02 23:23:53.114 | INFO     | utils.api_utils:process_miner:941 - Miner 8hvxxUmM16AAouBqmRsr has 1 compute resource(s)
+2025-06-02 23:23:53.114 | INFO     | utils.api_utils:process_miner:934 - Processing miner AOoep8Z84sMW3V57Mclc (UID: 106)
+2025-06-02 23:23:53.114 | INFO     | utils.api_utils:process_miner:941 - Miner AOoep8Z84sMW3V57Mclc has 1 compute resource(s)
+2025-06-02 23:23:53.115 | INFO     | utils.api_utils:process_miner:934 - Processing miner E83NDzEkSsmSAFoLmE2t (UID: 131)
+2025-06-02 23:23:53.115 | INFO     | utils.api_utils:process_miner:941 - Miner E83NDzEkSsmSAFoLmE2t has 1 compute resource(s)
+2025-06-02 23:23:53.115 | INFO     | utils.api_utils:process_miner:934 - Processing miner FqvzUNI5vYs0lrlF5mcy (UID: 131)
+2025-06-02 23:23:53.115 | INFO     | utils.api_utils:process_miner:941 - Miner FqvzUNI5vYs0lrlF5mcy has 1 compute resource(s)
+2025-06-02 23:23:53.115 | WARNING  | utils.api_utils:process_miner:923 - Skipping miner GyzD1ZRChqv3JFEsW1DQ: No bittensor registration
+2025-06-02 23:23:53.116 | INFO     | utils.api_utils:process_miner:934 - Processing miner Qo58fb85M23qr3xrJXpx (UID: 64)
+2025-06-02 23:23:53.116 | INFO     | utils.api_utils:process_miner:941 - Miner Qo58fb85M23qr3xrJXpx has 1 compute resource(s)
+2025-06-02 23:23:53.116 | INFO     | utils.api_utils:process_miner:934 - Processing miner S2XJuMnC29rn7JQUUPIS (UID: 30)
+2025-06-02 23:23:53.116 | INFO     | utils.api_utils:process_miner:941 - Miner S2XJuMnC29rn7JQUUPIS has 1 compute resource(s)
+2025-06-02 23:23:53.116 | INFO     | utils.api_utils:process_miner:934 - Processing miner SHgoiWPB5htfBs3pXjIN (UID: 131)
+2025-06-02 23:23:53.116 | INFO     | utils.api_utils:process_miner:941 - Miner SHgoiWPB5htfBs3pXjIN has 1 compute resource(s)
+2025-06-02 23:23:53.116 | INFO     | utils.api_utils:process_miner:934 - Processing miner SYciHeMGsVuu55n07oKr (UID: 30)
+2025-06-02 23:23:53.117 | INFO     | utils.api_utils:process_miner:941 - Miner SYciHeMGsVuu55n07oKr has 1 compute resource(s)
+2025-06-02 23:23:53.118 | WARNING  | utils.api_utils:process_miner:923 - Skipping miner b73dc3d7-02d0-4f0f-814b-ab8053017c6a: No bittensor registration
+2025-06-02 23:23:53.118 | INFO     | utils.api_utils:process_miner:934 - Processing miner eQqjnL1LlpHw8kPBD98c (UID: 112)
+2025-06-02 23:23:53.119 | INFO     | utils.api_utils:process_miner:941 - Miner eQqjnL1LlpHw8kPBD98c has 1 compute resource(s)
+2025-06-02 23:23:53.119 | INFO     | utils.api_utils:process_miner:934 - Processing miner iArUCOD1ylnGEgrKVDKV (UID: 60)
+2025-06-02 23:23:53.119 | INFO     | utils.api_utils:process_miner:941 - Miner iArUCOD1ylnGEgrKVDKV has 1 compute resource(s)
+2025-06-02 23:23:53.120 | INFO     | utils.api_utils:process_miner:934 - Processing miner nzQIc2THYhLiINzEtRBb (UID: 163)
+2025-06-02 23:23:53.120 | INFO     | utils.api_utils:process_miner:941 - Miner nzQIc2THYhLiINzEtRBb has 1 compute resource(s)
+2025-06-02 23:23:53.120 | INFO     | utils.api_utils:process_miner:934 - Processing miner pbPc0b4Uf1TxjwtQHsSN (UID: 188)
+2025-06-02 23:23:53.120 | INFO     | utils.api_utils:process_miner:941 - Miner pbPc0b4Uf1TxjwtQHsSN has 1 compute resource(s)
+2025-06-02 23:23:53.120 | INFO     | utils.api_utils:process_miner:934 - Processing miner qIixWdT07862KFu87tIa (UID: 4)
+2025-06-02 23:23:53.121 | INFO     | utils.api_utils:process_miner:941 - Miner qIixWdT07862KFu87tIa has 1 compute resource(s)
+2025-06-02 23:23:53.121 | INFO     | utils.api_utils:process_miner:934 - Processing miner qtYNDsUkH0lxyLfAcmL7 (UID: 69)
+2025-06-02 23:23:53.121 | INFO     | utils.api_utils:process_miner:941 - Miner qtYNDsUkH0lxyLfAcmL7 has 1 compute resource(s)
+2025-06-02 23:23:53.121 | INFO     | utils.api_utils:process_miner:934 - Processing miner s663AjJ38d9YEWvrn3Kn (UID: 57)
+2025-06-02 23:23:53.121 | INFO     | utils.api_utils:process_miner:941 - Miner s663AjJ38d9YEWvrn3Kn has 1 compute resource(s)
+2025-06-02 23:23:53.121 | INFO     | utils.api_utils:process_miner:934 - Processing miner sG3D9cMKoayIHId8Ib2h (UID: 183)
+2025-06-02 23:23:53.122 | INFO     | utils.api_utils:process_miner:941 - Miner sG3D9cMKoayIHId8Ib2h has 1 compute resource(s)
+2025-06-02 23:23:53.122 | INFO     | utils.api_utils:process_miner:934 - Processing miner uMtcUAZUQIKS1iCtTYUv (UID: 48)
+2025-06-02 23:23:53.122 | INFO     | utils.api_utils:process_miner:941 - Miner uMtcUAZUQIKS1iCtTYUv has 1 compute resource(s)
+2025-06-02 23:23:53.122 | INFO     | utils.api_utils:process_miner:934 - Processing miner uWwXp6L82A3Zc0Q1nqnP (UID: 125)
+2025-06-02 23:23:53.122 | INFO     | utils.api_utils:process_miner:941 - Miner uWwXp6L82A3Zc0Q1nqnP has 1 compute resource(s)
+2025-06-02 23:23:53.123 | INFO     | utils.api_utils:process_miner:934 - Processing miner vQDJkxG5UdCe2xVhlbHa (UID: 132)
+2025-06-02 23:23:53.123 | INFO     | utils.api_utils:process_miner:941 - Miner vQDJkxG5UdCe2xVhlbHa has 1 compute resource(s)
+2025-06-02 23:23:53.123 | INFO     | utils.api_utils:process_miner:934 - Processing miner vSftixDvtLODeJGuK6mR (UID: 113)
+2025-06-02 23:23:53.123 | INFO     | utils.api_utils:process_miner:941 - Miner vSftixDvtLODeJGuK6mR has 1 compute resource(s)
+2025-06-02 23:23:53.124 | INFO     | utils.api_utils:process_miner:934 - Processing miner w0QpNQzOhIa5dhirD9bu (UID: 153)
+2025-06-02 23:23:53.125 | INFO     | utils.api_utils:process_miner:941 - Miner w0QpNQzOhIa5dhirD9bu has 1 compute resource(s)
+2025-06-02 23:23:53.125 | INFO     | utils.api_utils:process_miner:934 - Processing miner zexiPSfZ404mKfg5s52U (UID: 60)
+2025-06-02 23:23:53.126 | INFO     | utils.api_utils:process_miner:941 - Miner zexiPSfZ404mKfg5s52U has 1 compute resource(s)
+2025-06-02 23:23:53.126 | INFO     | utils.api_utils:process_miner:934 - Processing miner zlGakvHqctqNDoW69or8 (UID: 145)
+2025-06-02 23:23:53.126 | INFO     | utils.api_utils:process_miner:941 - Miner zlGakvHqctqNDoW69or8 has 1 compute resource(s)
+2025-06-02 23:23:53.126 | INFO     | utils.api_utils:reward_mechanism:282 - Resource ba4f23a7-6a32-4fbc-af0b-fcee9c06acb0: scaled_compute_score=1.69
+2025-06-02 23:23:53,128 - neurons.utils.uptimedata - INFO - No logs within 7200 blocks for miner ba4f23a7-6a32-4fbc-af0b-fcee9c06acb0. Uptime: 0%
+2025-06-02 23:23:53,129 - neurons.utils.uptimedata - ERROR - Error saving payment log for miner ba4f23a7-6a32-4fbc-af0b-fcee9c06acb0: Extra data: line 1 column 189 (char 188)
+2025-06-02 23:23:53.129 | INFO     | utils.api_utils:reward_mechanism:319 - Resource ba4f23a7-6a32-4fbc-af0b-fcee9c06acb0: reward=0.000037
+2025-06-02 23:23:53.129 | INFO     | utils.api_utils:get_containers_for_resource:676 - Fetching containers for resource_id: ba4f23a7-6a32-4fbc-af0b-fcee9c06acb0 from https://polaris-interface.onrender.com/api/v1/services/container/container/containers
+2025-06-02 23:23:53.639 | INFO     | utils.api_utils:get_containers_for_resource:684 - Retrieved 38 containers for resource_id: ba4f23a7-6a32-4fbc-af0b-fcee9c06acb0
+2025-06-02 23:23:53.640 | INFO     | utils.api_utils:get_containers_for_resource:690 - Found 0 containers for resource_id ba4f23a7-6a32-4fbc-af0b-fcee9c06acb0, 0 in 'running' status
+2025-06-02 23:23:53.640 | INFO     | utils.api_utils:reward_mechanism:334 - Resource ba4f23a7-6a32-4fbc-af0b-fcee9c06acb0: running_containers=0
+2025-06-02 23:23:53.640 | INFO     | utils.api_utils:reward_mechanism:342 - Resource ba4f23a7-6a32-4fbc-af0b-fcee9c06acb0: containers=0, score=10.06
+2025-06-02 23:23:53.640 | INFO     | utils.api_utils:reward_mechanism:197 - Processing miner qtYNDsUkH0lxyLfAcmL7 (UID: 69)
+2025-06-02 23:23:53.641 | INFO     | utils.api_utils:reward_mechanism:230 - Miner qtYNDsUkH0lxyLfAcmL7 has 1 compute resource(s)
+2025-06-02 23:23:53.641 | DEBUG    | utils.api_utils:process_resource:950 - Resource cc5e3090-a267-4e73-b407-1dfb9cd50aa2 already verified, skipping
+2025-06-02 23:23:53.641 | DEBUG    | utils.api_utils:process_resource:950 - Resource f4eee6ff-d351-4590-a330-e35558bf896b already verified, skipping
+2025-06-02 23:23:53.641 | DEBUG    | utils.api_utils:process_resource:950 - Resource 314b2044-06ce-42c5-9088-a84825991dfd already verified, skipping
+2025-06-02 23:23:53.641 | INFO     | utils.api_utils:check_resource_unique:548 - Resource a1df2745-769a-4873-be1a-00d1e669bbdf of miner AOoep8Z84sMW3V57Mclc is unique with IP and port: ('10.0.2.79', '22')
+2025-06-02 23:23:53.642 | INFO     | utils.api_utils:process_resource:958 - Processing resource 1 (ID: a1df2745-769a-4873-be1a-00d1e669bbdf)
+2025-06-02 23:23:53.642 | DEBUG    | utils.api_utils:process_resource:950 - Resource 2c960a4b-4462-4db0-8358-bb3abb2f24c9 already verified, skipping
+2025-06-02 23:23:53.642 | DEBUG    | utils.api_utils:process_resource:950 - Resource 92a012a7-c4f7-4cc0-8aee-98006f2e1989 already verified, skipping
+2025-06-02 23:23:53.642 | INFO     | utils.api_utils:check_resource_unique:540 - Resource 034450e8-a29b-4fe9-b618-5762a2879049 of miner Qo58fb85M23qr3xrJXpx shares IP 135.181.219.102 and port 22 with resource f4eee6ff-d351-4590-a330-e35558bf896b of miner 7guIVzseS0TFjgvjgoSS
+2025-06-02 23:23:53.642 | WARNING  | utils.api_utils:process_resource:955 - Resource 034450e8-a29b-4fe9-b618-5762a2879049 of miner Qo58fb85M23qr3xrJXpx is not unique. Skipping.
+2025-06-02 23:23:53.643 | DEBUG    | utils.api_utils:process_resource:950 - Resource 53d07943-77ba-45c4-9921-886bc34bbf4c already verified, skipping
+2025-06-02 23:23:53.643 | DEBUG    | utils.api_utils:process_resource:950 - Resource b012b334-ca0d-47aa-9777-f16ef502894f already verified, skipping
+2025-06-02 23:23:53.644 | DEBUG    | utils.api_utils:process_resource:950 - Resource 5d09f7ae-5601-4779-ac07-1508b6e45a01 already verified, skipping
+2025-06-02 23:23:53.644 | DEBUG    | utils.api_utils:process_resource:950 - Resource acb345d4-4c99-4630-b0b0-0217caeeb885 already verified, skipping
+2025-06-02 23:23:53.644 | DEBUG    | utils.api_utils:process_resource:950 - Resource a20cba62-0db0-46a3-b3e9-5f09ddea1d60 already verified, skipping
+2025-06-02 23:23:53.644 | DEBUG    | utils.api_utils:process_resource:950 - Resource 658b5e91-10ce-4cfe-96e5-68f57aeb012a already verified, skipping
+2025-06-02 23:23:53.645 | DEBUG    | utils.api_utils:process_resource:950 - Resource ccd7faba-c1f3-47ff-aed2-4314f5ab9118 already verified, skipping
+2025-06-02 23:23:53.646 | DEBUG    | utils.api_utils:process_resource:950 - Resource ba4f23a7-6a32-4fbc-af0b-fcee9c06acb0 already verified, skipping
+2025-06-02 23:23:53.646 | DEBUG    | utils.api_utils:process_resource:950 - Resource 9175b852-0aa0-4f24-b652-cbf5d07ae950 already verified, skipping
+2025-06-02 23:23:53.646 | DEBUG    | utils.api_utils:process_resource:950 - Resource e44e86c7-b495-47e1-ba13-198e2eac1952 already verified, skipping
+2025-06-02 23:23:53.646 | DEBUG    | utils.api_utils:process_resource:950 - Resource a93ac06f-13df-4da1-a861-0fc8e0aa4894 already verified, skipping
+2025-06-02 23:23:53.646 | DEBUG    | utils.api_utils:process_resource:950 - Resource dee3929c-4171-40bf-af0c-6911c973b4be already verified, skipping
+2025-06-02 23:23:53.647 | DEBUG    | utils.api_utils:process_resource:950 - Resource 7ef84a9d-3a50-4170-bc57-e2c7913df01e already verified, skipping
+2025-06-02 23:23:53.647 | DEBUG    | utils.api_utils:process_resource:950 - Resource 72b1f75c-25e9-45a2-b60c-083351971dfc already verified, skipping
+2025-06-02 23:23:53.647 | DEBUG    | utils.api_utils:process_resource:950 - Resource 3ba62197-bbf5-45d1-979a-c9cb12884c56 already verified, skipping
+2025-06-02 23:23:53.647 | DEBUG    | utils.api_utils:process_resource:950 - Resource e2d3640f-cbc5-4c3a-b64e-ef945ace26e0 already verified, skipping
+2025-06-02 23:23:53.647 | DEBUG    | utils.api_utils:process_resource:950 - Resource 8756ebd8-9068-4b05-b2ed-759368964369 already verified, skipping
+2025-06-02 23:23:53.647 | DEBUG    | utils.api_utils:process_resource:950 - Resource 177cf93f-c4ca-41d5-9a38-00f14d125640 already verified, skipping
+2025-06-02 23:23:53.647 | INFO     | utils.api_utils:process_resource:238 - Processing resource 1 (ID: 9175b852-0aa0-4f24-b652-cbf5d07ae950)
+2025-06-02 23:23:56,649 - neurons.utils.proof_of_work - WARNING - SSH timeout for 10.0.2.79:22 - command may be taking too long
+2025-06-02 23:23:59,651 - neurons.utils.proof_of_work - WARNING - SSH timeout for 10.0.2.79:22 - command may be taking too long
+2025-06-02 23:24:02,652 - neurons.utils.proof_of_work - WARNING - SSH timeout for 10.0.2.79:22 - command may be taking too long
+2025-06-02 23:24:05,654 - neurons.utils.proof_of_work - WARNING - SSH timeout for 10.0.2.79:22 - command may be taking too long
+2025-06-02 23:24:08,656 - neurons.utils.proof_of_work - WARNING - SSH timeout for 10.0.2.79:22 - command may be taking too long
+2025-06-02 23:24:11,657 - neurons.utils.proof_of_work - WARNING - SSH timeout for 10.0.2.79:22 - command may be taking too long
+2025-06-02 23:24:12,168 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:24:15,649 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:24:18,618 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:24:20,422 - neurons.utils.proof_of_work - WARNING - SSH protocol error for 163.5.212.17:22: No existing session
+2025-06-02 23:24:23,424 - neurons.utils.proof_of_work - WARNING - SSH timeout for 163.5.212.17:22 - command may be taking too long
+2025-06-02 23:24:23,905 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:24:27,936 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:24:31,008 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:24:32,338 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:24:35,617 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:24:38,894 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:24:44,455 - neurons.utils.proof_of_work - WARNING - SSH timeout for 10.0.2.79:22 - command may be taking too long
+2025-06-02 23:24:47,457 - neurons.utils.proof_of_work - WARNING - SSH timeout for 10.0.2.79:22 - command may be taking too long
+2025-06-02 23:24:50,459 - neurons.utils.proof_of_work - WARNING - SSH timeout for 10.0.2.79:22 - command may be taking too long
+2025-06-02 23:24:53,460 - neurons.utils.proof_of_work - WARNING - SSH timeout for 10.0.2.79:22 - command may be taking too long
+2025-06-02 23:24:56,462 - neurons.utils.proof_of_work - WARNING - SSH timeout for 10.0.2.79:22 - command may be taking too long
+2025-06-02 23:24:59,465 - neurons.utils.proof_of_work - WARNING - SSH timeout for 10.0.2.79:22 - command may be taking too long
+2025-06-02 23:25:00,944 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:25:03,673 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:25:07,903 - neurons.utils.proof_of_work - WARNING - SSH timeout for 10.0.2.79:22 - command may be taking too long
+2025-06-02 23:25:10,905 - neurons.utils.proof_of_work - WARNING - SSH timeout for 10.0.2.79:22 - command may be taking too long
+2025-06-02 23:25:13,906 - neurons.utils.proof_of_work - WARNING - SSH timeout for 10.0.2.79:22 - command may be taking too long
+2025-06-02 23:25:15,549 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:25:19,849 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:25:24.561 | INFO     | utils.api_utils:process_resource:243 - Resource 9175b852-0aa0-4f24-b652-cbf5d07ae950: compute_score=1.0000
+2025-06-02 23:25:27,562 - neurons.utils.proof_of_work - WARNING - SSH timeout for 10.0.2.79:22 - command may be taking too long
+2025-06-02 23:25:27.563 | INFO     | utils.api_utils:reward_mechanism:282 - Resource 9175b852-0aa0-4f24-b652-cbf5d07ae950: scaled_compute_score=6.93
+2025-06-02 23:25:27,565 - neurons.utils.uptimedata - INFO - No logs within 7200 blocks for miner 9175b852-0aa0-4f24-b652-cbf5d07ae950. Uptime: 0%
+2025-06-02 23:25:27,567 - neurons.utils.uptimedata - ERROR - Error saving payment log for miner 9175b852-0aa0-4f24-b652-cbf5d07ae950: Extra data: line 1 column 189 (char 188)
+2025-06-02 23:25:27.567 | INFO     | utils.api_utils:reward_mechanism:319 - Resource 9175b852-0aa0-4f24-b652-cbf5d07ae950: reward=0.000200
+2025-06-02 23:25:27.568 | INFO     | utils.api_utils:get_containers_for_resource:676 - Fetching containers for resource_id: 9175b852-0aa0-4f24-b652-cbf5d07ae950 from https://polaris-interface.onrender.com/api/v1/services/container/container/containers
+2025-06-02 23:25:30.761 | INFO     | utils.api_utils:get_containers_for_resource:684 - Retrieved 38 containers for resource_id: 9175b852-0aa0-4f24-b652-cbf5d07ae950
+2025-06-02 23:25:30.761 | INFO     | utils.api_utils:get_containers_for_resource:690 - Found 0 containers for resource_id 9175b852-0aa0-4f24-b652-cbf5d07ae950, 0 in 'running' status
+2025-06-02 23:25:30.762 | INFO     | utils.api_utils:reward_mechanism:334 - Resource 9175b852-0aa0-4f24-b652-cbf5d07ae950: running_containers=0
+2025-06-02 23:25:30.762 | INFO     | utils.api_utils:reward_mechanism:342 - Resource 9175b852-0aa0-4f24-b652-cbf5d07ae950: containers=0, score=10.23
+2025-06-02 23:25:30.762 | INFO     | utils.api_utils:reward_mechanism:197 - Processing miner s663AjJ38d9YEWvrn3Kn (UID: 57)
+2025-06-02 23:25:30.762 | INFO     | utils.api_utils:reward_mechanism:230 - Miner s663AjJ38d9YEWvrn3Kn has 1 compute resource(s)
+2025-06-02 23:25:30.763 | INFO     | utils.api_utils:process_resource:236 - Skipping resource e44e86c7-b495-47e1-ba13-198e2eac1952 (ID: 1): validation_status=rejected
+2025-06-02 23:25:33,764 - neurons.utils.proof_of_work - WARNING - SSH timeout for 10.0.2.79:22 - command may be taking too long
+2025-06-02 23:25:33.764 | INFO     | utils.api_utils:process_resource:967 - Resource a1df2745-769a-4873-be1a-00d1e669bbdf: compute_score=0.0000
+2025-06-02 23:25:33.765 | INFO     | utils.api_utils:reward_mechanism:197 - Processing miner sG3D9cMKoayIHId8Ib2h (UID: 183)
+2025-06-02 23:25:33.765 | INFO     | utils.api_utils:reward_mechanism:230 - Miner sG3D9cMKoayIHId8Ib2h has 1 compute resource(s)
+2025-06-02 23:25:33.765 | INFO     | utils.api_utils:process_resource:238 - Processing resource 1 (ID: a93ac06f-13df-4da1-a861-0fc8e0aa4894)
+2025-06-02 23:25:33.766 | INFO     | utils.api_utils:update_miner_compute_resource:863 - Sending PUT request with payload: {'compute_resource_updates': [{'id': 'a1df2745-769a-4873-be1a-00d1e669bbdf', 'validation_status': 'rejected', 'reason': 'Low compute score: 0.0000'}]}
+2025-06-02 23:25:34.698 | INFO     | utils.api_utils:update_miner_compute_resource:868 - Successfully updated compute resource a1df2745-769a-4873-be1a-00d1e669bbdf for miner AOoep8Z84sMW3V57Mclc
+2025-06-02 23:25:35,313 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:25:37,566 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:25:42,172 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:25:44,984 - neurons.utils.proof_of_work - WARNING - SSH protocol error for 109.107.181.126:11000: No existing session
+2025-06-02 23:25:45,655 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:25:47,803 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:25:50,576 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:25:55,073 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:25:57,941 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:26:01,534 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:26:06,033 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:26:07,567 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:26:08.455 | INFO     | utils.validator_utils:verify_miners:136 - Verifiction complete .........
+2025-06-02 23:26:09,514 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:26:12,073 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:26:17.193 | INFO     | utils.api_utils:process_resource:243 - Resource a93ac06f-13df-4da1-a861-0fc8e0aa4894: compute_score=1.0000
+2025-06-02 23:26:17.194 | INFO     | utils.api_utils:reward_mechanism:282 - Resource a93ac06f-13df-4da1-a861-0fc8e0aa4894: scaled_compute_score=6.93
+2025-06-02 23:26:17,195 - neurons.utils.uptimedata - INFO - No valid logs for miner a93ac06f-13df-4da1-a861-0fc8e0aa4894. Uptime: 0%
+2025-06-02 23:26:17,196 - neurons.utils.uptimedata - ERROR - Error saving payment log for miner a93ac06f-13df-4da1-a861-0fc8e0aa4894: Extra data: line 1 column 189 (char 188)
+2025-06-02 23:26:17.197 | INFO     | utils.api_utils:reward_mechanism:319 - Resource a93ac06f-13df-4da1-a861-0fc8e0aa4894: reward=0.000200
+2025-06-02 23:26:17.197 | INFO     | utils.api_utils:get_containers_for_resource:676 - Fetching containers for resource_id: a93ac06f-13df-4da1-a861-0fc8e0aa4894 from https://polaris-interface.onrender.com/api/v1/services/container/container/containers
+2025-06-02 23:26:18.524 | INFO     | utils.api_utils:get_containers_for_resource:684 - Retrieved 38 containers for resource_id: a93ac06f-13df-4da1-a861-0fc8e0aa4894
+2025-06-02 23:26:18.524 | INFO     | utils.api_utils:get_containers_for_resource:690 - Found 0 containers for resource_id a93ac06f-13df-4da1-a861-0fc8e0aa4894, 0 in 'running' status
+2025-06-02 23:26:18.525 | INFO     | utils.api_utils:reward_mechanism:334 - Resource a93ac06f-13df-4da1-a861-0fc8e0aa4894: running_containers=0
+2025-06-02 23:26:18.525 | INFO     | utils.api_utils:reward_mechanism:342 - Resource a93ac06f-13df-4da1-a861-0fc8e0aa4894: containers=0, score=10.23
+2025-06-02 23:26:18.525 | INFO     | utils.api_utils:reward_mechanism:197 - Processing miner uMtcUAZUQIKS1iCtTYUv (UID: 48)
+2025-06-02 23:26:18.525 | INFO     | utils.api_utils:reward_mechanism:230 - Miner uMtcUAZUQIKS1iCtTYUv has 1 compute resource(s)
+2025-06-02 23:26:18.526 | INFO     | utils.api_utils:process_resource:238 - Processing resource 1 (ID: dee3929c-4171-40bf-af0c-6911c973b4be)
+2025-06-02 23:26:19,445 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:26:20,672 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:26:21,799 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:26:23,466 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:26:27,364 - neurons.utils.proof_of_work - WARNING - SSH timeout for 65.108.228.154:22 - command may be taking too long
+2025-06-02 23:26:30,402 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:26:33,360 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:26:34,906 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:26:36,521 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:26:38,082 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:26:40,455 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:26:42,180 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:26:43,662 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:26:45,454 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:26:47,500 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:26:53.850 | INFO     | utils.api_utils:process_resource:243 - Resource dee3929c-4171-40bf-af0c-6911c973b4be: compute_score=0.1840
+2025-06-02 23:26:53.851 | INFO     | utils.api_utils:reward_mechanism:282 - Resource dee3929c-4171-40bf-af0c-6911c973b4be: scaled_compute_score=1.69
+2025-06-02 23:26:53,853 - neurons.utils.uptimedata - INFO - No logs within 7200 blocks for miner dee3929c-4171-40bf-af0c-6911c973b4be. Uptime: 0%
+2025-06-02 23:26:53,855 - neurons.utils.uptimedata - ERROR - Error saving payment log for miner dee3929c-4171-40bf-af0c-6911c973b4be: Extra data: line 1 column 189 (char 188)
+2025-06-02 23:26:53.855 | INFO     | utils.api_utils:reward_mechanism:319 - Resource dee3929c-4171-40bf-af0c-6911c973b4be: reward=0.000037
+2025-06-02 23:26:53.856 | INFO     | utils.api_utils:get_containers_for_resource:676 - Fetching containers for resource_id: dee3929c-4171-40bf-af0c-6911c973b4be from https://polaris-interface.onrender.com/api/v1/services/container/container/containers
+2025-06-02 23:27:00.104 | INFO     | utils.api_utils:get_containers_for_resource:684 - Retrieved 38 containers for resource_id: dee3929c-4171-40bf-af0c-6911c973b4be
+2025-06-02 23:27:00.104 | INFO     | utils.api_utils:get_containers_for_resource:690 - Found 0 containers for resource_id dee3929c-4171-40bf-af0c-6911c973b4be, 0 in 'running' status
+2025-06-02 23:27:00.104 | INFO     | utils.api_utils:reward_mechanism:334 - Resource dee3929c-4171-40bf-af0c-6911c973b4be: running_containers=0
+2025-06-02 23:27:00.105 | INFO     | utils.api_utils:reward_mechanism:342 - Resource dee3929c-4171-40bf-af0c-6911c973b4be: containers=0, score=10.06
+2025-06-02 23:27:00.105 | INFO     | utils.api_utils:reward_mechanism:197 - Processing miner uWwXp6L82A3Zc0Q1nqnP (UID: 125)
+2025-06-02 23:27:00.105 | INFO     | utils.api_utils:reward_mechanism:230 - Miner uWwXp6L82A3Zc0Q1nqnP has 1 compute resource(s)
+2025-06-02 23:27:00.105 | INFO     | utils.api_utils:process_resource:238 - Processing resource 1 (ID: 7ef84a9d-3a50-4170-bc57-e2c7913df01e)
+2025-06-02 23:27:00,636 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:27:03,222 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:27:05,257 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:27:07,776 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:27:10,130 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:27:13,202 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:27:14,533 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:27:16,068 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:27:17,400 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:27:18,373 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:27:20,576 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:27:22,833 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:27:27,437 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:27:30,817 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:27:32.975 | INFO     | utils.api_utils:process_resource:243 - Resource 7ef84a9d-3a50-4170-bc57-e2c7913df01e: compute_score=0.2270
+2025-06-02 23:27:32.976 | INFO     | utils.api_utils:reward_mechanism:282 - Resource 7ef84a9d-3a50-4170-bc57-e2c7913df01e: scaled_compute_score=2.05
+2025-06-02 23:27:32,977 - neurons.utils.uptimedata - INFO - No valid logs for miner 7ef84a9d-3a50-4170-bc57-e2c7913df01e. Uptime: 0%
+2025-06-02 23:27:32,978 - neurons.utils.uptimedata - ERROR - Error saving payment log for miner 7ef84a9d-3a50-4170-bc57-e2c7913df01e: Extra data: line 1 column 189 (char 188)
+2025-06-02 23:27:32.979 | INFO     | utils.api_utils:reward_mechanism:319 - Resource 7ef84a9d-3a50-4170-bc57-e2c7913df01e: reward=0.000045
+2025-06-02 23:27:32.979 | INFO     | utils.api_utils:get_containers_for_resource:676 - Fetching containers for resource_id: 7ef84a9d-3a50-4170-bc57-e2c7913df01e from https://polaris-interface.onrender.com/api/v1/services/container/container/containers
+2025-06-02 23:27:33.582 | INFO     | utils.api_utils:get_containers_for_resource:684 - Retrieved 38 containers for resource_id: 7ef84a9d-3a50-4170-bc57-e2c7913df01e
+2025-06-02 23:27:33.583 | INFO     | utils.api_utils:get_containers_for_resource:690 - Found 0 containers for resource_id 7ef84a9d-3a50-4170-bc57-e2c7913df01e, 0 in 'running' status
+2025-06-02 23:27:33.583 | INFO     | utils.api_utils:reward_mechanism:334 - Resource 7ef84a9d-3a50-4170-bc57-e2c7913df01e: running_containers=0
+2025-06-02 23:27:33.584 | INFO     | utils.api_utils:reward_mechanism:342 - Resource 7ef84a9d-3a50-4170-bc57-e2c7913df01e: containers=0, score=10.07
+2025-06-02 23:27:33.584 | INFO     | utils.api_utils:reward_mechanism:197 - Processing miner vQDJkxG5UdCe2xVhlbHa (UID: 132)
+2025-06-02 23:27:33.584 | INFO     | utils.api_utils:reward_mechanism:230 - Miner vQDJkxG5UdCe2xVhlbHa has 1 compute resource(s)
+2025-06-02 23:27:33.585 | INFO     | utils.api_utils:process_resource:238 - Processing resource 1 (ID: 72b1f75c-25e9-45a2-b60c-083351971dfc)
+2025-06-02 23:27:34,913 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:27:37,443 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:27:38,596 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:27:41,365 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:27:42,794 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:27:46,686 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:27:51,501 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:27:52,636 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:27:55,184 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:27:57,950 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:28:01,226 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:28:13,024 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:28:16,942 - neurons.utils.proof_of_work - WARNING - SSH timeout for 43.245.226.190:22 - command may be taking too long
+2025-06-02 23:28:19,349 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:28:22,162 - neurons.utils.proof_of_work - WARNING - SSH protocol error for 43.245.226.190:22: No existing session
+2025-06-02 23:28:22.163 | INFO     | utils.api_utils:process_resource:243 - Resource 72b1f75c-25e9-45a2-b60c-083351971dfc: compute_score=0.0990
+2025-06-02 23:28:22.163 | INFO     | utils.api_utils:reward_mechanism:282 - Resource 72b1f75c-25e9-45a2-b60c-083351971dfc: scaled_compute_score=0.94
+2025-06-02 23:28:22,164 - neurons.utils.uptimedata - INFO - No valid logs for miner 72b1f75c-25e9-45a2-b60c-083351971dfc. Uptime: 0%
+2025-06-02 23:28:22,166 - neurons.utils.uptimedata - ERROR - Error saving payment log for miner 72b1f75c-25e9-45a2-b60c-083351971dfc: Extra data: line 1 column 186 (char 185)
+2025-06-02 23:28:22.166 | INFO     | utils.api_utils:reward_mechanism:319 - Resource 72b1f75c-25e9-45a2-b60c-083351971dfc: reward=0.000020
+2025-06-02 23:28:22.166 | INFO     | utils.api_utils:get_containers_for_resource:676 - Fetching containers for resource_id: 72b1f75c-25e9-45a2-b60c-083351971dfc from https://polaris-interface.onrender.com/api/v1/services/container/container/containers
+2025-06-02 23:28:23.040 | INFO     | utils.api_utils:get_containers_for_resource:684 - Retrieved 38 containers for resource_id: 72b1f75c-25e9-45a2-b60c-083351971dfc
+2025-06-02 23:28:23.041 | INFO     | utils.api_utils:get_containers_for_resource:690 - Found 0 containers for resource_id 72b1f75c-25e9-45a2-b60c-083351971dfc, 0 in 'running' status
+2025-06-02 23:28:23.041 | INFO     | utils.api_utils:reward_mechanism:334 - Resource 72b1f75c-25e9-45a2-b60c-083351971dfc: running_containers=0
+2025-06-02 23:28:23.042 | INFO     | utils.api_utils:reward_mechanism:342 - Resource 72b1f75c-25e9-45a2-b60c-083351971dfc: containers=0, score=10.03
+2025-06-02 23:28:23.042 | INFO     | utils.api_utils:reward_mechanism:197 - Processing miner vSftixDvtLODeJGuK6mR (UID: 113)
+2025-06-02 23:28:23.042 | INFO     | utils.api_utils:reward_mechanism:230 - Miner vSftixDvtLODeJGuK6mR has 1 compute resource(s)
+2025-06-02 23:28:23.042 | INFO     | utils.api_utils:process_resource:238 - Processing resource 1 (ID: 3ba62197-bbf5-45d1-979a-c9cb12884c56)
+2025-06-02 23:28:23,957 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:28:26,336 - neurons.utils.proof_of_work - WARNING - SSH protocol error for 81.94.158.61:22: No existing session
+2025-06-02 23:28:26,767 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:28:30,433 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:28:35,142 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:28:36,756 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:28:39,523 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:28:42,342 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:28:43,937 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:28:45,144 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:28:47,099 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:28:48,732 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:28:51,491 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:28:53,654 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:28:58.308 | INFO     | utils.api_utils:process_resource:243 - Resource 3ba62197-bbf5-45d1-979a-c9cb12884c56: compute_score=0.0360
+2025-06-02 23:28:58.309 | INFO     | utils.api_utils:reward_mechanism:282 - Resource 3ba62197-bbf5-45d1-979a-c9cb12884c56: scaled_compute_score=0.35
+2025-06-02 23:28:58,311 - neurons.utils.uptimedata - INFO - No logs within 7200 blocks for miner 3ba62197-bbf5-45d1-979a-c9cb12884c56. Uptime: 0%
+2025-06-02 23:28:58,313 - neurons.utils.uptimedata - ERROR - Error saving payment log for miner 3ba62197-bbf5-45d1-979a-c9cb12884c56: Extra data: line 1 column 187 (char 186)
+2025-06-02 23:28:58.313 | INFO     | utils.api_utils:reward_mechanism:319 - Resource 3ba62197-bbf5-45d1-979a-c9cb12884c56: reward=0.000007
+2025-06-02 23:28:58.314 | INFO     | utils.api_utils:get_containers_for_resource:676 - Fetching containers for resource_id: 3ba62197-bbf5-45d1-979a-c9cb12884c56 from https://polaris-interface.onrender.com/api/v1/services/container/container/containers
+2025-06-02 23:28:59.799 | INFO     | utils.api_utils:get_containers_for_resource:684 - Retrieved 38 containers for resource_id: 3ba62197-bbf5-45d1-979a-c9cb12884c56
+2025-06-02 23:28:59.799 | INFO     | utils.api_utils:get_containers_for_resource:690 - Found 0 containers for resource_id 3ba62197-bbf5-45d1-979a-c9cb12884c56, 0 in 'running' status
+2025-06-02 23:28:59.800 | INFO     | utils.api_utils:reward_mechanism:334 - Resource 3ba62197-bbf5-45d1-979a-c9cb12884c56: running_containers=0
+2025-06-02 23:28:59.800 | INFO     | utils.api_utils:reward_mechanism:342 - Resource 3ba62197-bbf5-45d1-979a-c9cb12884c56: containers=0, score=10.01
+2025-06-02 23:28:59.800 | INFO     | utils.api_utils:reward_mechanism:197 - Processing miner w0QpNQzOhIa5dhirD9bu (UID: 153)
+2025-06-02 23:28:59.800 | INFO     | utils.api_utils:reward_mechanism:230 - Miner w0QpNQzOhIa5dhirD9bu has 1 compute resource(s)
+2025-06-02 23:28:59.801 | INFO     | utils.api_utils:process_resource:238 - Processing resource 1 (ID: e2d3640f-cbc5-4c3a-b64e-ef945ace26e0)
+2025-06-02 23:29:00,209 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:29:02,355 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:29:04,916 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:29:06,020 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:29:08,931 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:29:10,445 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:29:12,925 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:29:15,056 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:29:16,486 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:29:17,614 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:29:23,543 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:29:25,599 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:29:32,462 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:29:33,531 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:29:36.148 | INFO     | utils.api_utils:process_resource:243 - Resource e2d3640f-cbc5-4c3a-b64e-ef945ace26e0: compute_score=0.2110
+2025-06-02 23:29:36.149 | INFO     | utils.api_utils:reward_mechanism:282 - Resource e2d3640f-cbc5-4c3a-b64e-ef945ace26e0: scaled_compute_score=1.91
+2025-06-02 23:29:36,149 - neurons.utils.uptimedata - INFO - No valid logs for miner e2d3640f-cbc5-4c3a-b64e-ef945ace26e0. Uptime: 0%
+2025-06-02 23:29:36,151 - neurons.utils.uptimedata - ERROR - Error saving payment log for miner e2d3640f-cbc5-4c3a-b64e-ef945ace26e0: Extra data: line 1 column 189 (char 188)
+2025-06-02 23:29:36.151 | INFO     | utils.api_utils:reward_mechanism:319 - Resource e2d3640f-cbc5-4c3a-b64e-ef945ace26e0: reward=0.000042
+2025-06-02 23:29:36.151 | INFO     | utils.api_utils:get_containers_for_resource:676 - Fetching containers for resource_id: e2d3640f-cbc5-4c3a-b64e-ef945ace26e0 from https://polaris-interface.onrender.com/api/v1/services/container/container/containers
+2025-06-02 23:29:38.912 | INFO     | utils.api_utils:get_containers_for_resource:684 - Retrieved 38 containers for resource_id: e2d3640f-cbc5-4c3a-b64e-ef945ace26e0
+2025-06-02 23:29:38.913 | INFO     | utils.api_utils:get_containers_for_resource:690 - Found 0 containers for resource_id e2d3640f-cbc5-4c3a-b64e-ef945ace26e0, 0 in 'running' status
+2025-06-02 23:29:38.913 | INFO     | utils.api_utils:reward_mechanism:334 - Resource e2d3640f-cbc5-4c3a-b64e-ef945ace26e0: running_containers=0
+2025-06-02 23:29:38.913 | INFO     | utils.api_utils:reward_mechanism:342 - Resource e2d3640f-cbc5-4c3a-b64e-ef945ace26e0: containers=0, score=10.06
+2025-06-02 23:29:38.914 | INFO     | utils.api_utils:reward_mechanism:197 - Processing miner zexiPSfZ404mKfg5s52U (UID: 60)
+2025-06-02 23:29:38.914 | INFO     | utils.api_utils:reward_mechanism:230 - Miner zexiPSfZ404mKfg5s52U has 1 compute resource(s)
+2025-06-02 23:29:38.914 | INFO     | utils.api_utils:process_resource:238 - Processing resource 1 (ID: 8756ebd8-9068-4b05-b2ed-759368964369)
+2025-06-02 23:29:39,274 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:29:41,268 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:29:44,748 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:29:47,432 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:29:50,379 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:29:54,270 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:29:55,249 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:29:56,830 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:29:59,904 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:30:01,754 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:30:03,179 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:30:09,427 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:30:10,915 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_9.6p1)
+2025-06-02 23:30:11,884 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:30:15.467 | INFO     | utils.api_utils:process_resource:243 - Resource 8756ebd8-9068-4b05-b2ed-759368964369: compute_score=0.2040
+2025-06-02 23:30:15.468 | INFO     | utils.api_utils:reward_mechanism:282 - Resource 8756ebd8-9068-4b05-b2ed-759368964369: scaled_compute_score=1.86
+2025-06-02 23:30:15,469 - neurons.utils.uptimedata - INFO - No logs within 7200 blocks for miner 8756ebd8-9068-4b05-b2ed-759368964369. Uptime: 0%
+2025-06-02 23:30:15,470 - neurons.utils.uptimedata - ERROR - Error saving payment log for miner 8756ebd8-9068-4b05-b2ed-759368964369: Extra data: line 1 column 189 (char 188)
+2025-06-02 23:30:15.470 | INFO     | utils.api_utils:reward_mechanism:319 - Resource 8756ebd8-9068-4b05-b2ed-759368964369: reward=0.000041
+2025-06-02 23:30:15.470 | INFO     | utils.api_utils:get_containers_for_resource:676 - Fetching containers for resource_id: 8756ebd8-9068-4b05-b2ed-759368964369 from https://polaris-interface.onrender.com/api/v1/services/container/container/containers
+2025-06-02 23:30:16.086 | INFO     | utils.api_utils:get_containers_for_resource:684 - Retrieved 38 containers for resource_id: 8756ebd8-9068-4b05-b2ed-759368964369
+2025-06-02 23:30:16.087 | INFO     | utils.api_utils:get_containers_for_resource:690 - Found 0 containers for resource_id 8756ebd8-9068-4b05-b2ed-759368964369, 0 in 'running' status
+2025-06-02 23:30:16.087 | INFO     | utils.api_utils:reward_mechanism:334 - Resource 8756ebd8-9068-4b05-b2ed-759368964369: running_containers=0
+2025-06-02 23:30:16.088 | INFO     | utils.api_utils:reward_mechanism:342 - Resource 8756ebd8-9068-4b05-b2ed-759368964369: containers=0, score=10.06
+2025-06-02 23:30:16.088 | INFO     | utils.api_utils:reward_mechanism:197 - Processing miner zlGakvHqctqNDoW69or8 (UID: 145)
+2025-06-02 23:30:16.088 | INFO     | utils.api_utils:reward_mechanism:230 - Miner zlGakvHqctqNDoW69or8 has 1 compute resource(s)
+2025-06-02 23:30:16.089 | INFO     | utils.api_utils:process_resource:238 - Processing resource 1 (ID: 177cf93f-c4ca-41d5-9a38-00f14d125640)
+2025-06-02 23:30:16,798 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:30:19,405 - neurons.utils.proof_of_work - WARNING - SSH protocol error for 108.175.183.8:2121: No existing session
+2025-06-02 23:30:21,081 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:30:24,207 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:30:29,291 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:30:32,082 - neurons.utils.proof_of_work - WARNING - SSH protocol error for 108.175.183.8:2121: No existing session
+2025-06-02 23:30:33,768 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:30:36,420 - neurons.utils.proof_of_work - WARNING - SSH protocol error for 108.175.183.8:2121: No existing session
+2025-06-02 23:30:38,636 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:30:42,705 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:30:45,680 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:30:51,102 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:30:54,248 - paramiko.transport - INFO - Connected (version 2.0, client OpenSSH_8.9p1)
+2025-06-02 23:30:58,677 - paramiko.transport - INFO - Authentication (publickey) successful!
+2025-06-02 23:31:03.322 | INFO     | utils.api_utils:process_resource:243 - Resource 177cf93f-c4ca-41d5-9a38-00f14d125640: compute_score=1.0000
+2025-06-02 23:31:03.323 | INFO     | utils.api_utils:reward_mechanism:282 - Resource 177cf93f-c4ca-41d5-9a38-00f14d125640: scaled_compute_score=6.93
+2025-06-02 23:31:03,323 - neurons.utils.uptimedata - INFO - No valid logs for miner 177cf93f-c4ca-41d5-9a38-00f14d125640. Uptime: 0%
+2025-06-02 23:31:03.325 | INFO     | utils.api_utils:reward_mechanism:319 - Resource 177cf93f-c4ca-41d5-9a38-00f14d125640: reward=0.000200
+2025-06-02 23:31:03.325 | INFO     | utils.api_utils:get_containers_for_resource:676 - Fetching containers for resource_id: 177cf93f-c4ca-41d5-9a38-00f14d125640 from https://polaris-interface.onrender.com/api/v1/services/container/container/containers
+2025-06-02 23:31:04.109 | INFO     | utils.api_utils:get_containers_for_resource:684 - Retrieved 38 containers for resource_id: 177cf93f-c4ca-41d5-9a38-00f14d125640
+2025-06-02 23:31:04.109 | INFO     | utils.api_utils:get_containers_for_resource:690 - Found 0 containers for resource_id 177cf93f-c4ca-41d5-9a38-00f14d125640, 0 in 'running' status
+2025-06-02 23:31:04.110 | INFO     | utils.api_utils:reward_mechanism:334 - Resource 177cf93f-c4ca-41d5-9a38-00f14d125640: running_containers=0
+2025-06-02 23:31:04.110 | INFO     | utils.api_utils:reward_mechanism:342 - Resource 177cf93f-c4ca-41d5-9a38-00f14d125640: containers=0, score=10.23
+2025-06-02 23:31:04.133 | INFO     | utils.api_utils:reward_mechanism:356 - Miner ID 4r6R71dJ4vyvErClkd9x: raw_score=10.23, normalized_score=500.00
+2025-06-02 23:31:04.134 | INFO     | utils.api_utils:reward_mechanism:356 - Miner ID 7guIVzseS0TFjgvjgoSS: raw_score=10.04, normalized_score=490.95
+2025-06-02 23:31:04.135 | INFO     | utils.api_utils:reward_mechanism:356 - Miner ID 8hvxxUmM16AAouBqmRsr: raw_score=10.09, normalized_score=493.29
+2025-06-02 23:31:04.135 | INFO     | utils.api_utils:reward_mechanism:356 - Miner ID AOoep8Z84sMW3V57Mclc: raw_score=0.00, normalized_score=0.00
+2025-06-02 23:31:04.136 | INFO     | utils.api_utils:reward_mechanism:356 - Miner ID E83NDzEkSsmSAFoLmE2t: raw_score=10.04, normalized_score=490.95
+2025-06-02 23:31:04.136 | INFO     | utils.api_utils:reward_mechanism:356 - Miner ID FqvzUNI5vYs0lrlF5mcy: raw_score=10.04, normalized_score=490.95
+2025-06-02 23:31:04.136 | INFO     | utils.api_utils:reward_mechanism:356 - Miner ID Qo58fb85M23qr3xrJXpx: raw_score=0.00, normalized_score=0.00
+2025-06-02 23:31:04.136 | INFO     | utils.api_utils:reward_mechanism:356 - Miner ID S2XJuMnC29rn7JQUUPIS: raw_score=10.04, normalized_score=490.95
+2025-06-02 23:31:04.136 | INFO     | utils.api_utils:reward_mechanism:356 - Miner ID SHgoiWPB5htfBs3pXjIN: raw_score=10.04, normalized_score=490.95
+2025-06-02 23:31:04.137 | INFO     | utils.api_utils:reward_mechanism:356 - Miner ID SYciHeMGsVuu55n07oKr: raw_score=10.23, normalized_score=500.00
+2025-06-02 23:31:04.137 | INFO     | utils.api_utils:reward_mechanism:356 - Miner ID eQqjnL1LlpHw8kPBD98c: raw_score=10.23, normalized_score=500.00
+2025-06-02 23:31:04.137 | INFO     | utils.api_utils:reward_mechanism:356 - Miner ID iArUCOD1ylnGEgrKVDKV: raw_score=10.06, normalized_score=491.81
+2025-06-02 23:31:04.137 | INFO     | utils.api_utils:reward_mechanism:356 - Miner ID nzQIc2THYhLiINzEtRBb: raw_score=10.11, normalized_score=494.24
+2025-06-02 23:31:04.137 | INFO     | utils.api_utils:reward_mechanism:356 - Miner ID pbPc0b4Uf1TxjwtQHsSN: raw_score=10.10, normalized_score=493.77
+2025-06-02 23:31:04.137 | INFO     | utils.api_utils:reward_mechanism:356 - Miner ID qIixWdT07862KFu87tIa: raw_score=10.06, normalized_score=491.54
+2025-06-02 23:31:04.137 | INFO     | utils.api_utils:reward_mechanism:356 - Miner ID qtYNDsUkH0lxyLfAcmL7: raw_score=10.23, normalized_score=500.00
+2025-06-02 23:31:04.137 | INFO     | utils.api_utils:reward_mechanism:356 - Miner ID s663AjJ38d9YEWvrn3Kn: raw_score=0.00, normalized_score=0.00
+2025-06-02 23:31:04.138 | INFO     | utils.api_utils:reward_mechanism:356 - Miner ID sG3D9cMKoayIHId8Ib2h: raw_score=10.23, normalized_score=500.00
+2025-06-02 23:31:04.140 | INFO     | utils.api_utils:reward_mechanism:356 - Miner ID uMtcUAZUQIKS1iCtTYUv: raw_score=10.06, normalized_score=491.54
+2025-06-02 23:31:04.141 | INFO     | utils.api_utils:reward_mechanism:356 - Miner ID uWwXp6L82A3Zc0Q1nqnP: raw_score=10.07, normalized_score=492.11
+2025-06-02 23:31:04.141 | INFO     | utils.api_utils:reward_mechanism:356 - Miner ID vQDJkxG5UdCe2xVhlbHa: raw_score=10.03, normalized_score=490.33
+2025-06-02 23:31:04.141 | INFO     | utils.api_utils:reward_mechanism:356 - Miner ID vSftixDvtLODeJGuK6mR: raw_score=10.01, normalized_score=489.38
+2025-06-02 23:31:04.141 | INFO     | utils.api_utils:reward_mechanism:356 - Miner ID w0QpNQzOhIa5dhirD9bu: raw_score=10.06, normalized_score=491.90
+2025-06-02 23:31:04.141 | INFO     | utils.api_utils:reward_mechanism:356 - Miner ID zexiPSfZ404mKfg5s52U: raw_score=10.06, normalized_score=491.81
+2025-06-02 23:31:04.141 | INFO     | utils.api_utils:reward_mechanism:356 - Miner ID zlGakvHqctqNDoW69or8: raw_score=10.23, normalized_score=500.00
+2025-06-02 23:31:04,145 - neurons.utils.uptimedata - WARNING - Log file for miner f4eee6ff-d351-4590-a330-e35558bf896b missing or tampered. Starting fresh.
+2025-06-02 23:31:04,150 - neurons.utils.uptimedata - WARNING - Log file for miner 2c960a4b-4462-4db0-8358-bb3abb2f24c9 missing or tampered. Starting fresh.
+2025-06-02 23:31:04,152 - neurons.utils.uptimedata - WARNING - Log file for miner 92a012a7-c4f7-4cc0-8aee-98006f2e1989 missing or tampered. Starting fresh.
+2025-06-02 23:31:04,154 - neurons.utils.uptimedata - WARNING - Log file for miner 53d07943-77ba-45c4-9921-886bc34bbf4c missing or tampered. Starting fresh.
+2025-06-02 23:31:04,158 - neurons.utils.uptimedata - WARNING - Log file for miner b012b334-ca0d-47aa-9777-f16ef502894f missing or tampered. Starting fresh.
+2025-06-02 23:31:04,160 - neurons.utils.uptimedata - WARNING - Log file for miner 5d09f7ae-5601-4779-ac07-1508b6e45a01 missing or tampered. Starting fresh.
+2025-06-02 23:31:04,171 - neurons.utils.uptimedata - WARNING - Log file for miner 658b5e91-10ce-4cfe-96e5-68f57aeb012a missing or tampered. Starting fresh.
+2025-06-02 23:31:04,175 - neurons.utils.uptimedata - WARNING - Log file for miner ccd7faba-c1f3-47ff-aed2-4314f5ab9118 missing or tampered. Starting fresh.
+2025-06-02 23:31:04,186 - neurons.utils.uptimedata - WARNING - Log file for miner a93ac06f-13df-4da1-a861-0fc8e0aa4894 missing or tampered. Starting fresh.
+2025-06-02 23:31:04,192 - neurons.utils.uptimedata - WARNING - Log file for miner 7ef84a9d-3a50-4170-bc57-e2c7913df01e missing or tampered. Starting fresh.
+2025-06-02 23:31:04,197 - neurons.utils.uptimedata - WARNING - Log file for miner 72b1f75c-25e9-45a2-b60c-083351971dfc missing or tampered. Starting fresh.
+2025-06-02 23:31:04,202 - neurons.utils.uptimedata - WARNING - Log file for miner e2d3640f-cbc5-4c3a-b64e-ef945ace26e0 missing or tampered. Starting fresh.
+2025-06-02 23:31:04,210 - neurons.utils.uptimedata - WARNING - Log file for miner 177cf93f-c4ca-41d5-9a38-00f14d125640 missing or tampered. Starting fresh.
+2025-06-02 23:31:04.213 | INFO     | utils.api_utils:reward_mechanism:370 - Processed 25 unique miner IDs
+2025-06-02 23:31:04.213 | DEBUG    | utils.api_utils:aggregate_rewards:99 - Aggregating rewards for scored miners.................
+2025-06-02 23:31:04.214 | INFO     | utils.validator_utils:process_miners:103 - Successfully processed miners rewards: {'18': 500.0002, '123': 490.95254015777004, '61': 493.2908587597088, '106': 0.0, '131': 1472.8576204733101, '64': 0.0, '30': 990.95274015777, '112': 500.0002, '60': 983.6119212868036, '163': 494.24079565694416, '188': 493.77280717670925, '4': 491.53555872271056, '69': 500.0002, '57': 0.0, '183': 500.0002, '48': 491.53555872271056, '125': 492.11142852169775, '132': 490.33300765840113, '113': 489.3801266209687, '153': 491.89954207728334, '145': 500.0002}
+2025-06-02 23:31:04.531 | DEBUG    | utils.validator_utils:process_miners:117 - Subtensor connection closed
+2025-06-02 23:31:04.531 | INFO     | __main__:update_validator_weights:192 - Starting update_validator_weights...
+2025-06-02 23:31:10.838 | INFO     | __main__:check_registered:147 - Validator is registered.
+2025-06-02 23:31:20.088 | INFO     | __main__:get_last_update:119 - Last update was 1583694 blocks ago
+2025-06-02 23:31:20.387 | INFO     | __main__:is_subnet_ready_for_weights:184 - Ready: 5695180/360 blocks (internal), 1583694/360 (chain)
+2025-06-02 23:31:30.525 | INFO     | __main__:update_validator_weights:209 - Subnet price: 0.001966734
+2025-06-02 23:31:30.525 | INFO     | __main__:update_validator_weights:215 - Applied score decay: 0.9, new scores sum: 0.0
+2025-06-02 23:31:30.526 | INFO     | __main__:update_validator_weights:222 - Updated scores, top 5: [(131, 2.8967192), (30, 1.9489404), (60, 1.934503), (18, 0.9833674), (69, 0.9833674)]
+2025-06-02 23:31:30.530 | INFO     | template.base.utils.weight_utils:convert_weights_and_uids_for_emit:63 - Converted weights: UIDs=[4, 18, 30, 48, 60, 61, 69, 112, 113, 123, 125, 131, 132, 145, 153, 163, 183, 188], Weights=[0.047093894332647324, 0.047904882580041885, 0.09494291990995407, 0.047093894332647324, 0.09423959255218506, 0.04726206511259079, 0.047904882580041885, 0.047904882580041885, 0.04688737913966179, 0.04703803360462189, 0.047149065881967545, 0.10000000894069672, 0.046978674829006195, 0.047904882580041885, 0.04712876304984093, 0.04735307767987251, 0.047904882580041885, 0.047308243811130524], Sum=1.000000026077032
+2025-06-02 23:31:30.581 | INFO     | template.base.utils.weight_utils:process_weights_for_netuid:104 - Setting weights: UIDs=[4, 18, 30, 48, 60, 61, 69, 112, 113, 123, 125, 131, 132, 145, 153, 163, 183, 188], Weights=[0.047093894332647324, 0.047904882580041885, 0.09494291990995407, 0.047093894332647324, 0.09423959255218506, 0.04726206511259079, 0.047904882580041885, 0.047904882580041885, 0.04688737913966179, 0.04703803360462189, 0.047149065881967545, 0.10000000894069672, 0.046978674829006195, 0.047904882580041885, 0.04712876304984093, 0.04735307767987251, 0.047904882580041885, 0.047308243811130524], Sum=1.000000026077032
+2025-06-02 23:31:30.582 | INFO     | template.base.utils.weight_utils:process_weights_for_netuid:105 - Wallet: Wallet (Name: 'mokoai', Hotkey: 'mokoai', Path: '~/.bittensor/wallets/')
+2025-06-02 23:31:59,729 - bittensor - ERROR - Subtensor returned: Invalid Transaction
+2025-06-02 23:31:59.729 |      ERROR       | Subtensor returned: Invalid Transaction
+2025-06-02 23:32:12,927 - bittensor - ERROR - Subtensor returned: Invalid Transaction
+2025-06-02 23:32:12.927 |      ERROR       | Subtensor returned: Invalid Transaction
+2025-06-02 23:32:24,589 - bittensor - ERROR - Subtensor returned: Invalid Transaction
+2025-06-02 23:32:24.589 |      ERROR       | Subtensor returned: Invalid Transaction
+2025-06-02 23:32:36,772 - bittensor - ERROR - Subtensor returned: Invalid Transaction
+2025-06-02 23:32:36.772 |      ERROR       | Subtensor returned: Invalid Transaction
+2025-06-02 23:32:56,230 - bittensor - ERROR - Subtensor returned: Invalid Transaction
+2025-06-02 23:32:56.230 |      ERROR       | Subtensor returned: Invalid Transaction
+2025-06-02 23:32:56.230 | WARNING  | template.base.utils.weight_utils:process_weights_for_netuid:119 - Weight setting failed: Subtensor returned: Invalid Transaction
+2025-06-02 23:32:56.231 | WARNING  | __main__:update_validator_weights:246 - Weight update failed on attempt 1/3
+2025-06-02 23:32:56.231 | INFO     | __main__:update_validator_weights:249 - Retrying in 5 seconds...
+2025-06-02 23:32:56.231 | INFO     | __main__:verify_miners_loop:260 - Starting miner verification cycle
+2025-06-02 23:32:56.232 | DEBUG    | __main__:verify_miners_loop:262 - Fetching registered miners
+2025-06-02 23:33:04.055 | DEBUG    | __main__:verify_miners_loop:264 - Selecting through 256 Bittensor miners
+2025-06-02 23:33:15.381 | INFO     | utils.api_utils:_sync_miners_data:69 - Cached miners data, total miners: 28
+2025-06-02 23:33:15.381 | INFO     | utils.api_utils:sub_verification:916 - Processing 28 miners for verification
+2025-06-02 23:33:15.382 | INFO     | utils.api_utils:process_miner:934 - Processing miner 4r6R71dJ4vyvErClkd9x (UID: 18)
+2025-06-02 23:33:15.382 | INFO     | utils.api_utils:process_miner:941 - Miner 4r6R71dJ4vyvErClkd9x has 1 compute resource(s)
+2025-06-02 23:33:15.382 | WARNING  | utils.api_utils:process_miner:923 - Skipping miner 615745ac-ad47-414b-b673-85b7eb470ffc: No bittensor registration
+2025-06-02 23:33:15.382 | INFO     | utils.api_utils:process_miner:934 - Processing miner 7guIVzseS0TFjgvjgoSS (UID: 123)
+2025-06-02 23:33:15.383 | INFO     | utils.api_utils:process_miner:941 - Miner 7guIVzseS0TFjgvjgoSS has 1 compute resource(s)
+2025-06-02 23:33:15.383 | INFO     | utils.api_utils:process_miner:934 - Processing miner 8hvxxUmM16AAouBqmRsr (UID: 61)
+2025-06-02 23:33:15.383 | INFO     | utils.api_utils:process_miner:941 - Miner 8hvxxUmM16AAouBqmRsr has 1 compute resource(s)
+2025-06-02 23:33:15.383 | INFO     | utils.api_utils:process_miner:934 - Processing miner AOoep8Z84sMW3V57Mclc (UID: 106)
+2025-06-02 23:33:15.384 | INFO     | utils.api_utils:process_miner:941 - Miner AOoep8Z84sMW3V57Mclc has 1 compute resource(s)
+2025-06-02 23:33:15.384 | INFO     | utils.api_utils:process_miner:934 - Processing miner E83NDzEkSsmSAFoLmE2t (UID: 131)
+2025-06-02 23:33:15.384 | INFO     | utils.api_utils:process_miner:941 - Miner E83NDzEkSsmSAFoLmE2t has 1 compute resource(s)
+2025-06-02 23:33:15.385 | INFO     | utils.api_utils:process_miner:934 - Processing miner FqvzUNI5vYs0lrlF5mcy (UID: 131)
+2025-06-02 23:33:15.385 | INFO     | utils.api_utils:process_miner:941 - Miner FqvzUNI5vYs0lrlF5mcy has 1 compute resource(s)
+2025-06-02 23:33:15.385 | WARNING  | utils.api_utils:process_miner:923 - Skipping miner GyzD1ZRChqv3JFEsW1DQ: No bittensor registration
+2025-06-02 23:33:15.386 | INFO     | utils.api_utils:process_miner:934 - Processing miner Qo58fb85M23qr3xrJXpx (UID: 64)
+2025-06-02 23:33:15.387 | INFO     | utils.api_utils:process_miner:941 - Miner Qo58fb85M23qr3xrJXpx has 1 compute resource(s)
+2025-06-02 23:33:15.387 | INFO     | utils.api_utils:process_miner:934 - Processing miner S2XJuMnC29rn7JQUUPIS (UID: 30)
+2025-06-02 23:33:15.387 | INFO     | utils.api_utils:process_miner:941 - Miner S2XJuMnC29rn7JQUUPIS has 1 compute resource(s)
+2025-06-02 23:33:15.388 | INFO     | utils.api_utils:process_miner:934 - Processing miner SHgoiWPB5htfBs3pXjIN (UID: 131)
+2025-06-02 23:33:15.388 | INFO     | utils.api_utils:process_miner:941 - Miner SHgoiWPB5htfBs3pXjIN has 1 compute resource(s)
+2025-06-02 23:33:15.389 | INFO     | utils.api_utils:process_miner:934 - Processing miner SYciHeMGsVuu55n07oKr (UID: 30)
+2025-06-02 23:33:15.389 | INFO     | utils.api_utils:process_miner:941 - Miner SYciHeMGsVuu55n07oKr has 1 compute resource(s)
+2025-06-02 23:33:15.389 | WARNING  | utils.api_utils:process_miner:923 - Skipping miner b73dc3d7-02d0-4f0f-814b-ab8053017c6a: No bittensor registration
+2025-06-02 23:33:15.390 | INFO     | utils.api_utils:process_miner:934 - Processing miner eQqjnL1LlpHw8kPBD98c (UID: 112)
+2025-06-02 23:33:15.390 | INFO     | utils.api_utils:process_miner:941 - Miner eQqjnL1LlpHw8kPBD98c has 1 compute resource(s)
+2025-06-02 23:33:15.390 | INFO     | utils.api_utils:process_miner:934 - Processing miner iArUCOD1ylnGEgrKVDKV (UID: 60)
+2025-06-02 23:33:15.390 | INFO     | utils.api_utils:process_miner:941 - Miner iArUCOD1ylnGEgrKVDKV has 1 compute resource(s)
+2025-06-02 23:33:15.391 | INFO     | utils.api_utils:process_miner:934 - Processing miner nzQIc2THYhLiINzEtRBb (UID: 163)
+2025-06-02 23:33:15.391 | INFO     | utils.api_utils:process_miner:941 - Miner nzQIc2THYhLiINzEtRBb has 1 compute resource(s)
+2025-06-02 23:33:15.395 | INFO     | utils.api_utils:process_miner:934 - Processing miner pbPc0b4Uf1TxjwtQHsSN (UID: 188)
+2025-06-02 23:33:15.395 | INFO     | utils.api_utils:process_miner:941 - Miner pbPc0b4Uf1TxjwtQHsSN has 1 compute resource(s)
+2025-06-02 23:33:15.395 | INFO     | utils.api_utils:process_miner:934 - Processing miner qIixWdT07862KFu87tIa (UID: 4)
+2025-06-02 23:33:15.395 | INFO     | utils.api_utils:process_miner:941 - Miner qIixWdT07862KFu87tIa has 1 compute resource(s)
+2025-06-02 23:33:15.396 | INFO     | utils.api_utils:process_miner:934 - Processing miner qtYNDsUkH0lxyLfAcmL7 (UID: 69)
+2025-06-02 23:33:15.396 | INFO     | utils.api_utils:process_miner:941 - Miner qtYNDsUkH0lxyLfAcmL7 has 1 compute resource(s)
+2025-06-02 23:33:15.396 | INFO     | utils.api_utils:process_miner:934 - Processing miner s663AjJ38d9YEWvrn3Kn (UID: 57)
+2025-06-02 23:33:15.396 | INFO     | utils.api_utils:process_miner:941 - Miner s663AjJ38d9YEWvrn3Kn has 1 compute resource(s)
+2025-06-02 23:33:15.397 | INFO     | utils.api_utils:process_miner:934 - Processing miner sG3D9cMKoayIHId8Ib2h (UID: 183)
+2025-06-02 23:33:15.397 | INFO     | utils.api_utils:process_miner:941 - Miner sG3D9cMKoayIHId8Ib2h has 1 compute resource(s)
+2025-06-02 23:33:15.397 | INFO     | utils.api_utils:process_miner:934 - Processing miner uMtcUAZUQIKS1iCtTYUv (UID: 48)
+2025-06-02 23:33:15.397 | INFO     | utils.api_utils:process_miner:941 - Miner uMtcUAZUQIKS1iCtTYUv has 1 compute resource(s)
+2025-06-02 23:33:15.397 | INFO     | utils.api_utils:process_miner:934 - Processing miner uWwXp6L82A3Zc0Q1nqnP (UID: 125)
+2025-06-02 23:33:15.397 | INFO     | utils.api_utils:process_miner:941 - Miner uWwXp6L82A3Zc0Q1nqnP has 1 compute resource(s)
+2025-06-02 23:33:15.398 | INFO     | utils.api_utils:process_miner:934 - Processing miner vQDJkxG5UdCe2xVhlbHa (UID: 132)
+2025-06-02 23:33:15.398 | INFO     | utils.api_utils:process_miner:941 - Miner vQDJkxG5UdCe2xVhlbHa has 1 compute resource(s)
+2025-06-02 23:33:15.398 | INFO     | utils.api_utils:process_miner:934 - Processing miner vSftixDvtLODeJGuK6mR (UID: 113)
+2025-06-02 23:33:15.398 | INFO     | utils.api_utils:process_miner:941 - Miner vSftixDvtLODeJGuK6mR has 1 compute resource(s)
+2025-06-02 23:33:15.398 | INFO     | utils.api_utils:process_miner:934 - Processing miner w0QpNQzOhIa5dhirD9bu (UID: 153)
+2025-06-02 23:33:15.398 | INFO     | utils.api_utils:process_miner:941 - Miner w0QpNQzOhIa5dhirD9bu has 1 compute resource(s)
+2025-06-02 23:33:15.399 | INFO     | utils.api_utils:process_miner:934 - Processing miner zexiPSfZ404mKfg5s52U (UID: 60)
+2025-06-02 23:33:15.399 | INFO     | utils.api_utils:process_miner:941 - Miner zexiPSfZ404mKfg5s52U has 1 compute resource(s)
+2025-06-02 23:33:15.399 | INFO     | utils.api_utils:process_miner:934 - Processing miner zlGakvHqctqNDoW69or8 (UID: 145)
+2025-06-02 23:33:15.399 | INFO     | utils.api_utils:process_miner:941 - Miner zlGakvHqctqNDoW69or8 has 1 compute resource(s)
+2025-06-02 23:33:15.399 | DEBUG    | utils.api_utils:process_resource:950 - Resource cc5e3090-a267-4e73-b407-1dfb9cd50aa2 already verified, skipping
+2025-06-02 23:33:15.400 | DEBUG    | utils.api_utils:process_resource:950 - Resource f4eee6ff-d351-4590-a330-e35558bf896b already verified, skipping
+2025-06-02 23:33:15.402 | DEBUG    | utils.api_utils:process_resource:950 - Resource 314b2044-06ce-42c5-9088-a84825991dfd already verified, skipping
+2025-06-02 23:33:15.402 | INFO     | utils.api_utils:check_resource_unique:548 - Resource a1df2745-769a-4873-be1a-00d1e669bbdf of miner AOoep8Z84sMW3V57Mclc is unique with IP and port: ('10.0.2.79', '22')
+2025-06-02 23:33:15.402 | INFO     | utils.api_utils:process_resource:958 - Processing resource 1 (ID: a1df2745-769a-4873-be1a-00d1e669bbdf)
+2025-06-02 23:33:15.403 | DEBUG    | utils.api_utils:process_resource:950 - Resource 2c960a4b-4462-4db0-8358-bb3abb2f24c9 already verified, skipping
+2025-06-02 23:33:15.404 | DEBUG    | utils.api_utils:process_resource:950 - Resource 92a012a7-c4f7-4cc0-8aee-98006f2e1989 already verified, skipping
+2025-06-02 23:33:15.404 | INFO     | utils.api_utils:check_resource_unique:540 - Resource 034450e8-a29b-4fe9-b618-5762a2879049 of miner Qo58fb85M23qr3xrJXpx shares IP 135.181.219.102 and port 22 with resource f4eee6ff-d351-4590-a330-e35558bf896b of miner 7guIVzseS0TFjgvjgoSS
+2025-06-02 23:33:15.404 | WARNING  | utils.api_utils:process_resource:955 - Resource 034450e8-a29b-4fe9-b618-5762a2879049 of miner Qo58fb85M23qr3xrJXpx is not unique. Skipping.
+2025-06-02 23:33:15.405 | DEBUG    | utils.api_utils:process_resource:950 - Resource 53d07943-77ba-45c4-9921-886bc34bbf4c already verified, skipping
+2025-06-02 23:33:15.405 | DEBUG    | utils.api_utils:process_resource:950 - Resource b012b334-ca0d-47aa-9777-f16ef502894f already verified, skipping
+2025-06-02 23:33:15.405 | DEBUG    | utils.api_utils:process_resource:950 - Resource 5d09f7ae-5601-4779-ac07-1508b6e45a01 already verified, skipping
+2025-06-02 23:33:15.405 | DEBUG    | utils.api_utils:process_resource:950 - Resource acb345d4-4c99-4630-b0b0-0217caeeb885 already verified, skipping
+2025-06-02 23:33:15.406 | DEBUG    | utils.api_utils:process_resource:950 - Resource a20cba62-0db0-46a3-b3e9-5f09ddea1d60 already verified, skipping
+2025-06-02 23:33:15.407 | DEBUG    | utils.api_utils:process_resource:950 - Resource 658b5e91-10ce-4cfe-96e5-68f57aeb012a already verified, skipping
+2025-06-02 23:33:15.407 | DEBUG    | utils.api_utils:process_resource:950 - Resource ccd7faba-c1f3-47ff-aed2-4314f5ab9118 already verified, skipping
+2025-06-02 23:33:15.407 | DEBUG    | utils.api_utils:process_resource:950 - Resource ba4f23a7-6a32-4fbc-af0b-fcee9c06acb0 already verified, skipping
+2025-06-02 23:33:15.408 | DEBUG    | utils.api_utils:process_resource:950 - Resource 9175b852-0aa0-4f24-b652-cbf5d07ae950 already verified, skipping
+2025-06-02 23:33:15.408 | DEBUG    | utils.api_utils:process_resource:950 - Resource e44e86c7-b495-47e1-ba13-198e2eac1952 already verified, skipping
+2025-06-02 23:33:15.408 | DEBUG    | utils.api_utils:process_resource:950 - Resource a93ac06f-13df-4da1-a861-0fc8e0aa4894 already verified, skipping
+2025-06-02 23:33:15.410 | DEBUG    | utils.api_utils:process_resource:950 - Resource dee3929c-4171-40bf-af0c-6911c973b4be already verified, skipping
+2025-06-02 23:33:15.411 | DEBUG    | utils.api_utils:process_resource:950 - Resource 7ef84a9d-3a50-4170-bc57-e2c7913df01e already verified, skipping
+2025-06-02 23:33:15.412 | DEBUG    | utils.api_utils:process_resource:950 - Resource 72b1f75c-25e9-45a2-b60c-083351971dfc already verified, skipping
+2025-06-02 23:33:15.412 | DEBUG    | utils.api_utils:process_resource:950 - Resource 3ba62197-bbf5-45d1-979a-c9cb12884c56 already verified, skipping
+2025-06-02 23:33:15.412 | DEBUG    | utils.api_utils:process_resource:950 - Resource e2d3640f-cbc5-4c3a-b64e-ef945ace26e0 already verified, skipping
+2025-06-02 23:33:15.413 | DEBUG    | utils.api_utils:process_resource:950 - Resource 8756ebd8-9068-4b05-b2ed-759368964369 already verified, skipping
+2025-06-02 23:33:15.413 | DEBUG    | utils.api_utils:process_resource:950 - Resource 177cf93f-c4ca-41d5-9a38-00f14d125640 already verified, skipping
+2025-06-02 23:33:15.413 | INFO     | template.base.utils.weight_utils:process_weights_for_netuid:104 - Setting weights: UIDs=[4, 18, 30, 48, 60, 61, 69, 112, 113, 123, 125, 131, 132, 145, 153, 163, 183, 188], Weights=[0.047093894332647324, 0.047904882580041885, 0.09494291990995407, 0.047093894332647324, 0.09423959255218506, 0.04726206511259079, 0.047904882580041885, 0.047904882580041885, 0.04688737913966179, 0.04703803360462189, 0.047149065881967545, 0.10000000894069672, 0.046978674829006195, 0.047904882580041885, 0.04712876304984093, 0.04735307767987251, 0.047904882580041885, 0.047308243811130524], Sum=1.000000026077032
+2025-06-02 23:33:15.413 | INFO     | template.base.utils.weight_utils:process_weights_for_netuid:105 - Wallet: Wallet (Name: 'mokoai', Hotkey: 'mokoai', Path: '~/.bittensor/wallets/')
+2025-06-02 23:33:30,532 - bittensor - ERROR - Subtensor returned: Invalid Transaction
+2025-06-02 23:33:30.532 |      ERROR       | Subtensor returned: Invalid Transaction
+2025-06-02 23:33:38,286 - bittensor - ERROR - Subtensor returned: Invalid Transaction
+2025-06-02 23:33:38.286 |      ERROR       | Subtensor returned: Invalid Transaction
+2025-06-02 23:33:55,328 - bittensor - ERROR - Subtensor returned: Invalid Transaction
+2025-06-02 23:33:55.328 |      ERROR       | Subtensor returned: Invalid Transaction
+2025-06-02 23:54:17,123 - bittensor - ERROR - Subtensor returned: Invalid Transaction
+2025-06-02 23:54:17.123 |      ERROR       | Subtensor returned: Invalid Transaction
+2025-06-02 23:54:23,503 - bittensor - ERROR - Subtensor returned: Invalid Transaction
+2025-06-02 23:54:23.503 |      ERROR       | Subtensor returned: Invalid Transaction
+2025-06-02 23:54:23.504 | WARNING  | template.base.utils.weight_utils:process_weights_for_netuid:119 - Weight setting failed: Subtensor returned: Invalid Transaction
+2025-06-02 23:54:23.504 | WARNING  | __main__:update_validator_weights:246 - Weight update failed on attempt 2/3
+2025-06-02 23:54:23.505 | INFO     | __main__:update_validator_weights:249 - Retrying in 10 seconds...
+2025-06-02 23:54:26,507 - neurons.utils.proof_of_work - WARNING - SSH timeout for 10.0.2.79:22 - command may be taking too long
+2025-06-02 23:54:29,509 - neurons.utils.proof_of_work - WARNING - SSH timeout for 10.0.2.79:22 - command may be taking too long
+2025-06-02 23:54:32,511 - neurons.utils.proof_of_work - WARNING - SSH timeout for 10.0.2.79:22 - command may be taking too long
+2025-06-02 23:54:35,513 - neurons.utils.proof_of_work - WARNING - SSH timeout for 10.0.2.79:22 - command may be taking too long
+2025-06-02 23:54:38,516 - neurons.utils.proof_of_work - WARNING - SSH timeout for 10.0.2.79:22 - command may be taking too long
+2025-06-02 23:54:41,517 - neurons.utils.proof_of_work - WARNING - SSH timeout for 10.0.2.79:22 - command may be taking too long
+2025-06-02 23:54:44,519 - neurons.utils.proof_of_work - WARNING - SSH timeout for 10.0.2.79:22 - command may be taking too long
+2025-06-02 23:54:47,521 - neurons.utils.proof_of_work - WARNING - SSH timeout for 10.0.2.79:22 - command may be taking too long
+2025-06-02 23:54:47.523 | INFO     | template.base.utils.weight_utils:process_weights_for_netuid:104 - Setting weights: UIDs=[4, 18, 30, 48, 60, 61, 69, 112, 113, 123, 125, 131, 132, 145, 153, 163, 183, 188], Weights=[0.047093894332647324, 0.047904882580041885, 0.09494291990995407, 0.047093894332647324, 0.09423959255218506, 0.04726206511259079, 0.047904882580041885, 0.047904882580041885, 0.04688737913966179, 0.04703803360462189, 0.047149065881967545, 0.10000000894069672, 0.046978674829006195, 0.047904882580041885, 0.04712876304984093, 0.04735307767987251, 0.047904882580041885, 0.047308243811130524], Sum=1.000000026077032
+2025-06-02 23:54:47.523 | INFO     | template.base.utils.weight_utils:process_weights_for_netuid:105 - Wallet: Wallet (Name: 'mokoai', Hotkey: 'mokoai', Path: '~/.bittensor/wallets/')
+2025-06-02 23:55:03,081 - bittensor - ERROR - Subtensor returned: Invalid Transaction
+2025-06-02 23:55:03.081 |      ERROR       | Subtensor returned: Invalid Transaction

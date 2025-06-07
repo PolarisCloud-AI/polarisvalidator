@@ -122,9 +122,7 @@ async def execute_ssh_task(hostname: str, port: int, username: str, key_path: st
             port=port,
             username=username,
             key_filename=key_path,
-            timeout=10,  # Increased from 3 to 10 seconds
-            banner_timeout=10,  # Add banner timeout
-            auth_timeout=10,    # Add auth timeout
+            timeout=3
         )
         
         # Execute command with timeout

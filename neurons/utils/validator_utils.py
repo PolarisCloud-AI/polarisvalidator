@@ -17,8 +17,8 @@ async def process_miners(
     miners: List[int],
     tempo: int,
     max_score: float = 500.0,
-    netuid: int = 100,
-    network: str = "test",
+    netuid: int = 49,
+    network: str = "finney",
 ) -> Tuple[Dict[int, float], Dict[int, List[str]], Dict[int, Dict]]:
     """
     Process miners and compute their rewards with robust error handling.
