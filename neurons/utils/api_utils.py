@@ -170,6 +170,7 @@ async def reward_mechanism(
     try:
         # Get cached miners data
         miners = _get_cached_miners_data()
+
         if not miners:
             logger.warning("No miners data available")
             return {}, {}
@@ -236,15 +237,35 @@ async def reward_mechanism(
                     logger.info(f"Skipping resource {resource_id} (ID: {idx}): validation_status={validation_status}")
                     return None
                 logger.info(f"Processing resource {idx} (ID: {resource_id})")
-                ssh_value = resource.get("network", {}).get("ssh", "No SSH value available")
+
+                # Check monitoring_status fields
+                monitoring_status = resource.get("monitoring_status", {})
+                conn_status = monitoring_status.get("conn", {}).get("status")
+                auth_status = monitoring_status.get("auth", {}).get("status")
+                docker_running = monitoring_status.get("docker", {}).get("running")
+                docker_user_group = monitoring_status.get("docker", {}).get("user_group")
+                if (
+                    conn_status != "ok" or
+                    auth_status != "ok" 
+                    # docker_running is not True or
+                    # docker_user_group is not True
+                ):
+                    logger.info(
+                        f"Resource {resource_id} failed monitoring checks: "
+                        f"conn_status={conn_status}, auth_status={auth_status}, "
+                        f"docker_running={docker_running}, docker_user_group={docker_user_group}"
+                    )
+                    return None
+
                 try:
-                    ssh_result = await perform_ssh_tasks(ssh_value)
-                    pog_score = ssh_result["task_results"]["total_score"]
+                    # Use pow total as pog_score
+                    pog_score = monitoring_status.get("pow", {}).get("total", 0.0)
                     logger.info(f"Resource {resource_id}: compute_score={pog_score:.4f}")
                     return resource_id, pog_score
-                except (OSError, asyncio.TimeoutError) as e:
-                    logger.error(f"Error performing SSH tasks for resource {resource_id}: {e}")
+                except Exception as e:
+                    logger.error(f"Unexpected error fetching pog_score for resource {resource_id}: {e}")
                     return None
+                
                 except HTTPException as e:
                     logger.error(f"HTTP error performing SSH tasks for resource {resource_id}: {e.status_code} - {e.detail}")
                     return None
@@ -752,7 +773,7 @@ def extract_miner_ids(data: List[dict]) -> List[str]:
 def filter_miners_by_id(
     bittensor_miners: Dict[str, int],
     netuid: int = 100,
-    network: str = "test",
+    network: str = "finney",
     hotkey_to_uid: Optional[Dict[str, int]] = None
 ) -> Dict[str, int]:
     """
@@ -956,15 +977,30 @@ async def sub_verification(allowed_uids: List[int]) -> Tuple[Dict[str, int], Dic
                             return None
 
                         logger.info(f"Processing resource {idx} (ID: {resource_id})")
-                        ssh_value = resource.get("network", {}).get("ssh", None)
-                        
-                        if not ssh_value:
-                            logger.warning(f"Resource {resource_id} has no SSH value")
+                        # Check monitoring_status fields
+                        monitoring_status = resource.get("monitoring_status", {})
+                        conn_status = monitoring_status.get("conn", {}).get("status")
+                        auth_status = monitoring_status.get("auth", {}).get("status")
+                        docker_running = monitoring_status.get("docker", {}).get("running")
+                        docker_user_group = monitoring_status.get("docker", {}).get("user_group")
+
+                        if (
+                            conn_status != "ok" or
+                            auth_status != "ok" 
+                        ):
+                            logger.info(
+                                f"Resource {resource_id} failed monitoring checks: "
+                                f"conn_status={conn_status}, auth_status={auth_status}, "
+                                f"docker_running={docker_running}, docker_user_group={docker_user_group}"
+                            )
                             return None
 
-                        ssh_result = await perform_ssh_tasks(ssh_value)
-                        pog_score = ssh_result["task_results"]["total_score"]
+                        logger.info(f"Processing resource {idx} (ID: {resource_id})")
+
+                        # Use pow total as pog_score
+                        pog_score = monitoring_status.get("pow", {}).get("total", 0.0)
                         logger.info(f"Resource {resource_id}: compute_score={pog_score:.4f}")
+
                         return resource_id, pog_score
 
                     except (OSError, asyncio.TimeoutError) as e:
