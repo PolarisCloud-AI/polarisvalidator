@@ -1,0 +1,74 @@
+[
+  {
+    "timestamp": "2025-06-26T14:59:17.953111+00:00",
+    "miner_uid": "1ab80305-401b-4920-bc8a-dcd705f5a05f",
+    "status": "active",
+    "compute_score": 0.403,
+    "uptime_reward": 0.0,
+    "block_number": 5866068,
+    "reason": "Initial uptime log"
+  },
+  {
+    "timestamp": "2025-06-26T14:59:17.953885+00:00",
+    "miner_uid": "1ab80305-401b-4920-bc8a-dcd705f5a05f",
+    "status": "active",
+    "compute_score": 0.403,
+    "uptime_reward": 8.060000000000002e-05,
+    "block_number": 5866068,
+    "reason": "Reward updated"
+  },
+  {
+    "timestamp": "2025-06-26T15:45:30.319486+00:00",
+    "miner_uid": "1ab80305-401b-4920-bc8a-dcd705f5a05f",
+    "status": "active",
+    "compute_score": 0.403,
+    "uptime_reward": 0.0,
+    "block_number": 5866337,
+    "reason": "Initial uptime log"
+  },
+  {
+    "timestamp": "2025-06-26T15:45:30.321372+00:00",
+    "miner_uid": "1ab80305-401b-4920-bc8a-dcd705f5a05f",
+    "status": "active",
+    "compute_score": 0.403,
+    "uptime_reward": 8.060000000000002e-05,
+    "block_number": 5866337,
+    "reason": "Reward updated"
+  },
+  {
+    "timestamp": "2025-06-26T16:19:49.245789+00:00",
+    "miner_uid": "1ab80305-401b-4920-bc8a-dcd705f5a05f",
+    "status": "active",
+    "compute_score": 0.403,
+    "uptime_reward": 0.0,
+    "block_number": 5866574,
+    "reason": "Initial uptime log"
+  },
+  {
+    "timestamp": "2025-06-26T16:19:49.247102+00:00",
+    "miner_uid": "1ab80305-401b-4920-bc8a-dcd705f5a05f",
+    "status": "active",
+    "compute_score": 0.403,
+    "uptime_reward": 8.060000000000002e-05,
+    "block_number": 5866574,
+    "reason": "Reward updated"
+  },
+  {
+    "timestamp": "2025-06-26T17:00:49.681931+00:00",
+    "miner_uid": "1ab80305-401b-4920-bc8a-dcd705f5a05f",
+    "status": "active",
+    "compute_score": 0.4,
+    "uptime_reward": 0.0,
+    "block_number": 5866765,
+    "reason": "Initial uptime log"
+  },
+  {
+    "timestamp": "2025-06-26T17:00:49.683458+00:00",
+    "miner_uid": "1ab80305-401b-4920-bc8a-dcd705f5a05f",
+    "status": "active",
+    "compute_score": 0.4,
+    "uptime_reward": 8.000000000000002e-05,
+    "block_number": 5866765,
+    "reason": "Reward updated"
+  }
+]

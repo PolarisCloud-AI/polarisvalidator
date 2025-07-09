@@ -1,0 +1,20 @@
+[
+  {
+    "timestamp": "2025-07-03T17:33:38.621495+00:00",
+    "miner_uid": "ef83f430-bf2d-4a0c-b325-68619305bdd3",
+    "status": "active",
+    "compute_score": 0.034,
+    "uptime_reward": 0.0,
+    "block_number": 5917472,
+    "reason": "Initial uptime log"
+  },
+  {
+    "timestamp": "2025-07-03T17:33:38.622699+00:00",
+    "miner_uid": "ef83f430-bf2d-4a0c-b325-68619305bdd3",
+    "status": "active",
+    "compute_score": 0.034,
+    "uptime_reward": 6.800000000000002e-06,
+    "block_number": 5917472,
+    "reason": "Reward updated"
+  }
+]

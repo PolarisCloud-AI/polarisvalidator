@@ -55,12 +55,12 @@ def _sync_miners_data() -> None:
     try:
         headers = {
             "Connection": "keep-alive",
-            "x-api-key": "dev-services-key",
-            "service-key": "9e2e9d9d4370ba4c6ab90b7ab46ed334bb6b1a79af368b451796a6987988ed77",
+            "x-api-key": "",
+            "service-key": " ",
             "service-name": "miner_service",
             "Content-Type": "application/json"
         }
-        url = "https://polaris-interface.onrender.com/api/v1/services/miner/miners"
+        url = "https://femi-aristodemos.onrender.com/api/v1/services/miner/miners"
         response = requests.get(url, headers=headers)
         response.raise_for_status()
 
@@ -236,19 +236,22 @@ async def reward_mechanism(
                 if validation_status != "verified":
                     logger.info(f"Skipping resource {resource_id} (ID: {idx}): validation_status={validation_status}")
                     return None
-                logger.info(f"Processing resource {idx} (ID: {resource_id})")
+                logger.info(f"Processing resource {idx} (ID: {resource_id}) miner uid {miner_uid}")
 
                 # Check monitoring_status fields
                 monitoring_status = resource.get("monitoring_status", {})
+                if not monitoring_status:
+                    logger.warning(
+                        f"Skipping resource {resource_id} for miner UID {miner_uid}: Empty monitoring_status"
+                    )
+                    return None
                 conn_status = monitoring_status.get("conn", {}).get("status")
                 auth_status = monitoring_status.get("auth", {}).get("status")
                 docker_running = monitoring_status.get("docker", {}).get("running")
                 docker_user_group = monitoring_status.get("docker", {}).get("user_group")
                 if (
                     conn_status != "ok" or
-                    auth_status != "ok" 
-                    # docker_running is not True or
-                    # docker_user_group is not True
+                    auth_status != "ok"
                 ):
                     logger.info(
                         f"Resource {resource_id} failed monitoring checks: "
@@ -264,13 +267,6 @@ async def reward_mechanism(
                     return resource_id, pog_score
                 except Exception as e:
                     logger.error(f"Unexpected error fetching pog_score for resource {resource_id}: {e}")
-                    return None
-                
-                except HTTPException as e:
-                    logger.error(f"HTTP error performing SSH tasks for resource {resource_id}: {e.status_code} - {e.detail}")
-                    return None
-                except Exception as e:
-                    logger.error(f"Unexpected error performing SSH tasks for resource {resource_id}: {e}")
                     return None
 
             tasks = [process_resource(resource, idx) for idx, resource in enumerate(compute_details, 1)]
@@ -412,14 +408,13 @@ def update_miner_status(miner_id: str, status: str, percentage: float, reason: s
     """
     headers = {
             "Connection": "keep-alive",
-            "x-api-key": "dev-services-key",
-            "x-use-encryption": "true",
-            "service-key": "9e2e9d9d4370ba4c6ab90b7ab46ed334bb6b1a79af368b451796a6987988ed77",
+            "x-api-key": "",
+            "service-key": " ",
             "service-name": "miner_service",
             "Content-Type": "application/json"
         }
     updated_at = datetime.utcnow()
-    url = f"https://polaris-interface.onrender.com/api/v1/services/miner/miners/{miner_id}"
+    url = f"https://femi-aristodemos.onrender.com/api/v1/services/miner/miners/{miner_id}"
     payload = {
         "status": status,
         "percentage": percentage,
@@ -441,14 +436,13 @@ def get_containers_for_miner(miner_id: str) -> List[str]:
     try:
         headers = {
             "Connection": "keep-alive",
-            "x-api-key": "dev-services-key",
-            "x-use-encryption": "true",
-            "service-key": "9e2e9d9d4370ba4c6ab90b7ab46ed334bb6b1a79af368b451796a6987988ed77",
+            "x-api-key": "",
+            "service-key": " ",
             "service-name": "miner_service",
             "Content-Type": "application/json"
         }
 
-        url = f"https://polaris-interface.onrender.com/api/v1/services/container/container/containers/miner/{miner_id}"
+        url = f"https://femi-aristodemos.onrender.com/api/v1/services/container/container/containers/miner/{miner_id}"
         response = requests.get(url, headers=headers)
         response.raise_for_status()
         return response.json().get("containers", [])
@@ -471,15 +465,14 @@ def update_container_payment_status(container_id: str) -> bool:
         bool: True if update was successful, False otherwise.
     """
     headers = {
-        "Connection": "keep-alive",
-        "x-api-key": "dev-services-key",
-        "x-use-encryption": "true",
-        "service-key": "9e2e9d9d4370ba4c6ab90b7ab46ed334bb6b1a79af368b451796a6987988ed77",
-        "service-name": "miner_service",
-        "Content-Type": "application/json"
-    }
+            "Connection": "keep-alive",
+            "x-api-key": "",
+            "service-key": " ",
+            "service-name": "miner_service",
+            "Content-Type": "application/json"
+        }
 
-    url = f"https://polaris-interface.onrender.com/api/v1/services/container/container/containers/{container_id}"
+    url = f"https://femi-aristodemos.onrender.com/api/v1/services/container/container/containers/{container_id}"
     payload = {
         "fields": {
             "payment_status": "paid"
@@ -685,15 +678,14 @@ def get_containers_for_resource(resource_id: str) -> Dict[str, any]:
         # Set up headers
         headers = {
             "Connection": "keep-alive",
-            "x-api-key": "dev-services-key",
-            "x-use-encryption": "true",
-            "service-key": "9e2e9d9d4370ba4c6ab90b7ab46ed334bb6b1a79af368b451796a6987988ed77",
+            "x-api-key": "",
+            "service-key": " ",
             "service-name": "miner_service",
             "Content-Type": "application/json"
         }
 
         # API endpoint
-        url = "https://polaris-interface.onrender.com/api/v1/services/container/container/containers"
+        url = "https://femi-aristodemos.onrender.com/api/v1/services/container/container/containers"
         logger.info(f"Fetching containers for resource_id: {resource_id} from {url}")
 
         # Send GET request
@@ -858,13 +850,13 @@ def update_miner_compute_resource(
     try:
     
         # Construct the full URL
-        url = f"https://polaris-interface.onrender.com/api/v1/services/miner/miners/{miner_id}"
+        url = f"https://femi-aristodemos.onrender.com/api/v1/services/miner/miners/{miner_id}"
 
         # Prepare headers
         headers = {
             "Connection": "keep-alive",
-            "x-api-key": "dev-services-key",
-            "service-key": "9e2e9d9d4370ba4c6ab90b7ab46ed334bb6b1a79af368b451796a6987988ed77",
+            "x-api-key": "",
+            "service-key": " ",
             "service-name": "miner_service",
             "Content-Type": "application/json"
         }

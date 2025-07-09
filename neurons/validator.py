@@ -293,7 +293,7 @@ class PolarisNode(BaseValidatorNeuron):
         """Sets up the validator."""
         self.load_state()
         if not self._tasks_scheduled:
-            asyncio.create_task(self.verify_miners_loop())
+            # asyncio.create_task(self.verify_miners_loop())
             asyncio.create_task(self.process_miners_loop())
             self._tasks_scheduled = True
         logger.info("Setup completed")

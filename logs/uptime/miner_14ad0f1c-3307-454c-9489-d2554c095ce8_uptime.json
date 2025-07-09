@@ -1,0 +1,452 @@
+[
+  {
+    "timestamp": "2025-06-26T15:45:28.108643+00:00",
+    "miner_uid": "14ad0f1c-3307-454c-9489-d2554c095ce8",
+    "status": "active",
+    "compute_score": 0.17,
+    "uptime_reward": 0.0,
+    "block_number": 5866337,
+    "reason": "Initial uptime log"
+  },
+  {
+    "timestamp": "2025-06-26T15:45:28.109734+00:00",
+    "miner_uid": "14ad0f1c-3307-454c-9489-d2554c095ce8",
+    "status": "active",
+    "compute_score": 0.17,
+    "uptime_reward": 3.4000000000000007e-05,
+    "block_number": 5866337,
+    "reason": "Reward updated"
+  },
+  {
+    "timestamp": "2025-06-26T15:45:33.058463+00:00",
+    "miner_uid": "14ad0f1c-3307-454c-9489-d2554c095ce8",
+    "status": "active",
+    "compute_score": 0.17,
+    "uptime_reward": 0.0,
+    "block_number": 5866337,
+    "reason": "Initial uptime log"
+  },
+  {
+    "timestamp": "2025-06-26T15:45:33.059618+00:00",
+    "miner_uid": "14ad0f1c-3307-454c-9489-d2554c095ce8",
+    "status": "active",
+    "compute_score": 0.17,
+    "uptime_reward": 3.4000000000000007e-05,
+    "block_number": 5866337,
+    "reason": "Reward updated"
+  },
+  {
+    "timestamp": "2025-06-26T15:45:35.908110+00:00",
+    "miner_uid": "14ad0f1c-3307-454c-9489-d2554c095ce8",
+    "status": "active",
+    "compute_score": 0.17,
+    "uptime_reward": 0.0,
+    "block_number": 5866337,
+    "reason": "Initial uptime log"
+  },
+  {
+    "timestamp": "2025-06-26T15:45:35.909457+00:00",
+    "miner_uid": "14ad0f1c-3307-454c-9489-d2554c095ce8",
+    "status": "active",
+    "compute_score": 0.17,
+    "uptime_reward": 3.4000000000000007e-05,
+    "block_number": 5866337,
+    "reason": "Reward updated"
+  },
+  {
+    "timestamp": "2025-06-26T16:19:48.542667+00:00",
+    "miner_uid": "14ad0f1c-3307-454c-9489-d2554c095ce8",
+    "status": "active",
+    "compute_score": 0.17,
+    "uptime_reward": 0.0,
+    "block_number": 5866574,
+    "reason": "Initial uptime log"
+  },
+  {
+    "timestamp": "2025-06-26T16:19:48.544103+00:00",
+    "miner_uid": "14ad0f1c-3307-454c-9489-d2554c095ce8",
+    "status": "active",
+    "compute_score": 0.17,
+    "uptime_reward": 3.4000000000000007e-05,
+    "block_number": 5866574,
+    "reason": "Reward updated"
+  },
+  {
+    "timestamp": "2025-06-26T16:19:50.212482+00:00",
+    "miner_uid": "14ad0f1c-3307-454c-9489-d2554c095ce8",
+    "status": "active",
+    "compute_score": 0.17,
+    "uptime_reward": 0.0,
+    "block_number": 5866574,
+    "reason": "Initial uptime log"
+  },
+  {
+    "timestamp": "2025-06-26T16:19:50.213427+00:00",
+    "miner_uid": "14ad0f1c-3307-454c-9489-d2554c095ce8",
+    "status": "active",
+    "compute_score": 0.17,
+    "uptime_reward": 3.4000000000000007e-05,
+    "block_number": 5866574,
+    "reason": "Reward updated"
+  },
+  {
+    "timestamp": "2025-06-26T16:19:51.086986+00:00",
+    "miner_uid": "14ad0f1c-3307-454c-9489-d2554c095ce8",
+    "status": "active",
+    "compute_score": 0.17,
+    "uptime_reward": 0.0,
+    "block_number": 5866574,
+    "reason": "Initial uptime log"
+  },
+  {
+    "timestamp": "2025-06-26T16:19:51.088364+00:00",
+    "miner_uid": "14ad0f1c-3307-454c-9489-d2554c095ce8",
+    "status": "active",
+    "compute_score": 0.17,
+    "uptime_reward": 3.4000000000000007e-05,
+    "block_number": 5866574,
+    "reason": "Reward updated"
+  },
+  {
+    "timestamp": "2025-06-26T17:00:48.266707+00:00",
+    "miner_uid": "14ad0f1c-3307-454c-9489-d2554c095ce8",
+    "status": "active",
+    "compute_score": 0.17,
+    "uptime_reward": 0.0,
+    "block_number": 5866765,
+    "reason": "Initial uptime log"
+  },
+  {
+    "timestamp": "2025-06-26T17:00:48.268438+00:00",
+    "miner_uid": "14ad0f1c-3307-454c-9489-d2554c095ce8",
+    "status": "active",
+    "compute_score": 0.17,
+    "uptime_reward": 3.4000000000000007e-05,
+    "block_number": 5866765,
+    "reason": "Reward updated"
+  },
+  {
+    "timestamp": "2025-06-26T17:00:51.333335+00:00",
+    "miner_uid": "14ad0f1c-3307-454c-9489-d2554c095ce8",
+    "status": "active",
+    "compute_score": 0.17,
+    "uptime_reward": 0.0,
+    "block_number": 5866765,
+    "reason": "Initial uptime log"
+  },
+  {
+    "timestamp": "2025-06-26T17:00:51.335062+00:00",
+    "miner_uid": "14ad0f1c-3307-454c-9489-d2554c095ce8",
+    "status": "active",
+    "compute_score": 0.17,
+    "uptime_reward": 3.4000000000000007e-05,
+    "block_number": 5866765,
+    "reason": "Reward updated"
+  },
+  {
+    "timestamp": "2025-06-26T17:00:52.920510+00:00",
+    "miner_uid": "14ad0f1c-3307-454c-9489-d2554c095ce8",
+    "status": "active",
+    "compute_score": 0.17,
+    "uptime_reward": 0.0,
+    "block_number": 5866765,
+    "reason": "Initial uptime log"
+  },
+  {
+    "timestamp": "2025-06-26T17:00:52.924374+00:00",
+    "miner_uid": "14ad0f1c-3307-454c-9489-d2554c095ce8",
+    "status": "active",
+    "compute_score": 0.17,
+    "uptime_reward": 3.4000000000000007e-05,
+    "block_number": 5866765,
+    "reason": "Reward updated"
+  },
+  {
+    "timestamp": "2025-06-27T09:36:13.122252+00:00",
+    "miner_uid": "14ad0f1c-3307-454c-9489-d2554c095ce8",
+    "status": "active",
+    "compute_score": 0.17,
+    "uptime_reward": 0.0,
+    "block_number": 5871668,
+    "reason": "Initial uptime log"
+  },
+  {
+    "timestamp": "2025-06-27T09:36:13.126353+00:00",
+    "miner_uid": "14ad0f1c-3307-454c-9489-d2554c095ce8",
+    "status": "active",
+    "compute_score": 0.17,
+    "uptime_reward": 3.4000000000000007e-05,
+    "block_number": 5871668,
+    "reason": "Reward updated"
+  },
+  {
+    "timestamp": "2025-06-27T09:36:13.384048+00:00",
+    "miner_uid": "14ad0f1c-3307-454c-9489-d2554c095ce8",
+    "status": "active",
+    "compute_score": 0.17,
+    "uptime_reward": 0.0,
+    "block_number": 5871668,
+    "reason": "Initial uptime log"
+  },
+  {
+    "timestamp": "2025-06-27T09:36:13.385651+00:00",
+    "miner_uid": "14ad0f1c-3307-454c-9489-d2554c095ce8",
+    "status": "active",
+    "compute_score": 0.17,
+    "uptime_reward": 3.4000000000000007e-05,
+    "block_number": 5871668,
+    "reason": "Reward updated"
+  },
+  {
+    "timestamp": "2025-06-27T09:36:14.194681+00:00",
+    "miner_uid": "14ad0f1c-3307-454c-9489-d2554c095ce8",
+    "status": "active",
+    "compute_score": 0.17,
+    "uptime_reward": 0.0,
+    "block_number": 5871668,
+    "reason": "Initial uptime log"
+  },
+  {
+    "timestamp": "2025-06-27T09:36:14.196275+00:00",
+    "miner_uid": "14ad0f1c-3307-454c-9489-d2554c095ce8",
+    "status": "active",
+    "compute_score": 0.17,
+    "uptime_reward": 3.4000000000000007e-05,
+    "block_number": 5871668,
+    "reason": "Reward updated"
+  },
+  {
+    "timestamp": "2025-06-27T09:36:14.936187+00:00",
+    "miner_uid": "14ad0f1c-3307-454c-9489-d2554c095ce8",
+    "status": "active",
+    "compute_score": 0.17,
+    "uptime_reward": 0.0,
+    "block_number": 5871668,
+    "reason": "Initial uptime log"
+  },
+  {
+    "timestamp": "2025-06-27T09:36:14.937965+00:00",
+    "miner_uid": "14ad0f1c-3307-454c-9489-d2554c095ce8",
+    "status": "active",
+    "compute_score": 0.17,
+    "uptime_reward": 3.4000000000000007e-05,
+    "block_number": 5871668,
+    "reason": "Reward updated"
+  },
+  {
+    "timestamp": "2025-06-27T09:36:15.354697+00:00",
+    "miner_uid": "14ad0f1c-3307-454c-9489-d2554c095ce8",
+    "status": "active",
+    "compute_score": 0.17,
+    "uptime_reward": 0.0,
+    "block_number": 5871668,
+    "reason": "Initial uptime log"
+  },
+  {
+    "timestamp": "2025-06-27T09:36:15.356500+00:00",
+    "miner_uid": "14ad0f1c-3307-454c-9489-d2554c095ce8",
+    "status": "active",
+    "compute_score": 0.17,
+    "uptime_reward": 3.4000000000000007e-05,
+    "block_number": 5871668,
+    "reason": "Reward updated"
+  },
+  {
+    "timestamp": "2025-06-27T09:36:15.939972+00:00",
+    "miner_uid": "14ad0f1c-3307-454c-9489-d2554c095ce8",
+    "status": "active",
+    "compute_score": 0.17,
+    "uptime_reward": 0.0,
+    "block_number": 5871668,
+    "reason": "Initial uptime log"
+  },
+  {
+    "timestamp": "2025-06-27T09:36:15.942371+00:00",
+    "miner_uid": "14ad0f1c-3307-454c-9489-d2554c095ce8",
+    "status": "active",
+    "compute_score": 0.17,
+    "uptime_reward": 3.4000000000000007e-05,
+    "block_number": 5871668,
+    "reason": "Reward updated"
+  },
+  {
+    "timestamp": "2025-06-27T09:36:16.449097+00:00",
+    "miner_uid": "14ad0f1c-3307-454c-9489-d2554c095ce8",
+    "status": "active",
+    "compute_score": 0.17,
+    "uptime_reward": 0.0,
+    "block_number": 5871668,
+    "reason": "Initial uptime log"
+  },
+  {
+    "timestamp": "2025-06-27T09:36:16.451028+00:00",
+    "miner_uid": "14ad0f1c-3307-454c-9489-d2554c095ce8",
+    "status": "active",
+    "compute_score": 0.17,
+    "uptime_reward": 3.4000000000000007e-05,
+    "block_number": 5871668,
+    "reason": "Reward updated"
+  },
+  {
+    "timestamp": "2025-06-27T09:36:16.885477+00:00",
+    "miner_uid": "14ad0f1c-3307-454c-9489-d2554c095ce8",
+    "status": "active",
+    "compute_score": 0.17,
+    "uptime_reward": 0.0,
+    "block_number": 5871668,
+    "reason": "Initial uptime log"
+  },
+  {
+    "timestamp": "2025-06-27T09:36:16.887317+00:00",
+    "miner_uid": "14ad0f1c-3307-454c-9489-d2554c095ce8",
+    "status": "active",
+    "compute_score": 0.17,
+    "uptime_reward": 3.4000000000000007e-05,
+    "block_number": 5871668,
+    "reason": "Reward updated"
+  },
+  {
+    "timestamp": "2025-06-27T09:36:17.725784+00:00",
+    "miner_uid": "14ad0f1c-3307-454c-9489-d2554c095ce8",
+    "status": "active",
+    "compute_score": 0.17,
+    "uptime_reward": 0.0,
+    "block_number": 5871668,
+    "reason": "Initial uptime log"
+  },
+  {
+    "timestamp": "2025-06-27T09:36:17.729984+00:00",
+    "miner_uid": "14ad0f1c-3307-454c-9489-d2554c095ce8",
+    "status": "active",
+    "compute_score": 0.17,
+    "uptime_reward": 3.4000000000000007e-05,
+    "block_number": 5871668,
+    "reason": "Reward updated"
+  },
+  {
+    "timestamp": "2025-06-27T09:36:18.578837+00:00",
+    "miner_uid": "14ad0f1c-3307-454c-9489-d2554c095ce8",
+    "status": "active",
+    "compute_score": 0.17,
+    "uptime_reward": 0.0,
+    "block_number": 5871668,
+    "reason": "Initial uptime log"
+  },
+  {
+    "timestamp": "2025-06-27T09:36:18.580832+00:00",
+    "miner_uid": "14ad0f1c-3307-454c-9489-d2554c095ce8",
+    "status": "active",
+    "compute_score": 0.17,
+    "uptime_reward": 3.4000000000000007e-05,
+    "block_number": 5871668,
+    "reason": "Reward updated"
+  },
+  {
+    "timestamp": "2025-06-27T09:36:18.999601+00:00",
+    "miner_uid": "14ad0f1c-3307-454c-9489-d2554c095ce8",
+    "status": "active",
+    "compute_score": 0.17,
+    "uptime_reward": 0.0,
+    "block_number": 5871668,
+    "reason": "Initial uptime log"
+  },
+  {
+    "timestamp": "2025-06-27T09:36:19.000951+00:00",
+    "miner_uid": "14ad0f1c-3307-454c-9489-d2554c095ce8",
+    "status": "active",
+    "compute_score": 0.17,
+    "uptime_reward": 3.4000000000000007e-05,
+    "block_number": 5871668,
+    "reason": "Reward updated"
+  },
+  {
+    "timestamp": "2025-06-27T09:36:19.874205+00:00",
+    "miner_uid": "14ad0f1c-3307-454c-9489-d2554c095ce8",
+    "status": "active",
+    "compute_score": 0.17,
+    "uptime_reward": 0.0,
+    "block_number": 5871668,
+    "reason": "Initial uptime log"
+  },
+  {
+    "timestamp": "2025-06-27T09:36:19.876393+00:00",
+    "miner_uid": "14ad0f1c-3307-454c-9489-d2554c095ce8",
+    "status": "active",
+    "compute_score": 0.17,
+    "uptime_reward": 3.4000000000000007e-05,
+    "block_number": 5871668,
+    "reason": "Reward updated"
+  },
+  {
+    "timestamp": "2025-06-27T09:36:20.292434+00:00",
+    "miner_uid": "14ad0f1c-3307-454c-9489-d2554c095ce8",
+    "status": "active",
+    "compute_score": 0.17,
+    "uptime_reward": 0.0,
+    "block_number": 5871668,
+    "reason": "Initial uptime log"
+  },
+  {
+    "timestamp": "2025-06-27T09:36:20.294328+00:00",
+    "miner_uid": "14ad0f1c-3307-454c-9489-d2554c095ce8",
+    "status": "active",
+    "compute_score": 0.17,
+    "uptime_reward": 3.4000000000000007e-05,
+    "block_number": 5871668,
+    "reason": "Reward updated"
+  },
+  {
+    "timestamp": "2025-06-27T09:36:21.019842+00:00",
+    "miner_uid": "14ad0f1c-3307-454c-9489-d2554c095ce8",
+    "status": "active",
+    "compute_score": 0.17,
+    "uptime_reward": 0.0,
+    "block_number": 5871668,
+    "reason": "Initial uptime log"
+  },
+  {
+    "timestamp": "2025-06-27T09:36:21.021348+00:00",
+    "miner_uid": "14ad0f1c-3307-454c-9489-d2554c095ce8",
+    "status": "active",
+    "compute_score": 0.17,
+    "uptime_reward": 3.4000000000000007e-05,
+    "block_number": 5871668,
+    "reason": "Reward updated"
+  },
+  {
+    "timestamp": "2025-06-27T09:36:21.091971+00:00",
+    "miner_uid": "14ad0f1c-3307-454c-9489-d2554c095ce8",
+    "status": "active",
+    "compute_score": 0.17,
+    "uptime_reward": 0.0,
+    "block_number": 5871668,
+    "reason": "Initial uptime log"
+  },
+  {
+    "timestamp": "2025-06-27T09:36:21.093371+00:00",
+    "miner_uid": "14ad0f1c-3307-454c-9489-d2554c095ce8",
+    "status": "active",
+    "compute_score": 0.17,
+    "uptime_reward": 3.4000000000000007e-05,
+    "block_number": 5871668,
+    "reason": "Reward updated"
+  },
+  {
+    "timestamp": "2025-06-27T09:36:22.287398+00:00",
+    "miner_uid": "14ad0f1c-3307-454c-9489-d2554c095ce8",
+    "status": "active",
+    "compute_score": 0.17,
+    "uptime_reward": 0.0,
+    "block_number": 5871668,
+    "reason": "Initial uptime log"
+  },
+  {
+    "timestamp": "2025-06-27T09:36:22.288862+00:00",
+    "miner_uid": "14ad0f1c-3307-454c-9489-d2554c095ce8",
+    "status": "active",
+    "compute_score": 0.17,
+    "uptime_reward": 3.4000000000000007e-05,
+    "block_number": 5871668,
+    "reason": "Reward updated"
+  }
+]
