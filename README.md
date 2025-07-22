@@ -108,7 +108,7 @@ docker run --rm -it -v ${HOME}/.bittensor:/root/.bittensor -e WALLET_NAME=<your_
 ```
 
 ### Method 3: Using the Automated Script
-
+0764395648
 For an easier setup, you can use our automated script:
 
 1. Download the `entry_point.sh` script from this repository

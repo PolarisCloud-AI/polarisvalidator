@@ -1,42 +1,3 @@
-# # import paramiko
-# # import os
-
-# # def connect_to_remote_machine(host, port=22, username="user"):
-# #     # Initialize SSH client
-# #     client = paramiko.SSHClient()
-# #     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    
-# #     # Path to your private key
-# #     key_path = os.path.join(os.path.dirname(_file_), "ssh_host_key")
-    
-# #     try:
-# #         # Connect using the private key
-# #         client.connect(
-# #             hostname=host,
-# #             port=port,
-# #             username=username,
-# #             key_filename=key_path,
-# #             timeout=5
-# #         )
-        
-# #         print(f"Successfully connected to {username}@{host}:{port}")
-        
-# #         # Execute a command
-# #         stdin, stdout, stderr = client.exec_command("hostname")
-# #         print(f"Remote hostname: {stdout.read().decode().strip()}")
-        
-# #         # Close the connection
-# #         client.close()
-# #         return True
-        
-# #     except Exception as e:
-# #         print(f"Failed to connect: {str(e)}")
-# #         return False
-
-# # # Example usage
-# # connect_to_remote_machine("192.168.1.100", username="admin")
-
-
 import json
 import re
 import logging
@@ -47,367 +8,22 @@ from typing import Dict, Any, List, Union
 from loguru import logger
 import numpy as np
 from collections import defaultdict
-
-
-# # from neurons.utils.pogs import execute_ssh_tasks, compare_compute_resources, compute_resource_score
-# def get_unverified_miners() -> dict[str, dict]:
-#     try:
-#         response = requests.get("https://polaris-test-server.onrender.com/api/v1/miners")
-#         response.raise_for_status()
-#         miners_data = response.json()
-#         return {
-#             miner["id"]: miner.get("compute_resources", {})
-#             for miner in miners_data
-#             if miner.get("status") == "rejected"
-#         }
-#     except Exception as e:
-#         print(f"No data found: {e}")
-#         return {}
-# # unverified_miners=get_unverified_miners()
-# # miner="OcaIXLgNDnwAIiDETFiM"
-# # miner_resources = unverified_miners.get(miner)
-# # print(f"miner resources {miner_resources[0]}")
-
-
-# # def execute_ssh_tasks(miner_id: str) -> Dict[str, Any]:
-# #     """
-# #     Execute SSH tasks for a given miner ID by calling the orchestrator API.
-    
-# #     Args:
-# #         miner_id (str): The ID of the miner to execute tasks for.
-    
-# #     Returns:
-# #         Dict[str, Any]: A dictionary containing:
-# #             - status: "success" or "error"
-# #             - message: Descriptive message about the outcome
-# #             - task_results: Dictionary of task results or empty dict if failed
-# #     """
-# #     logger.info(f"Executing SSH tasks for miner {miner_id}")
-    
-# #     # Validate miner_id
-# #     if not isinstance(miner_id, str) or not miner_id.strip():
-# #         logger.error("Invalid miner_id: must be a non-empty string")
-# #         return {
-# #             "status": "error",
-# #             "message": "Invalid miner_id: must be a non-empty string",
-# #             "task_results": {}
-# #         }
-    
-# #     url = url = f"https://orchestrator-gekh.onrender.com/api/v1/miners/{miner_id}/perform-tasks"
-# #     logger.debug(f"Requesting SSH tasks at: {url}")
-    
-# #     try:
-# #         response = requests.get(url, timeout=10)
-# #         logger.info(f"Response status: {response.status_code}")
-        
-# #         if response.status_code == 200:
-# #             try:
-# #                 result = response.json()
-# #                 logger.debug(f"Server response: {result}")
-                
-# #                 if result.get("status") != "success":
-# #                     logger.error(f"Server error: {result.get('message', 'Unknown error')}")
-# #                     return {
-# #                         "status": "error",
-# #                         "message": result.get("message", "Server reported failure"),
-# #                         "task_results": {}
-# #                     }
-                
-# #                 # Extract task_results (adjust key based on actual server response)
-# #                 task_results = result.get("task_results", result.get("specifications", {}))
-# #                 logger.info("SSH tasks executed successfully")
-# #                 return {
-# #                     "status": "success",
-# #                     "message": "SSH tasks executed successfully",
-# #                     "task_results": task_results
-# #                 }
-# #             except ValueError as e:
-# #                 logger.error(f"Failed to parse JSON response: {str(e)}")
-# #                 return {
-# #                     "status": "error",
-# #                     "message": f"Invalid server response: {str(e)}",
-# #                     "task_results": {}
-# #                 }
-# #         else:
-# #             logger.error(f"Unexpected status code: {response.status_code}")
-# #             return {
-# #                 "status": "error",
-# #                 "message": f"Server returned status code {response.status_code}",
-# #                 "task_results": {}
-# #             }
-            
-# #     except requests.exceptions.RequestException as e:
-# #         logger.error(f"Request failed for {url}: {str(e)}")
-# #         return {
-# #             "status": "error",
-# #             "message": f"Request error: {str(e)}",
-# #             "task_results": {}
-# #         }
-# #     except Exception as e:
-# #         logger.error(f"Unexpected error executing SSH tasks: {str(e)}")
-# #         return {
-# #             "status": "error",
-# #             "message": f"Unexpected error: {str(e)}",
-# #             "task_results": {}
-# #         }
-
-
-
-# def update_miner_status(miner_id: str, status: str, percentage: float) -> str:
-#     url = f"https://orchestrator-gekh.onrender.com/api/v1/miners/{miner_id}/status"
-#     headers = {"Content-Type": "application/json"}
-#     payload = {"status": status}
-#     try:
-#         response = requests.patch(url, json=payload, headers=headers)
-#         response.raise_for_status()
-#         return response.json().get("status", "unknown")
-#     except Exception as e:
-#         print(f"Error updating miner {miner_id}: {e}")
-#         return None
-
-# def update_rejected_miners_to_pending():
-#     # Get the list of rejected miners
-#     unverified_miners = get_unverified_miners()
-    
-#     # Extract miner IDs
-#     miner_ids = list(unverified_miners.keys())
-    
-#     if not miner_ids:
-#         print("No miners with 'rejected' status found.")
-#         return
-    
-#     print(f"Found {len(miner_ids)} miners with 'rejected' status: {miner_ids}")
-    
-#     # Update each miner's status to pending_verification
-#     for miner_id in miner_ids:
-#         print(f"Updating miner {miner_id} to 'pending_verification'...")
-#         new_status = update_miner_status(miner_id, "pending_verification", 0.0)
-#         if new_status:
-#             print(f"Successfully updated miner {miner_id} to status: {new_status}")
-#         else:
-#             print(f"Failed to update miner {miner_id}")
-# update_rejected_miners_to_pending()
-
-# # def get_filtered_miners() -> tuple[Dict[str, str], List[str]]:
-# #     try:
-# #         response = requests.get("https://orchestrator-gekh.onrender.com/api/v1/bittensor/miners")
-# #         response.raise_for_status()
-# #         miners_data = response.json()
-        
-# #         # Initialize outputs
-# #         miners_to_reject = []
-        
-# #         # Process each miner
-# #         for miner in miners_data:
-# #             miner_id = miner.get("miner_id")
-# #             miner_uid = miner.get("miner_uid")
-# #             print(f"miner uid {miner_id} and {miner_uid}")
-# #             if miner_uid is None:
-# #                 miners_to_reject.append(miner_id)
-        
-# #         return miners_to_reject
-    
-# #     except Exception as e:
-# #         logger.error(f"Error fetching filtered miners: {e}")
-# #         return {}, []
-# # allowed_uids=[2,0,13,131,207]
-# # def get_filtered_miners(allowed_uids: List[int]) -> tuple[Dict[str, str], List[str]]:
-# #     try:
-# #         response = requests.get("https://orchestrator-gekh.onrender.com/api/v1/bittensor/miners")
-# #         response.raise_for_status()
-# #         miners_data = response.json()
-        
-# #         # Initialize outputs
-# #         filtered_miners = {}
-# #         miners_to_reject = []
-        
-# #         # Process each miner
-# #         for miner in miners_data:
-# #             miner_id = miner.get("miner_id")
-# #             miner_uid = miner.get("miner_uid")
-# #             if miner_uid is None:
-# #                 miners_to_reject.append(miner_id)
-# #             elif int(miner_uid) in allowed_uids:
-# #                 # Include miners with valid miner_uid in allowed_uids
-# #                 filtered_miners[miner_id] = str(miner_uid)
-        
-# #         return filtered_miners, miners_to_reject
-    
-# #     except Exception as e:
-# #         logger.error(f"Error fetching filtered miners: {e}")
-# #         return {}, []
-    
-# filtered,miners_to_reject =get_filtered_miners(allowed_uids)
-# print(miners_to_reject)
-# print(filtered)
-# # def get_rejected_miners() -> list[str]:
-# #     try:
-# #         # Get current date dynamically and calculate 2 days ago
-# #         today = datetime.now()
-# #         two_days_ago = today - timedelta(days=2)
-        
-# #         # Fetch data from API
-# #         response = requests.get("https://orchestrator-gekh.onrender.com/api/v1/miners")
-# #         response.raise_for_status()
-# #         miners_data = response.json()
-        
-# #         # Filter miners with status "rejected" and created 2 days ago
-# #         rejected_miners = [
-# #             miner["id"]
-# #             for miner in miners_data
-# #             if miner.get("status") == "pending_verification"
-# #             and miner.get("created_at")  # Ensure created_at exists
-# #             and datetime.fromisoformat(miner["created_at"].replace("Z", "+00:00")).date() <= two_days_ago.date()
-# #         ]
-        
-# #         return rejected_miners
-    
-# #     except Exception as e:
-# #         print(f"No data found: {e}")
-# #         return []
-    
-
-
-# # def delete_miner(miner_id: str) -> bool:
-# #     url = f"https://orchestrator-gekh.onrender.com/api/v1/miners/{miner_id}"
-# #     try:
-# #         response = requests.delete(url)
-# #         response.raise_for_status()
-# #         return True
-# #     except Exception as e:
-# #         print(f"Error deleting miner {miner_id}: {e}")
-# #         return False
-    
-
-# # def delete_rejected_miners():
-# #     # Get the list of rejected miners created 2 days ago
-# #     miner_ids = get_rejected_miners()
-    
-# #     # Format the date 2 days ago for output
-# #     two_days_ago = (datetime.now() - timedelta(days=2)).strftime("%Y-%m-%d")
-    
-# #     if not miner_ids:
-# #         print(f"No rejected miners created on {two_days_ago} found.")
-# #         return
-    
-# #     print(f"Found {len(miner_ids)} rejected miners created on {two_days_ago}: {miner_ids}")
-    
-# #     # Delete each miner
-# #     for miner_id in miner_ids:
-# #         print(f"Deleting miner {miner_id}...")
-# #         if delete_miner(miner_id):
-# #             print(f"Successfully deleted miner {miner_id}")
-# #         else:
-# #             print(f"Failed to delete miner {miner_id}")
-    
-# # if __name__ == "__main__":
-# #     delete_rejected_miners()
+from neurons.utils.proof_of_work import perform_ssh_tasks
+from neurons.utils.api_utils import update_miner_compute_resource
+import os
+import time
+from neurons.utils.uptimedata import calculate_miner_rewards,log_uptime
+from fastapi import HTTPException
 
 # # 
 logger = logging.getLogger("remote_access")
-
+import asyncio
 # 
 # from neurons.utils.pow import  perform_ssh_tasks
 # from neurons.utils.compute_score import pow_tasks
 # from neurons.utils.pogs import compare_compute_resources
 # import asyncio
-data={'7RnrqmhcC8Nr5rD1YmLO': 134}
-# data={'04bwZkkZpSP1ioavmVRe': 158, '081Oqu75ZFkm7S6EO9LN': 240, '0FMSrY4xx62xMy9KN6xd': 158, '0WKTOGat9IUVDWIvbynF': 49, '0e8CRALWdml3Pnf27Z4C': 1, '0icypK4pgzlAuTS9c5Kl': 117, '0riqI6Q4Y9CIcqFA8tgO': 186, '0rny3Vhvmne8DKEDHVsa': 192, '0sy5sozr8YlBQGYU0OuV': 47, '0tsNfjpKviJ6jZrG2WUh': 203, '0uUAe3aeK2QDcYbUxzQj': 99, '0wPkDVmtwb1WYqdga71i': 66, '1Eg7uR28urM0AlEFSpj8': 231, '1EhIkNvpPubXZGd573Zm': 97, '1arXF3eSoXrzJbdsYFFC': 19, '1eYBryIJWdHV76gmxT2S': 73, '1jycXfgBunIv7GqFSDgV': 164, '1spnC8cxYgcncqvU73qo': 0, '1wEnm0ZcnWF3JuW355NT': 88, '22LJtOsYm93BY9FRegek': 233, '2DKFzsg0gaaIOvyP9nhL': 97, '2LpLqWHWf7AUVY2vPy7i': 46, '2N3MuHHWoq0AHxwm2Ut2': 49, '2T8Yono9z7HeuBiFC5lc': 84, '2dsYOnw7cY4ARdcX4yyx': 29, '2jN2m0492M9YMpfWKoxA': 251, '2pDgM79QuL0TJ8BV0kq7': 170, '340NevUIWzoVhiYh669j': 37, '3APsdH6RIYoiyd9JYbTS': 50, '3BkSOPHggi9Abw7PSvcE': 175, '3UiPMCOaMqheCmfUCfQv': 63, '3joc5Z84xzObVFnG7FKg': 39, '41SxnzgjAOGtaL5ePiMi': 249, '4EhchXbVdDeizxHJlK4e': 243, '4FRdZepSee2MaufETcDe': 63, '4aYGEHCAIZfs9eqW6Zyq': 103, '4cus7Od9UxkhAd3b2J74': 223, '4eQQsfwqiVsa2Tq2jRS5': 199, '4k2AITwc5ssFsXbpQots': 85, '4r6R71dJ4vyvErClkd9x': 18, '4xegUUWQnAcydIapQR4a': 30, '4zZvLl5pFfbydvcJ1rjH': 209, '53x5q3zIeSrE54LhUmqk': 232, '5FXy6x6R8wPgMBuRtGqc': 203, '5KSVBePo35qH2ABQbCdt': 166, '5Y4fAuTMNEdLZmQkzh5b': 97, '5lOdoOA3VCXy8DB77oet': 152, '5nhKJm3EpPbNOi9B9n5c': 77, '5tOL7jdpat6sMG1kdGHz': 115, '5yTOuv18ptPzPiN06VzG': 104, '66RkSt5JP8FLEASg9Btd': 118, '6W3hfViUMTvrucL4AkmW': 158, '6Zm3qP907FBS0rUE6Whd': 223, '6iHkv8kHiqzsyebxe9dP': 211, '6lqIN9A4fVM23b1YBNBf': 63, '6osulq8hR6oHSCbYY7Kw': 80, '6sIevKH8rfPwK8XxWQcF': 222, '6tPieGNxlh6f9oCcF6Kh': 0, '6ta26nyLZIwg6Qj2cxCR': 94, '6vwYtiUcSz3PWTCYjXMr': 200, '73MouZ0VbVM5hqSxvYz1': 27, '7RnrqmhcC8Nr5rD1YmLO': 134, '7vNTj807zMbJdcxhGe05': 112, '882LN53XUHv9JXpD6WU7': 252, '8Ol1o9uSYf1DYj0cKFIL': 213, '8fuPYK7hsDxtf4aFRogn': 103, '8hvxxUmM16AAouBqmRsr': 61, '8iqtRaIv1TaBMqf6xsbe': 219, '9ASVBbVjvD1DGWYPSmyB': 12, '9NHamtJ2qfZiTYDuFzQy': 250, '9bNKURPAgAt0leX2o9eU': 39, '9d4KAfmPhXNhfsqlltq3': 179, 'A0bel7PDzm5KbjWaPxsg': 184, 'A91HlSx28B5yJfUCHXEz': 63, 'AH3KEUkoQeuTaruKYcHj': 232, 'AJjmbYUdYwBRfQRs2WeX': 99, 'AOoep8Z84sMW3V57Mclc': 106, 'AWWiwutnp7O7XIBNFdf2': 12, 'B14zFYQjX1kD2STC308b': 141, 'BATNDvNCJKvzBgKEOr1n': 166, 'Bb4VubdZMok1cfXBUR6w': 90, 'BgyLLm5JvzmQbEjHZYa8': 107, 'C7KRZtz9ddSJjqMbqEA3': 233, 'CAeObeERUS5JMpYVwlIp': 27, 'CNrPZc8dmBIYe9qcvyX8': 80, 'CQcHZz7sWxptocMqV5bS': 13, 'CbbtTIRzXzbVumXOpj1J': 105, 'D2UxBEP6BkNC3nMTugQ7': 248, 'D63CYkdLlWMaIf5i8Yh8': 103, 'DaPaRHc26J9TKwV4QDZe': 139, 'DnA8lTBnRTPu2d1dURMb': 17, 'DsuQIsNllCNIamVIveqs': 187, 'E4QpIamMLoYsNffk2Izw': 106, 'EIimoD7nnKPLUMdtDWDX': 152, 'EMOvwLoypHqa9V1vcncZ': 229, 'EMPcUVp4WgSrX22ZgVxI': 0, 'Ehu9NHoswgfKePLbTkj0': 191, 'EsFaFAb8RFvX8quj0SZ9': 78, 'EuTWQ1utRSlmhsqyOxCJ': 85, 'F0wy6QD9MnSSHwFf8eil': 230, 'FFVyjiDrdC2p0DNIRooE': 176, 'GMkAHTWBFArdzciK7f9f': 128, 'GYcaqFyVvm3TAkImFYFF': 109, 'GataupE9Is4vwJeIBu4g': 233, 'GccnlU0H3RGR5s5BP6rP': 226, 'GjhCaWtT4CIf1piSoFkU': 63, 'H77hxM1S9cfko0BFqae1': 216, 'HAE7ML6SC5owGWFycHCx': 233, 'HCTiOLS6a6X7qYdMHCmA': 71, 'HDyTezxTLaPF0xwtTZWQ': 76, 'HNeGZT1fO6MMiaFvQXig': 76, 'HgPiXlvOvqYmpct3moTo': 16, 'HnFnHAaZvVFphMnudjnt': 222, 'HnKXNUjoF6oRPnA4bom2': 38, 'IEj6xad3k98Hv7LssVS1': 237, 'IHkLesAOka0VDC0oUM1F': 84, 'IOMcdoI0mY2gLE3H3USf': 63, 'IZDOmm6Xxs5LysowIEi8': 199, 'IxMgfuxMUlhKGzIy9bJk': 13, 'Iyi5dOU30VZxcERR13dC': 55, 'J4wqKHpewMbvp8yaU8Rs': 76, 'JVwomKQkGgyRX6lxxwy6': 62, 'JWxHOLyH6WBrFp00VNHm': 232, 'Jm0yRjsnfmwivZmV4bns': 239, 'JsYvMK8xtKY4lx9mPqfm': 158, 'JynmRVdFw2wYYTgFOaZa': 184, 'KJaxiKrZDEmcFMnKSbnB': 225, 'KOrqZobxXpvxA7T6byoY': 227, 'Kb3SlbFxGNAinDQCbOLq': 144, 'KeGnUMSNssqgSAoDiHwK': 145, 'KmPadhTTI9dozBvXP8F5': 133, 'KsEqoQFRsmKRetueH2aF': 7, 'LB2E7VEtqchGri0Bl2qB': 0, 'LDToI07GM3y89vPmg1kt': 116, 'LUXVnefVWTBlVVQuzyLv': 0, 'LtAopv9otDEnR1TcdEHL': 203, 'LvPSJbE9kIyBvTONrEc2': 195, 'M1kMP40ZaaAuX3s5ciCz': 146, 'M4XIJeiCThGaxZQcN5H9': 13, 'M60nA9uDZMLDT3V6a1Ak': 218, 'MFHh8lRpWKL4ucFkxZZX': 218, 'MPf2Xl4mwNpXJToWsuHo': 230, 'MQ96vMXYB6J37ZV9llJm': 63, 'MT4O1PvKSDOcR5qOLuOW': 197, 'MflXMI4aMWNLoyC8z8HI': 162, 'N4jfmWUvQ1Yfd24dBUeM': 117, 'ND0e3MtUuukQR2PflDgL': 40, 'NKq72ntMqp6878pGWv1a': 3, 'NTOadeiCOeRPj8vwoo9e': 22, 'Nis8zIqgXUCISj8SMo8G': 177, 'NuOZRx0KMk7F81Hqxtco': 38, 'NyKoFh9xhRzKERPBuft2': 217, 'OGyw7st2uWf3d5CUbyUk': 158, 'OavzlQhRKlbZWOplNoBU': 227, 'OlAcCHLSkxjEZwWYgKhn': 0, 'P8vw6BuadZrqKEsoSsfP': 4, 'PIDnNGShw3UlvGnst2VI': 211, 'PYOdznWwjqtfhGUmUw5W': 124, 'Pe9I9QyTs4nbQyTjJrzc': 87, 'PrANARGCTPJ5PDtaEh0I': 172, 'Q1uWqH7MwBPXxcBApYgv': 97, 'Q6qlifLxb88jgm3N3P1n': 64, 'QL2Pj9Bz2rBkGxAriGni': 99, 'QP7Y8pm9xiJfMxymWTGc': 143, 'QPqj8HRJaKH7IxWCccho': 29, 'QXb08OOxpADaMj7Xb7uV': 167, 'Qo58fb85M23qr3xrJXpx': 64, 'REMtH6wUkFLIivmlGdF2': 27, 'RtY9gpCjlllu8bmmh85H': 210, 'Rtl3qvMWMvPIZv8D8UcQ': 21, 'S6fWiD5yjreK3xw0h5kf': 97, 'SCJ2kuYzFhzQtEiTzAJ8': 0, 'SUlQ0XyDJAj3b5yjIQi8': 253, 'T2h1RxfnUwWrGVKmuFla': 79, 'TMWgtEf4S5lp14mC1BbM': 233, 'Th91HEEhtWhC4ylJnPMt': 101, 'TuLi2e3paFDt1KrFy8EB': 127, 'TueHEDGFxt9KCdJXA3PB': 121, 'UlFpSbz5Rv7uoUmC4l0V': 166, 'UqU9m4BXeBw4bOYkp8br': 233, 'VIv5j5ZtU0iOgUEemmps': 217, 'VPtE5Eb2sGJmnwT0LW4M': 31, 'VTFxMIrze1deRrZGDGKj': 87, 'VraUo9eCGiAmCTdnz9eC': 154, 'Vt3EtMPhsUbmBqgcuXlY': 233, 'Wbjht0arLPqeQ8ktEX0L': 173, 'WtSMNXfN9tx8B3f2D7bp': 103, 'WvOcrfWgVhJpAJiyrlHj': 96, 'XJ1ZF9XrTJsIGjgQ3LO1': 195, 'XML66pyn1S5APUwxJydi': 23, 'XORDAt6vljYsR31xowvj': 203, 'XaaJ0RSTMA5gDbWK29Sp': 3, 'Xc8tfUJj2VYSuDGY905Y': 249, 'YILsF8Qxxr8UlKkwLzKt': 33, 'YlMRUaBYi1ZZJ0Kg8Pjj': 97, 'ZM7CwG22glJLuVKpK0Ur': 85, 'ZPSZNsOyHFHCise636vu': 250, 'ZPhSU58HYfff2cCFqyJ5': 233, 'ZmtqC29ZCqhDYQCpHaIG': 6, 'ZpV5O1EbJhVEWXW9rMvr': 186, 'ZqjWKfL0feEaAfWQyqiG': 224, 'aBid5pRnNo7Jv68Di2OZ': 62, 'aETz6JkF5PdrZaAN0Htw': 35, 'aPEICXX6LBgjZDieNTJd': 84, 'afyeqT9XaCz6iSCrqNb5': 112, 'aqHZLmhcXhYInfnGqNWu': 206, 'au71Fozydjb6XxEzbT1D': 241, 'b7q1mnJYeAkMm0eeyIEa': 53, 'bMMGWXnSb7b80bCecKwm': 131, 'bqrUXvmfmOps40bO97xH': 164, 'c6vri8OZpxYDvktmyDXZ': 112, 'c92FHnjhUWSvscCkbFG8': 117, 'cPCN9jRRePOJww4ZxO08': 181, 'cbWF3ko52Xf2KuN9RxsT': 65, 'cfjDdlCpsupcq0eCl4z0': 238, 'ciobv0ZWgzMlvxBNMmLv': 230, 'csuWox5RtI11d73TBbbF': 212, 'ctQ2N2txxCQbrTU1Tmwn': 221, 'd2QnTaOwVGXDcM4AYvQI': 158, 'd3HHbWnbkCvll1lURxTF': 157, 'drtLwtVkV8q1njADEBm1': 22, 'e3jNfF4eaVCM1RZRDcWQ': 105, 'eIkiUFkJgSPBoF4kXkvV': 84, 'eKScaWF2H96SAdPk774y': 19, 'eURPmpf42Pee8rxGCj89': 0, 'egl7lBFHIGfJttPEiEPh': 21, 'eibn4Ho4E2JTgjYqEMTQ': 212, 'fJGaHD2t22KZjU9hab0o': 76, 'fSlqfnLbecubkrOpAw8Q': 120, 'fWOw3kQSeopsQnpnnkWL': 255, 'fWZZgVAVj2Ho1qCiL7E0': 203, 'fZJJYjQrCV9e2uneeR2Q': 0, 'fhqLSC5WHn8oA7aVDxLd': 202, 'fqrKl4j5SAnFqwt71BVj': 75, 'gTOo7rTfzpIkxLeXfU94': 0, 'gUqbUnjFxhsuCABDO7cM': 30, 'gaJ4IiCvWxEPeKm0oVXC': 107, 'gniIpn1OZaGgcB2TrKFh': 158, 'grYwTA7fnZatSR3qcezS': 249, 'gvpnUzp1qVdmJO8KH6do': 30, 'gwk7FImD0Yl0ZdZ0dBWc': 106, 'gzgBaIfgmDWE1knCxKe4': 166, 'h1nYxCo2xom42gkiP0lu': 182, 'hLoV2OXPw60SFHF51vYE': 197, 'hNYuhTB3g6bosNUe1pHn': 155, 'hUarPqf7f0DppiuYa0co': 112, 'hyQdy1k8Z4igoyxi5N2F': 65, 'i5entoHTdTjC1HucVYcH': 3, 'iArUCOD1ylnGEgrKVDKV': 60, 'iE0kLc88vWpz1qzOiSS6': 191, 'iH1SFIA8nAtF8lEWDCey': 0, 'iIMd28uY1pMa3pBQPeLV': 108, 'iZZ5mjvP7VfLorGOlT0s': 24, 'idHHih1nFoOhKEIBUxRt': 150, 'izx2TS5ZXjKgLHdwQbj6': 75, 'jJhod5DBG7OfzLgECReE': 86, 'jXCfREtMUnWNyY5xuosp': 12, 'jermjTpker76OG3Kx65z': 97, 'jwqvKdPTL0XLY4mkMWAm': 207, 'k4nE5C4mRwcs1RJwWRUq': 21, 'kO4NiuQW6rXZveDq6VKo': 117, 'kYRKgzuoFKz5P86rwIeM': 63, 'klOBnZR1eFWtgOFOWDej': 87, 'kwDVOdlG6QCimBQWwyMJ': 112, 'l2oQm4OHla9CUI50pmlT': 0, 'l7qOkd06IC05yhPikcWZ': 235, 'lVAB77j4Bgp24Cgt0d7v': 233, 'lZ2Q9Ys6R3ynP3gfBJ9w': 27, 'm7SiNgH6hCUIaEJci335': 48, 'mLEqdYsJFfrXdHO8cC0S': 8, 'mXgKwyKmqcEQEpjhmHXp': 172, 'mZ6frccstmQ3tGqWOHmk': 97, 'md94sqyYwsm8ppbJKR6q': 117, 'mdSIRXm1x8OJJScmIn9q': 117, 'n3ly9JsfRx5PGOarpPhm': 124, 'n7S3yErH9GcHl7APSbx0': 120, 'nArXNaO53DQhMv3GSG3o': 160, 'nIasxVk4T68JkATgbtyl': 253, 'navcdCleGl4qsbRNuzZN': 3, 'nb9q0v4fmG2sKz7FJ3Sz': 91, 'nfcPkLPoTY2I8zEfeeoT': 22, 'nqqSELEP1y5kHPuG9393': 166, 'ntIXLWFaQVj1lqQwWOqe': 88, 'nzQIc2THYhLiINzEtRBb': 163, 'o5IW4Frmu8XFu80Fvv0n': 158, 'o6yYmyNsID29l7jJMqMU': 106, 'op9g21jep0DW5YsZhF6M': 112, 'ovtxvy6xXX97szRH7IMO': 2, 'p7opgZyOqn8cGPadKEZU': 28, 'p8mwFBAKYHe9pRLMyJgq': 228, 'pKqfUtgCv3D5USZFNgbU': 223, 'pPPJZQ6ZTjrYuSZDKxsP': 49, 'pWzainbPBkgA8Nag2GAI': 158, 'pbPc0b4Uf1TxjwtQHsSN': 188, 'pcMrbPzBFu8iNwZ2wint': 29, 'pdJpM3kpwNQbl8h26Q0Z': 243, 'pnaLQnPbIABhaQMNahMT': 63, 'prxBVPSzSpQGu7NLVAfF': 0, 'q192hC5vy3z4tukH1L2C': 158, 'q8oiO4OsVhPBYS2iikkA': 141, 'qGDz5Bsdc9wc1QAWKY2r': 94, 'qHbwde7rHDEjkm4ybb9M': 18, 'qIY6tpyFXTuT0zSWGNwB': 158, 'qKbLm39SqgbGAjwBjttp': 237, 'qZ5ou08lPalMTUCWT3Nn': 94, 'qmJEdNYSYaToARHVyiCb': 154, 'qtYNDsUkH0lxyLfAcmL7': 69, 'rAIWlYAyjI4g92dQKKAK': 97, 'rLQ1kttoG0nREKPizFKH': 136, 'rbC5Eo75UEZjjtKcD9JA': 16, 'ro3Jhn52pK8A7x02mJip': 214, 's663AjJ38d9YEWvrn3Kn': 57, 'sDYgGR0WT3maMom712HB': 126, 'sG3D9cMKoayIHId8Ib2h': 183, 'sHWLu91MB3QPcBYlpH7f': 112, 'sP1QXKT46E48RyIsY4kM': 106, 'tHInHJ6VnoBY2PKd5WDR': 22, 'tIlqtLp4CxG3UIYaIuYP': 47, 'tIvwvtUntMoOFmZNfUom': 148, 'tdnIlo7ZsStHVTMdFTTa': 181, 'tlw9yqs4QFX6LRNmyu9g': 166, 'tnk7nDFUqKpaQ3tcPSR0': 87, 'uWwXp6L82A3Zc0Q1nqnP': 125, 'uhbaT0mLyYgF17zxwPxN': 177, 'uuD9ZsZeYPXZu08gSa1u': 176, 'uvFkoIK2wGRaegpbZr97': 226, 'uz99VNhk2WdvF6vPicwy': 60, 'uzpc9XtPlAy27FHGShY0': 182, 'vMB61leym52C97xv2SfU': 27, 'vSuUtJs3VxpYt12UxUGL': 0, 'vU6qRuGBaSh4AuYOLAko': 243, 'vb8qYkkdJMjxs2ImI5ZO': 247, 'veZPvA20PexrpUHDPiKb': 40, 'vuCbFEiS0SbnhXwVGTQg': 164, 'vzazHtvIaPVWab976yps': 77, 'w61UzuH7I0xV5l2vVzZK': 233, 'w8FVsQszJYRHDkgEQgNR': 147, 'wQ9x3tdwKvPM9tGibz5r': 74, 'weBgVtZwsKWtmwCEPIVb': 87, 'wzPGHTJpqgQcC60zgyyK': 229, 'x5jF5TopBn1Ij4vW84q7': 234, 'x5qOPnQpyKY8NVprK8p1': 185, 'xHXtyMvHAvZ4WEKHNLM6': 111, 'xOygCIuLsMSVZh4geA39': 158, 'xSQbPSAlnbPy5z7gnWnl': 117, 'xX1j8Sl5IpzIiO7vvsrG': 22, 'xuzS80dcNyIZDWmfcmoT': 141, 'yHQj7qDWqnQVi61yqQzJ': 109, 'yRi08zQBH3NLvFcf19Bl': 75, 'ybOweO11ru3MHjlSTS3r': 63, 'ytnr9WDEcCsB53FXyUzp': 189, 'yueTiA1EIVOYEoTI5886': 174, 'z6zPZzzCgpVuCGAhOP6G': 164, 'z7ybNECH1yKh8QfllxzA': 0, 'zJ4WeDzkiakWwxi8wEqE': 83, 'zMJCmBjFQlLDupQPRGqa': 72, 'zSTDjQQL0uTH03DDvwwj': 131, 'zVxhJWFEsznmw8jRAMNL': 149, 'zaxo2ATNVsEagb6ABbug': 252, 'zexiPSfZ404mKfg5s52U': 60, 'zlGakvHqctqNDoW69or8': 145, 'zuERoymc9gRWByz6jcXs': 170}
-# import requests
-# import logging
-
-# # Set up logging
-# logging.basicConfig(level=logging.INFO)
-# logger = logging.getLogger(__name__)
-
-# # First data dictionary (33 miner IDs)
-
-# def get_miner_list_with_resources(data) -> dict:
-#     logger.info(f"Fetching miner list with resources for {len(data)} miner IDs")
-#     try:
-#         response = requests.get("https://polaris-test-server.onrender.com/api/v1/miners")
-#         response.raise_for_status()
-#         miners_data = response.json()
-#         results = {}
-#         for miner in miners_data:
-#             miner_id = miner["id"]
-#             print(f"Processing miner ID: {miner_id}")  # Print miner ID being worked on
-#             if miner_id in data:
-#                 results[miner_id] = {
-#                     "compute_resources": miner["compute_resources"],
-#                     "miner_uid": data.get(miner_id)
-#                 }
-#         return results
-#     except Exception as e:
-#         logger.error(f"Error fetching miner list with resources: {e}")
-#         return {}
-
-
-# results = get_miner_list_with_resources(data)
-
-# # Collect unmapped miner IDs in a list
-# unmapped_miners = list(set(data.keys()) - set(results.keys()))
-
-# # Print unmapped miner IDs
-# print("\nMiner IDs whose resources are not found:", unmapped_miners)
-# print("\nReason: These miner IDs are not present in the API response (miners_data) from https://polaris-test-server.onrender.com/api/v1/miners.")
-# print(f"\n results found for {results.keys()}")
-# if not results:
-#     print("Note: The API request failed, so no miner resources were returned, making all IDs unmapped.")
-# else:
-#     print("Possible causes: The miner IDs may be invalid, not registered, or the API returned an incomplete miner list.")
-# def get_unmapped_miners_from_results(data, results):
-#     # Extract miner IDs from data and results
-#     data_miner_ids = set(data.keys())
-#     mapped_miner_ids = set(results.keys())
-    
-#     # Find miner IDs in data but not in results
-#     unmapped_miners = data_miner_ids - mapped_miner_ids
-    
-#     return unmapped_miners
-
-# # Run get_miner_list_with_resources
-# results = get_miner_list_with_resources(data)
-
-# # Get unmapped miner IDs
-# unmapped_miners = get_unmapped_miners_from_results(data, results)
-
-# # Print results
-# print("Unmapped miner IDs (not returned by get_miner_list_with_resources):")
-# if unmapped_miners:
-#     for miner_id in sorted(unmapped_miners):
-#         print(miner_id)
-# else:
-#     print("None (all miner IDs were found in the API response).")
-
-# print("\nReason: These miner IDs are not present in the API response (miners_data) from https://polaris-test-server.onrender.com/api/v1/miners.")
-# if not results:
-#     print("Note: The API request failed, so no miner information was returned, making all IDs unmapped.")
-# else:
-#     print("Possible causes: The miner IDs may be invalid, not registered, or the API returned an incomplete miner list.")
-
-# print("\nMapped miners (for reference):")
-# if results:
-#     for miner_id, info in sorted(results.items()):
-#         print(f"{miner_id}: {info}")
-# else:
-#     print("None (no miners were mapped due to API failure or no matching IDs).")
-# async def main():
-#     miner_id = "0sy5sozr8YlBQGYU0OuV"
-    # result = get_miner_list_with_resources(data)
-#     miner_resource = result.get(miner_id)
-#     wrk =miner_resource["compute_resources"][0]["network"]["ssh"]
-#     result2 = await perform_ssh_tasks(wrk)  # Await the coroutine
-#     specs = result2.get("task_results", {})
-#     resource_type =miner_resource["compute_resources"][0]["resource_type"]
-#     score_vall =calculate_compute_score(resource_type,specs)
-#     comparison_score = await pow_tasks(wrk)
-#     print(f"new stauff {comparison_score}")
-
-# if __name__ == "__main__":
-#     asyncio.run(main())
-
-
+data={"zgUxdd0fosPUuUqLQivY":18}
 
 
 import requests
@@ -439,14 +55,13 @@ def _sync_miners_data() -> None:
     global _miners_data_cache, _miners_data_last_fetch
     try:
         headers = {
-            "Accept-Encoding": "gzip, deflate, br",
             "Connection": "keep-alive",
-            "x-api-key": "dev-services-key",
+            "x-api-key": "8yZAE6YeijrYALevtrJwwHH2JkiU0mkMZ2DlFjO9KlXYp2ZISRSt5oQjxfqVRbaH",
             "x-use-encryption": "true",
-            "service-key": "53c8f1eba578f46cd3361d243a62c2c46e2852f80acaf5ccc35eaf16304bc60b",
+            "service-key": "I9zMqHJLMcAy7BWgbi1PuojY48f6pOIUpd5ERhsIr4XUEm1JD7Fu0v9LHt9AkiaG",
             "service-name": "miner_service"
         }
-        url = "https://polaris-interface.onrender.com/api/v1/services/miner/miners"
+        url = "https://femi-aristodeer/miners"
         response = requests.get(url, headers=headers)
         response.raise_for_status()
         _miners_data_cache = response.json().get("data", {}).get("miners", [])
@@ -479,37 +94,6 @@ def _sync_metagraph(netuid: int, network: str = "finney") -> None:
         _hotkey_to_uid_cache = {}
         _metagraph = None
 
-# def get_filtered_miners(allowed_uids: List[int]) -> Tuple[Dict[str, str], List[str]]:
-#     try:
-#         # Get cached miners data
-#         miners = _get_cached_miners_data()
-
-#         # Initialize outputs
-#         filtered_miners = {}
-#         miners_to_reject = []
-
-#         for miner in miners:
-#             print(miner)
-#             miner_id = miner.get("id")
-#             bittensor_reg = miner.get("bittensor_registration")
-
-#             if not miner_id:
-#                 continue 
-
-#             if bittensor_reg is not None:
-#                 miner_uid = bittensor_reg.get("miner_uid")
-#                 if miner_uid is None:
-#                     miners_to_reject.append(miner_id)
-#                 elif int(miner_uid) in allowed_uids:
-#                     filtered_miners[miner_id] = str(miner_uid)
-#             else:
-#                 miners_to_reject.append(miner_id)
-
-#         return filtered_miners, miners_to_reject
-
-#     except Exception as e:
-#         logger.error(f"Error fetching filtered miners: {e}")
-#         return {}, []
 
 
 # # Example usage
@@ -607,8 +191,8 @@ def get_miner_details(miner_id: str) -> dict:
 
 def filter_miners_by_id(
     bittensor_miners: Dict[str, int],
-    netuid: int = 49,
-    network: str = "finney",
+    netuid: int = 100,
+    network: str = "test",
     hotkey_to_uid: Optional[Dict[str, int]] = None
 ) -> Dict[str, int]:
     """
@@ -645,14 +229,12 @@ def filter_miners_by_id(
             if miner_id not in ids_to_keep_set:
                 logger.debug(f"Miner {miner_id} not in ids_to_keep, skipping")
                 continue
-
             # Get miner details
             miner_details = get_miner_details(miner_id)
             hotkey = miner_details.get("bittensor_registration", {}).get("hotkey")
             if not hotkey or hotkey == "default":
                 logger.warning(f"Invalid or missing hotkey for miner {miner_id}, skipping")
                 continue
-
             # Verify UID using cached mapping
             subnet_uid = uid_cache.get(hotkey)
             if subnet_uid is None:
@@ -675,26 +257,577 @@ def filter_miners_by_id(
         logger.error(f"Error filtering miners: {e}")
         return {}
 # info = filter_miners_by_id(data, netuid=49, network="finney")
+# data={'074rZehlXjTmxVH7ePRR': '114', '0e8CRALWdml3Pnf27Z4C': '1', '0icypK4pgzlAuTS9c5Kl': '117'}
+butt ={'0WKTOGat9IUVDWIvbynF': '49', '0e8CRALWdml3Pnf27Z4C': '1', '0icypK4pgzlAuTS9c5Kl': '117', '0rny3Vhvmne8DKEDHVsa': '192', '1arXF3eSoXrzJbdsYFFC': '19', '1eYBryIJWdHV76gmxT2S': '73', '1wEnm0ZcnWF3JuW355NT': '88', '2LpLqWHWf7AUVY2vPy7i': '46', '2T8Yono9z7HeuBiFC5lc': '84', '2d5ayYKanlefjvEqEjLe': '134', '2jN2m0492M9YMpfWKoxA': '251', '2mv3Z4eepUpafF1m8Ezb': '109', '2pDgM79QuL0TJ8BV0kq7': '170', '340NevUIWzoVhiYh669j': '37', '41SxnzgjAOGtaL5ePiMi': '249', '4eQQsfwqiVsa2Tq2jRS5': '199', '4r6R71dJ4vyvErClkd9x': '18', '4xegUUWQnAcydIapQR4a': '30', '5lOdoOA3VCXy8DB77oet': '152', '5nhKJm3EpPbNOi9B9n5c': '77', '6osulq8hR6oHSCbYY7Kw': '80', '7RnrqmhcC8Nr5rD1YmLO': '134', '8hvxxUmM16AAouBqmRsr': '61', '8iqtRaIv1TaBMqf6xsbe': '219', '9d4KAfmPhXNhfsqlltq3': '179', 'A0bel7PDzm5KbjWaPxsg': '184', 'A6erViSHjYOp3hYCEpfr': '48', 'AJjmbYUdYwBRfQRs2WeX': '99', 'AOoep8Z84sMW3V57Mclc': '106', 'B14zFYQjX1kD2STC308b': '141', 'CNrPZc8dmBIYe9qcvyX8': '80', 'CQcHZz7sWxptocMqV5bS': '13', 'D63CYkdLlWMaIf5i8Yh8': '103', 'DaPaRHc26J9TKwV4QDZe': '139', 'DnA8lTBnRTPu2d1dURMb': '17', 'E4QpIamMLoYsNffk2Izw': '106', 'E83NDzEkSsmSAFoLmE2t': '231', 'EsFaFAb8RFvX8quj0SZ9': '78', 'FqvzUNI5vYs0lrlF5mcy': '231', 'GMkAHTWBFArdzciK7f9f': '128', 'GYcaqFyVvm3TAkImFYFF': '109', 'H77hxM1S9cfko0BFqae1': '216', 'HDyTezxTLaPF0xwtTZWQ': '76', 'HNeGZT1fO6MMiaFvQXig': '76', 'IHkLesAOka0VDC0oUM1F': '84', 'IZDOmm6Xxs5LysowIEi8': '199', 'IxMgfuxMUlhKGzIy9bJk': '13', 'J4wqKHpewMbvp8yaU8Rs': '76', 'Kb3SlbFxGNAinDQCbOLq': '144', 'KmPadhTTI9dozBvXP8F5': '133', 'LDToI07GM3y89vPmg1kt': '116', 'LvPSJbE9kIyBvTONrEc2': '195', 'M1kMP40ZaaAuX3s5ciCz': '146', 'MQ96vMXYB6J37ZV9llJm': '63', 'MRQC5BCoFiqkteuNiw9u': '134', 'MT4O1PvKSDOcR5qOLuOW': '197', 'N4jfmWUvQ1Yfd24dBUeM': '117', 'ND0e3MtUuukQR2PflDgL': '40', 'NTOadeiCOeRPj8vwoo9e': '22', 'NyKoFh9xhRzKERPBuft2': '217', 'OlAcCHLSkxjEZwWYgKhn': '0', 'P8vw6BuadZrqKEsoSsfP': '4', 'Q6qlifLxb88jgm3N3P1n': '64', 'QL2Pj9Bz2rBkGxAriGni': '99', 'QP7Y8pm9xiJfMxymWTGc': '143', 'Qo58fb85M23qr3xrJXpx': '64', 'Rtl3qvMWMvPIZv8D8UcQ': '21', 'S2XJuMnC29rn7JQUUPIS': '231', 'SCJ2kuYzFhzQtEiTzAJ8': '0', 'SHgoiWPB5htfBs3pXjIN': '231', 'SYciHeMGsVuu55n07oKr': '231', 'T2h1RxfnUwWrGVKmuFla': '79', 'Th91HEEhtWhC4ylJnPMt': '101', 'TuLi2e3paFDt1KrFy8EB': '127', 'VTFxMIrze1deRrZGDGKj': '87', 'VraUo9eCGiAmCTdnz9eC': '154', 'WtSMNXfN9tx8B3f2D7bp': '103', 'X8szTKXH49tbgAvVJQzk': '85', 'XORDAt6vljYsR31xowvj': '203', 'XaaJ0RSTMA5gDbWK29Sp': '3', 'Xc8tfUJj2VYSuDGY905Y': '249', 'YILsF8Qxxr8UlKkwLzKt': '33', 'ZmtqC29ZCqhDYQCpHaIG': '6', 'aETz6JkF5PdrZaAN0Htw': '35', 'aPEICXX6LBgjZDieNTJd': '84', 'c92FHnjhUWSvscCkbFG8': '117', 'cPCN9jRRePOJww4ZxO08': '181', 'ctQ2N2txxCQbrTU1Tmwn': '221', 'diBAfIGiwBUJSNODpgkP': '37', 'eIkiUFkJgSPBoF4kXkvV': '84', 'eKScaWF2H96SAdPk774y': '19', 'eURPmpf42Pee8rxGCj89': '0', 'egl7lBFHIGfJttPEiEPh': '21', 'fJGaHD2t22KZjU9hab0o': '76', 'grYwTA7fnZatSR3qcezS': '249', 'gwk7FImD0Yl0ZdZ0dBWc': '106', 'h1nYxCo2xom42gkiP0lu': '182', 'hLoV2OXPw60SFHF51vYE': '197', 'hUarPqf7f0DppiuYa0co': '112', 'iArUCOD1ylnGEgrKVDKV': '60', 'iE0kLc88vWpz1qzOiSS6': '191', 'iH1SFIA8nAtF8lEWDCey': '0', 'jJhod5DBG7OfzLgECReE': '86', 'kO4NiuQW6rXZveDq6VKo': '117', 'klOBnZR1eFWtgOFOWDej': '87', 'l2oQm4OHla9CUI50pmlT': '0', 'lZ2Q9Ys6R3ynP3gfBJ9w': '27', 'md94sqyYwsm8ppbJKR6q': '117', 'mdSIRXm1x8OJJScmIn9q': '117', 'navcdCleGl4qsbRNuzZN': '3', 'nzQIc2THYhLiINzEtRBb': '163', 'o6yYmyNsID29l7jJMqMU': '106', 'ovtxvy6xXX97szRH7IMO': '2', 'pbPc0b4Uf1TxjwtQHsSN': '188', 'pcMrbPzBFu8iNwZ2wint': '29', 'ph5UdhtGyj6RDcJZn94S': '231', 'q8oiO4OsVhPBYS2iikkA': '141', 'qmJEdNYSYaToARHVyiCb': '154', 'qtYNDsUkH0lxyLfAcmL7': '69', 'rLQ1kttoG0nREKPizFKH': '136', 'sG3D9cMKoayIHId8Ib2h': '183', 'sP1QXKT46E48RyIsY4kM': '106', 'tIvwvtUntMoOFmZNfUom': '148', 'tdnIlo7ZsStHVTMdFTTa': '181', 'tlw9yqs4QFX6LRNmyu9g': '166', 'uWwXp6L82A3Zc0Q1nqnP': '125', 'uuD9ZsZeYPXZu08gSa1u': '176', 'veZPvA20PexrpUHDPiKb': '40', 'vzazHtvIaPVWab976yps': '77', 'w8FVsQszJYRHDkgEQgNR': '147', 'xHXtyMvHAvZ4WEKHNLM6': '111', 'xOygCIuLsMSVZh4geA39': '158', 'xSQbPSAlnbPy5z7gnWnl': '117', 'xuzS80dcNyIZDWmfcmoT': '141', 'yHQj7qDWqnQVi61yqQzJ': '109', 'yRi08zQBH3NLvFcf19Bl': '75', 'yueTiA1EIVOYEoTI5886': '174', 'zMJCmBjFQlLDupQPRGqa': '72', 'zexiPSfZ404mKfg5s52U': '60', 'zlGakvHqctqNDoW69or8': '145', 'zuERoymc9gRWByz6jcXs': '170'}
 
 
-def get_miner_list_with_resources(miner_commune_map: Dict[str, str]) -> Dict[str, dict]:
+def get_filtered_miners() -> Tuple[Dict[str, Dict[str, str]], List[str]]:
+    try:
+        # Get cached miners data
+        miners = _get_cached_miners_data()[2]
+        print(f"{miners}")
+        # Initialize outputs
+        filtered_miners = {}
+        miners_to_reject = []
+
+        for miner in miners:
+            miner_id = miner.get("id")
+            bittensor_reg = miner.get("bittensor_registration")
+        return 1
+
+        #     if not miner_id:
+        #         continue 
+
+        #     if bittensor_reg is not None:
+        #         miner_uid = bittensor_reg.get("miner_uid")
+        #         hotkey = bittensor_reg.get("hotkey")
+        #         if miner_uid is None or hotkey is None:
+        #             miners_to_reject.append(miner_id)
+        #         elif int(miner_uid):
+        #             filtered_miners[miner_id] = {"miner_uid": str(miner_uid), "hotkey": hotkey}
+        #     else:
+        #         miners_to_reject.append(miner_id)
+
+        # return filtered_miners, miners_to_reject
+
+    except Exception as e:
+        logger.error(f"Error fetching filtered miners: {e}")
+        return {}, []
+
+def get_miner_uid_by_hotkey(hotkey: str, netuid: int, network: str = "finney", force_refresh: bool = False) -> int | None:
+    """
+    Retrieves the miner UID for a given hotkey on a specific Bittensor subnet using cached metagraph data.
+
+    Args:
+        hotkey: The SS58 address of the miner's hotkey.
+        netuid: The subnet ID (e.g., 49).
+        network: The Bittensor network to query (default: "finney" for mainnet).
+        force_refresh: If True, forces a refresh of the metagraph cache (default: False).
+
+    Returns:
+        int | None: The miner's UID if found, None otherwise.
+    """
+    global _hotkey_to_uid_cache, _last_metagraph_sync, _metagraph
+
+    try:
+        # Validate input
+        if not hotkey or not isinstance(hotkey, str):
+            logger.error(f"Invalid hotkey provided: {hotkey}")
+            return None
+
+        # Check if cache refresh is needed or forced
+        if force_refresh or not _hotkey_to_uid_cache or time.time() - _last_metagraph_sync > _metagraph_sync_interval or _metagraph is None:
+            logger.info(f"Refreshing metagraph cache for netuid {netuid} (force_refresh={force_refresh})")
+            subtensor = bt.subtensor(network=network)
+            logger.info(f"Connected to Bittensor network: {network}, querying subnet: {netuid}")
+            _metagraph = subtensor.metagraph(netuid=netuid)
+            _hotkey_to_uid_cache = {hotkey: uid for uid, hotkey in enumerate(_metagraph.hotkeys)}
+            _last_metagraph_sync = time.time()
+            logger.info(f"Synced metagraph for netuid {netuid}, total nodes: {len(_metagraph.hotkeys)}")
+
+        # Look up hotkey in cache
+        uid = _hotkey_to_uid_cache.get(hotkey)
+        if uid is not None:
+            logger.info(f"Found hotkey {hotkey} with UID {uid} in cache for subnet {netuid}")
+            return uid
+
+        logger.warning(f"Hotkey {hotkey} not found in cache for subnet {netuid}")
+        return None
+
+    except Exception as e:
+        logger.error(f"Error retrieving miner UID for hotkey {hotkey} on subnet {netuid}: {e}")
+        return None
+
+tempo =90
+current_block = 89378283
+from typing import TypedDict, Tuple, List, Dict
+SCORE_THRESHOLD = 0.005
+MAX_CONTAINERS = 10
+SCORE_WEIGHT = 0.33
+CONTAINER_BONUS_MULTIPLIER = 2
+SUPPORTED_NETWORKS = ["finney", "mainnet", "testnet"]
+
+class MinerProcessingError(Exception):
+    pass
+
+class MinerResult(TypedDict):
+    miner_id: str
+    miner_uid: str
+    hotkey: str
+    total_score: float
+
+class UptimeReward(TypedDict):
+    reward_amount: float
+    blocks_active: int
+    uptime: int
+    additional_details: Dict
+
+async def get_filtered_miners_val(
+    allowed_uids: List[int],
+    netuid: int = 49,
+    network: str = "finney",
+    tempo: int = 4320,
+    max_score: float = 100.0,
+    current_block: int = 0
+) -> Tuple[Dict[str, MinerResult], Dict[str, UptimeReward]]:
+    """
+    Fetches and processes miner data, aggregating scores and rewards for verified compute resources.
+
+    Args:
+        allowed_uids: List of allowed miner UIDs to filter.
+        netuid: Subnet ID for hotkey verification (default: 49).
+        network: Bittensor network name (default: "finney").
+        tempo: Tempo interval in seconds (default: 4320 seconds = 72 minutes).
+        max_score: Maximum normalized score (default: 100.0).
+        current_block: Current block number for uptime logging (default: 0).
+
+    Returns:
+        Tuple of two dictionaries:
+        - Dict mapping miner_id to {miner_id, miner_uid, hotkey, total_score}.
+        - Dict mapping miner_id to {reward_amount, blocks_active, uptime, additional_details}.
+
+    Raises:
+        ValueError: If input parameters are invalid.
+        MinerProcessingError: If processing fails critically.
+    """
+    # Input validation
+    if not allowed_uids:
+        logger.warning("Empty allowed_uids list provided")
+        return {}, {}
+    if tempo <= 0:
+        raise ValueError("Tempo must be positive")
+    if max_score <= 0:
+        raise ValueError("max_score must be positive")
+    if current_block < 0:
+        raise ValueError("current_block cannot be negative")
+    if network not in SUPPORTED_NETWORKS:
+        raise ValueError(f"Network must be one of {SUPPORTED_NETWORKS}")
+
     try:
         # Get cached miners data
         miners = _get_cached_miners_data()
 
-        # Construct and return the desired output
-        return {
-            miner.get("id"): {
-                "compute_resource_details": miner.get("compute_resources_details", []),
-                "miner_uid": miner_commune_map.get(miner.get("id"))
-            }
-            for miner in miners
-            if miner.get("status") == "verified" and miner.get("id") in miner_commune_map
-        }
+        miners =miners[:10]
+        if not miners:
+            logger.warning("No miners data available")
+            return {}, {}
+        logger.info(f"Fetched {len(miners)} miners")
+
+        # Initialize result dictionaries
+        results: Dict[str, MinerResult] = {}
+        raw_results: Dict[str, dict] = {}
+        uptime_rewards_dict: Dict[str, UptimeReward] = {}
+        hotkey_cache: Dict[str, int] = {}
+        uptime_logs = []
+
+        # Iterate through miners
+        for miner in miners:
+            if (
+                not miner.get("bittensor_registration")
+                or miner["bittensor_registration"].get("miner_uid") is None
+                or int(miner["bittensor_registration"]["miner_uid"]) not in allowed_uids
+            ):
+                continue
+
+            hotkey = miner["bittensor_registration"].get("hotkey")
+            miner_uid = int(miner["bittensor_registration"]["miner_uid"])
+            miner_id = miner.get("id", "unknown")
+            logger.info(f"Processing miner {miner_id} (UID: {miner_uid})")
+
+            # Verify hotkey
+            if hotkey not in hotkey_cache:
+                logger.info(f"Verifying hotkey {hotkey} on subnet {netuid}")
+                hotkey_cache[hotkey] = get_miner_uid_by_hotkey(hotkey, netuid, network)
+            verified_uid = hotkey_cache[hotkey]
+            if verified_uid is None or verified_uid != miner_uid:
+                logger.warning(f"Hotkey verification failed for miner {miner_id}")
+                continue
+
+            # Initialize accumulators
+            if miner_id not in uptime_rewards_dict:
+                raw_results[miner_id] = {
+                    "miner_id": miner_id,
+                    "miner_uid": miner_uid,
+                    "total_raw_score": 0.0
+                }
+                uptime_rewards_dict[miner_id] = {
+                    "reward_amount": 0.0,
+                    "blocks_active": 0,
+                    "uptime": 0,
+                    "additional_details": {"resources": {}}
+                }
+                results[miner_id] = {
+                    "miner_id": miner_id,
+                    "miner_uid": str(miner_uid),
+                    "hotkey": hotkey,
+                    "total_score": 0.0
+                }
+
+            # Process compute resources concurrently
+            compute_details = miner.get("compute_resources_details", [])
+            logger.info(f"Miner {miner_id} has {len(compute_details)} compute resource(s)")
+
+            async def process_resource(resource, idx):
+                resource_id = resource.get("id", "unknown")
+                validation_status = resource.get("validation_status")
+                if validation_status != "verified":
+                    logger.info(f"Skipping resource {resource_id} (ID: {idx}): validation_status={validation_status}")
+                    return None
+                logger.info(f"Processing resource {idx} (ID: {resource_id})")
+                ssh_value = resource.get("network", {}).get("ssh", "No SSH value available")
+                try:
+                    ssh_result = await perform_ssh_tasks(ssh_value)
+                    pog_score = ssh_result["task_results"]["total_score"]
+                    logger.info(f"Resource {resource_id}: compute_score={pog_score:.4f}")
+                    return resource_id, pog_score
+                except (OSError, asyncio.TimeoutError) as e:
+                    logger.error(f"Error performing SSH tasks for resource {resource_id}: {e}")
+                    return None
+                except HTTPException as e:
+                    logger.error(f"HTTP error performing SSH tasks for resource {resource_id}: {e.status_code} - {e.detail}")
+                    return None
+                except Exception as e:
+                    logger.error(f"Unexpected error performing SSH tasks for resource {resource_id}: {e}")
+                    return None
+
+            tasks = [process_resource(resource, idx) for idx, resource in enumerate(compute_details, 1)]
+            task_results = await asyncio.gather(*tasks, return_exceptions=True)
+            
+            # Filter out None results and exceptions
+            resource_results = []
+            for result in task_results:
+                if isinstance(result, Exception):
+                    logger.error(f"Task failed with exception: {result}")
+                    continue
+                if result is not None:
+                    resource_results.append(result)
+
+            for resource_id, pog_score in resource_results:
+                if pog_score < SCORE_THRESHOLD:
+                    logger.warning(f"Resource {resource_id}: score={pog_score:.4f} below threshold")
+                    update_result = update_miner_compute_resource(
+                        miner_id=miner_id,
+                        resource_id=resource_id,
+                        reason=f"Low compute score: {pog_score:.4f}"
+                    )
+                    if not update_result:
+                        logger.warning(f"Failed to update status for resource {resource_id}")
+                    continue
+
+                # Scale compute score
+                scaled_compute_score = np.log1p(pog_score) * 10
+                logger.info(f"Resource {resource_id}: scaled_compute_score={scaled_compute_score:.2f}")
+
+                # Calculate uptime and rewards
+                status = "active" if pog_score >= SCORE_THRESHOLD else "inactive"
+                safe_resource_id = re.sub(r'[^a-zA-Z0-9_-]', '_', resource_id)
+                log_file = os.path.join("logs/uptime", f"resource_{safe_resource_id}_uptime.json")
+                is_new_resource = not os.path.exists(log_file)
+                uptime_percent = 100.0 if status == "active" else 0.0
+
+                uptime_logs.append({
+                    "miner_uid": resource_id,
+                    "status": status,
+                    "compute_score": pog_score,
+                    "uptime_reward": 0.0,
+                    "block_number": current_block,
+                    "reason": "Initial uptime log"
+                })
+
+                uptime_rewards = calculate_miner_rewards(resource_id, pog_score, current_block, tempo)
+                if is_new_resource:
+                    uptime_rewards["reward_amount"] = (tempo / 3600) * 0.2 * (pog_score / 100)
+                    uptime_rewards["blocks_active"] = 1
+                    uptime_rewards["uptime"] = tempo if status == "active" else 0
+                    uptime_rewards["additional_details"] = {
+                        "first_time_calculation": True,
+                        "blocks_since_last": current_block
+                    }
+
+                uptime_rewards_dict[miner_id]["reward_amount"] += uptime_rewards["reward_amount"]
+                uptime_rewards_dict[miner_id]["blocks_active"] += uptime_rewards.get("blocks_active", 0)
+                uptime_rewards_dict[miner_id]["uptime"] += uptime_rewards.get("uptime", 0)
+                uptime_rewards_dict[miner_id]["additional_details"]["resources"][resource_id] = {
+                    "reward_amount": uptime_rewards["reward_amount"],
+                    "blocks_active": uptime_rewards.get("blocks_active", 0),
+                    "uptime": uptime_rewards.get("uptime", 0),
+                    "details": uptime_rewards.get("additional_details", {})
+                }
+                logger.info(f"Resource {resource_id}: reward={uptime_rewards['reward_amount']:.6f}")
+
+                uptime_logs.append({
+                    "miner_uid": resource_id,
+                    "status": status,
+                    "compute_score": pog_score,
+                    "uptime_reward": uptime_rewards["reward_amount"],
+                    "block_number": current_block,
+                    "reason": "Reward updated"
+                })
+
+                containers = get_containers_for_resource(resource_id)
+                active_container_count = int(containers["running_count"])
+                if active_container_count == 0 and containers.get("total_count", 0) > 0:
+                    logger.warning(f"No running containers for resource {resource_id}, but {containers['total_count']} found")
+                logger.info(f"Resource {resource_id}: running_containers={active_container_count}")
+
+                # Calculate resource score
+                effective_container_count = min(active_container_count, MAX_CONTAINERS) + np.log1p(max(0, active_container_count - MAX_CONTAINERS))
+                container_bonus = np.sqrt(active_container_count) * CONTAINER_BONUS_MULTIPLIER
+                base_score = (uptime_percent / 100) * 100 + SCORE_WEIGHT * effective_container_count + SCORE_WEIGHT * scaled_compute_score
+                resource_score = (base_score * (tempo / 3600)) + container_bonus + uptime_rewards["reward_amount"]
+                raw_results[miner_id]["total_raw_score"] += resource_score
+                logger.info(
+                    f"Resource {resource_id}: containers={active_container_count}, score={resource_score:.2f}"
+                )
+
+        # Normalize scores
+        if raw_results:
+            raw_scores = [entry["total_raw_score"] for entry in raw_results.values()]
+            if raw_scores:
+                percentile_90 = np.percentile(raw_scores, 90) if len(raw_scores) >= 5 else max(raw_scores)
+                if percentile_90 > 0:
+                    normalization_factor = max_score / percentile_90
+                    for miner_id, entry in raw_results.items():
+                        normalized_score = min(max_score, entry["total_raw_score"] * normalization_factor)
+                        results[miner_id]["total_score"] = normalized_score
+                        logger.info(
+                            f"Miner ID {miner_id}: raw_score={entry['total_raw_score']:.2f}, normalized_score={normalized_score:.2f}"
+                        )
+                else:
+                    logger.warning("All raw scores are zero. Skipping normalization.")
+            else:
+                logger.info("No valid scores to normalize.")
+        else:
+            logger.info("No valid resources to process.")
+
+        # Write uptime logs
+        for log_entry in uptime_logs:
+            log_uptime(**log_entry)
+
+        logger.info(f"Processed {len(results)} unique miner IDs")
+        return results, uptime_rewards_dict
 
     except Exception as e:
-        logger.error(f"Error fetching miner list with resources: {e}")
-        return {}
-info = get_miner_list_with_resources(data)
-print(f"new data {info}")
-# print("Miners to Reject:", miners_to_reject)
+        logger.critical(f"Fatal error processing miners: {e}")
+        raise MinerProcessingError(f"Failed to process miners: {e}")
+
+def get_containers_for_resource(resource_id: str) -> Dict[str, any]:
+    """
+    Fetches containers for a specific resource ID from the Polaris API and counts those in 'running' status.
+
+    Args:
+        resource_id (str): The ID of the compute resource to filter containers (e.g., 'c6469c-4b1c-4bca-98e6-b9bf45b88260').
+
+    Returns:
+        Dict[str, any]: A dictionary containing:
+            - 'running_count': Number of containers in 'running' status for the resource.
+            - 'containers': List of containers matching the resource_id (optional, for further use).
+    """
+    try:
+        # Validate input
+        if not resource_id or not isinstance(resource_id, str):
+            logger.error(f"Invalid resource_id provided: {resource_id}")
+            return {"running_count": 0, "containers": []}
+
+        # Set up headers
+        headers = {
+            "Connection": "keep-alive",
+            "x-api-key": "dev-services-key",
+            "x-use-encryption": "true",
+            "service-key": "9e2e9d9d4370ba4c6ab90b7ab46ed334bb6b1a79af368b451796a6987988ed77",
+            "service-name": "miner_service",
+            "Content-Type": "application/json"
+        }
+
+        # API endpoint
+        url = "https://polaris-interface.onrender.com/api/v1/services/container/container/containers"
+        logger.info(f"Fetching containers for resource_id: {resource_id} from {url}")
+
+        # Send GET request
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()  # Raises an exception for 4xx/5xx status codes
+
+        # Parse response
+        container_list = response.json().get("containers", [])
+        logger.info(f"Retrieved {len(container_list)} containers for resource_id: {resource_id}")
+
+        # Filter containers by resource_id and count running ones
+        matching_containers = [container for container in container_list if container.get("resource_id") == resource_id]
+        running_count = sum(1 for container in matching_containers if container.get("status") == "running")
+
+        logger.info(f"Found {len(matching_containers)} containers for resource_id {resource_id}, "
+                    f"{running_count} in 'running' status")
+
+        return {
+            "running_count": running_count
+        }
+
+    except requests.RequestException as e:
+        logger.error(f"Network error fetching containers for resource {resource_id}: {e}")
+        return {"running_count": 0, "containers": []}
+    except Exception as e:
+        logger.error(f"Unexpected error fetching containers for resource {resource_id}: {e}")
+        return {"running_count": 0, "containers": []}
+
+def aggregate_rewards(results, uptime_rewards_dict):
+    import logging
+    aggregated_rewards = {}
+
+    # Map miner_id to miner_uid from results
+    miner_id_to_uid = {}
+    for miner_id, info in results.items():
+        miner_uid = info.get("miner_uid")
+        miner_id_to_uid[miner_id] = miner_uid
+
+        reward = info.get("total_score", 0)
+        if miner_uid:
+            if miner_uid not in aggregated_rewards:
+                aggregated_rewards[miner_uid] = 0
+            aggregated_rewards[miner_uid] += reward
+
+    # Now aggregate from uptime_rewards_dict
+    for miner_id, uptime_data in uptime_rewards_dict.items():
+        uptime_reward = uptime_data.get("reward_amount", 0)
+
+        miner_uid = miner_id_to_uid.get(miner_id)
+        if miner_uid:
+            if miner_uid not in aggregated_rewards:
+                aggregated_rewards[miner_uid] = 0
+            aggregated_rewards[miner_uid] += uptime_reward
+        else:
+            logging.warning(f"Miner ID {miner_id} not found in results. Skipping.")
+
+    return aggregated_rewards
+
+data = get_filtered_miners()
+print(data)
+# results= {'4r6R71dJ4vyvErClkd9x': {'miner_id': '4r6R71dJ4vyvErClkd9x', 'miner_uid': '18', 'hotkey': '5GpL9oHchoR5C6kr9YzfxvoWMitvqcdmS2m6NzaEEzNqigWx', 'total_score': 500}, '8hvxxUmM16AAouBqmRsr': {'miner_id': '8hvxxUmM16AAouBqmRsr', 'miner_uid': '61', 'hotkey': '5Cvx6ejZgavFzSST1orvwQBfy19Pa1AcfV3ar2zhT35BxtNy', 'total_score': 499.99090122099597}, 'AOoep8Z84sMW3V57Mclc': {'miner_id': 'AOoep8Z84sMW3V57Mclc', 'miner_uid': '106', 'hotkey': '5FecipgExVUeSfRaBCTZ6HEa9zpfcHkUXszZ6V7xFetejJHc', 'total_score': 0.0}, 'Qo58fb85M23qr3xrJXpx': {'miner_id': 'Qo58fb85M23qr3xrJXpx', 'miner_uid': '64', 'hotkey': '5En5mNrnjfwgLxJHhfM13rkLGVfokDm594wzdtMLNCw4KzWi', 'total_score': 496.30937524512456}, 'iArUCOD1ylnGEgrKVDKV': {'miner_id': 'iArUCOD1ylnGEgrKVDKV', 'miner_uid': '60', 'hotkey': '5CJ4qzLMfER9vcUbiCNAcoFm799y5gEMprzAQGDAXC6JmroJ', 'total_score': 497.1720950065381}, 'qIixWdT07862KFu87tIa': {'miner_id': 'qIixWdT07862KFu87tIa', 'miner_uid': '4', 'hotkey': '5HQtLy8dwVS9Ub2NURCGPDpA6hZHVnhJyHkyjLXsiPcDEUYM', 'total_score': 496.8987467297253}, 'qtYNDsUkH0lxyLfAcmL7': {'miner_id': 'qtYNDsUkH0lxyLfAcmL7', 'miner_uid': '69', 'hotkey': '5CtkvNmLVNWgd8UfsR6vpiNpgkeDqLaws2PLr41fJjdv5TUs', 'total_score': 495.6830916187421}, 's663AjJ38d9YEWvrn3Kn': {'miner_id': 's663AjJ38d9YEWvrn3Kn', 'miner_uid': '57', 'hotkey': '5F1r4TBMBVQp96MvqLiiA1na1ZmfTn53n8s9AGLoCYDEkLoV', 'total_score': 499.4458636313434}, 'uMtcUAZUQIKS1iCtTYUv': {'miner_id': 'uMtcUAZUQIKS1iCtTYUv', 'miner_uid': '48', 'hotkey': '5G7QNPTjgAA5rUv8zvZwwyik5GxSsZMiD4sDAXte94ofbi8u', 'total_score': 496.8987467297253}, 'zexiPSfZ404mKfg5s52U': {'miner_id': 'zexiPSfZ404mKfg5s52U', 'miner_uid': '60', 'hotkey': '5CJ4qzLMfER9vcUbiCNAcoFm799y5gEMprzAQGDAXC6JmroJ', 'total_score': 497.1720950065381}}
+# uptime_dict ={'4r6R71dJ4vyvErClkd9x': {'reward_amount': 2.4145e-05, 'blocks_active': 1, 'uptime': 99, 'additional_details': {'resources': {'cc5e3090-a267-4e73-b407-1dfb9cd50aa2': {'reward_amount': 2.4145e-05, 'blocks_active': 1, 'uptime': 99, 'details': {'first_time_calculation': True, 'blocks_since_last': 4659444}}}}}, '8hvxxUmM16AAouBqmRsr': {'reward_amount': 2.3705e-05, 'blocks_active': 1, 'uptime': 99, 'additional_details': {'resources': {'314b2044-06ce-42c5-9088-a84825991dfd': {'reward_amount': 2.3705e-05, 'blocks_active': 1, 'uptime': 99, 'details': {'first_time_calculation': True, 'blocks_since_last': 4659444}}}}}, 'AOoep8Z84sMW3V57Mclc': {'reward_amount': 0.0, 'blocks_active': 0, 'uptime': 0, 'additional_details': {'resources': {}}}, 'Qo58fb85M23qr3xrJXpx': {'reward_amount': 7.81e-06, 'blocks_active': 1, 'uptime': 99, 'additional_details': {'resources': {'034450e8-a29b-4fe9-b618-5762a2879049': {'reward_amount': 7.81e-06, 'blocks_active': 1, 'uptime': 99, 'details': {'first_time_calculation': True, 'blocks_since_last': 4659444}}}}}, 'iArUCOD1ylnGEgrKVDKV': {'reward_amount': 1.122e-05, 'blocks_active': 1, 'uptime': 99, 'additional_details': {'resources': {'a20cba62-0db0-46a3-b3e9-5f09ddea1d60': {'reward_amount': 1.122e-05, 'blocks_active': 1, 'uptime': 99, 'details': {'first_time_calculation': True, 'blocks_since_last': 4659444}}}}}, 'qIixWdT07862KFu87tIa': {'reward_amount': 1.0120000000000001e-05, 'blocks_active': 1, 'uptime': 99, 'additional_details': {'resources': {'ba4f23a7-6a32-4fbc-af0b-fcee9c06acb0': {'reward_amount': 1.0120000000000001e-05, 'blocks_active': 1, 'uptime': 99, 'details': {'first_time_calculation': True, 'blocks_since_last': 4659444}}}}}, 'qtYNDsUkH0lxyLfAcmL7': {'reward_amount': 5.445e-06, 'blocks_active': 1, 'uptime': 99, 'additional_details': {'resources': {'9175b852-0aa0-4f24-b652-cbf5d07ae950': {'reward_amount': 5.445e-06, 'blocks_active': 1, 'uptime': 99, 'details': {'first_time_calculation': True, 'blocks_since_last': 4659444}}}}}, 's663AjJ38d9YEWvrn3Kn': {'reward_amount': 2.112e-05, 'blocks_active': 1, 'uptime': 99, 'additional_details': {'resources': {'e44e86c7-b495-47e1-ba13-198e2eac1952': {'reward_amount': 2.112e-05, 'blocks_active': 1, 'uptime': 99, 'details': {'first_time_calculation': True, 'blocks_since_last': 4659444}}}}}, 'uMtcUAZUQIKS1iCtTYUv': {'reward_amount': 1.0120000000000001e-05, 'blocks_active': 1, 'uptime': 99, 'additional_details': {'resources': {'dee3929c-4171-40bf-af0c-6911c973b4be': {'reward_amount': 1.0120000000000001e-05, 'blocks_active': 1, 'uptime': 99, 'details': {'first_time_calculation': True, 'blocks_since_last': 4659444}}}}}, 'zexiPSfZ404mKfg5s52U': {'reward_amount': 1.122e-05, 'blocks_active': 1, 'uptime': 99, 'additional_details': {'resources': {'8756ebd8-9068-4b05-b2ed-759368964369': {'reward_amount': 1.122e-05, 'blocks_active': 1, 'uptime': 99, 'details': {'first_time_calculation': True, 'blocks_since_last': 4659444}}}}}}
+# data2 = aggregate_rewards(results=results, uptime_rewards_dict=uptime_dict)
+# print(f"hehehehe {data2}")
+
+# async def verify_miners(
+#     allowed_uids: List[int],
+#     netuid: int = 49,
+#     network: str = "finney",
+# ) -> Tuple[Dict[str, MinerResult]]:
+#     """
+#     Fetches and processes miner data, aggregating scores and rewards for verified compute resources.
+
+#     Args:
+#         allowed_uids: List of allowed miner UIDs to filter.
+#         netuid: Subnet ID for hotkey verification (default: 49).
+#         network: Bittensor network name (default: "finney").
+#         tempo: Tempo interval in seconds (default: 4320 seconds = 72 minutes).
+#         max_score: Maximum normalized score (default: 100.0).
+#         current_block: Current block number for uptime logging (default: 0).
+
+#     Returns:
+#         Tuple of two dictionaries:
+#         - Dict mapping miner_id to {miner_id, miner_uid, hotkey, total_score}.
+#         - Dict mapping miner_id to {reward_amount, blocks_active, uptime, additional_details}.
+
+#     Raises:
+#         ValueError: If input parameters are invalid.
+#         MinerProcessingError: If processing fails critically.
+#     """
+#     # Input validation
+#     if not allowed_uids:
+#         logger.warning("Empty allowed_uids list provided")
+#         return {}, {}
+#     if network not in SUPPORTED_NETWORKS:
+#         raise ValueError(f"Network must be one of {SUPPORTED_NETWORKS}")
+
+#     try:
+#         # Get cached miners data
+#         miners = _get_cached_miners_data()
+
+#         miners =miners[:10]
+#         if not miners:
+#             logger.warning("No miners data available")
+#             return {}, {}
+#         logger.info(f"Fetched {len(miners)} miners")
+
+#         # Initialize result dictionaries
+#         hotkey_cache: Dict[str, int] = {}
+
+#         # Iterate through miners
+#         for miner in miners:
+#             if (
+#                 not miner.get("bittensor_registration")
+#                 or miner["bittensor_registration"].get("miner_uid") is None
+#                 or int(miner["bittensor_registration"]["miner_uid"]) not in allowed_uids
+#             ):
+#                 continue
+
+#             miner_uid = int(miner["bittensor_registration"]["miner_uid"])
+#             miner_id = miner.get("id", "unknown")
+#             logger.info(f"Processing miner {miner_id} (UID: {miner_uid})")
+
+#             # Process compute resources concurrently
+#             compute_details = miner.get("compute_resources_details", [])
+#             logger.info(f"Miner {miner_id} has {len(compute_details)} compute resource(s)")
+
+#             async def process_resource(resource, idx):
+#                 resource_id = resource.get("id", "unknown")
+#                 validation_status = resource.get("validation_status")
+#                 if validation_status == "verified":
+#                     return None
+#                 logger.info(f"Processing resource {idx} (ID: {resource_id})")
+#                 ssh_value = resource.get("network", {}).get("ssh", "No SSH value available")
+#                 try:
+#                     ssh_result = await perform_ssh_tasks(ssh_value)
+#                     pog_score = ssh_result["task_results"]["total_score"]
+#                     logger.info(f"Resource {resource_id}: compute_score={pog_score:.4f}")
+#                     return resource_id, pog_score
+#                 except (OSError, asyncio.TimeoutError) as e:
+#                     logger.error(f"Error performing SSH tasks for resource {resource_id}: {e}")
+#                     return None
+
+#             tasks = [process_resource(resource, idx) for idx, resource in enumerate(compute_details, 1)]
+#             resource_results = [r for r in await asyncio.gather(*tasks, return_exceptions=True) if r is not None]
+
+#             for resource_id, pog_score in resource_results:
+#                 if pog_score < SCORE_THRESHOLD:
+#                     logger.warning(f"Resource {resource_id}: score={pog_score:.4f} below threshold")
+#                     update_result = update_miner_compute_resource(
+#                         miner_id=miner_id,
+#                         resource_id=resource_id,
+#                         reason=f"Low compute score: {pog_score:.4f}"
+#                     )
+#                     if not update_result:
+#                         logger.warning(f"Failed to update status for resource {resource_id}")
+#                     continue
+#         return results, uptime_rewards_dict
+
+#     except Exception as e:
+#         logger.critical(f"Fatal error processing miners: {e}")
+#         raise MinerProcessingError(f"Failed to process miners: {e}")
+
+
+
+# async def main():
+#     """
+#     Example main function to run get_filtered_miners_val.
+#     """
+#     # Configure logging
+#     logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+
+#     # Example allowed UIDs
+#     allowed_uids = [18,0,37,195, 231]
+
+#     # Run the function
+#     results, uptime_rewards_dict = await get_filtered_miners_val(
+#         allowed_uids=allowed_uids,
+#         netuid=49,
+#         network="finney",
+#         tempo=4320,
+#         current_block=1000
+#     )
+
+#     aggregated_rewards = aggregate_rewards(results, uptime_rewards_dict)
+#     print(aggregate_rewards)
+
+
+# if __name__ == "__main__":
+#     asyncio.run(main())
