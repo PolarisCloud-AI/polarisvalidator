@@ -60,11 +60,10 @@ def _sync_miners_data() -> None:
             "service-name": "miner_service",
             "Content-Type": "application/json"
         }
-        url = "https://femi-aristodemos.onrender.com/api/v1/services/miner/miners"
-        response = requests.get(url, headers=headers)
+        url ="https://validator-server-skyq.onrender.com/miners"
+        response = requests.get(url)
         response.raise_for_status()
-
-        _miners_data_cache = response.json().get("data", {}).get("miners", [])
+        _miners_data_cache = response.json().get("miners", [])
         _miners_data_last_fetch = time.time()
         logger.info(f"Cached miners data, total miners: {len(_miners_data_cache)}")
     except Exception as e:
@@ -186,15 +185,15 @@ async def reward_mechanism(
         # Iterate through miners
         for miner in miners:
             if (
-                not miner.get("bittensor_registration")
-                or miner["bittensor_registration"].get("miner_uid") is None
-                or int(miner["bittensor_registration"]["miner_uid"]) not in allowed_uids
+                not miner.get("bittensor_details")
+                or miner["bittensor_details"].get("miner_uid") is None
+                or int(miner["bittensor_details"]["miner_uid"]) not in allowed_uids
             ):
                 continue
 
-            hotkey = miner["bittensor_registration"].get("hotkey")
-            miner_uid = int(miner["bittensor_registration"]["miner_uid"])
-            miner_id = miner.get("id", "unknown")
+            hotkey = miner["bittensor_details"].get("hotkey")
+            miner_uid = int(miner["bittensor_details"]["miner_uid"])
+            miner_id = miner.get("miner_id", "unknown")
             logger.info(f"Processing miner {miner_id} (UID: {miner_uid})")
 
             # Verify hotkey
@@ -227,7 +226,7 @@ async def reward_mechanism(
                 }
 
             # Process compute resources concurrently
-            compute_details = miner.get("compute_resources_details", [])
+            compute_details = miner.get("resource_details", [])
             logger.info(f"Miner {miner_id} has {len(compute_details)} compute resource(s)")
 
             async def process_resource(resource, idx):
@@ -685,11 +684,11 @@ def get_containers_for_resource(resource_id: str) -> Dict[str, any]:
         }
 
         # API endpoint
-        url = "https://femi-aristodemos.onrender.com/api/v1/services/container/container/containers"
+        url = "https://validator-server-skyq.onrender.com/containers"
         logger.info(f"Fetching containers for resource_id: {resource_id} from {url}")
 
         # Send GET request
-        response = requests.get(url, headers=headers)
+        response = requests.get(url)
         response.raise_for_status()  # Raises an exception for 4xx/5xx status codes
 
         # Parse response
@@ -804,7 +803,7 @@ def filter_miners_by_id(
 
             # Get miner details
             miner_details = get_miner_details(miner_id)
-            hotkey = miner_details.get("bittensor_registration", {}).get("hotkey")
+            hotkey = miner_details.get("bittensor_details", {}).get("hotkey")
             if not hotkey or hotkey == "default":
                 logger.warning(f"Invalid or missing hotkey for miner {miner_id}, skipping")
                 continue
@@ -932,7 +931,7 @@ async def sub_verification(allowed_uids: List[int]) -> Tuple[Dict[str, int], Dic
             """Process individual miner and their compute resources."""
             try:
                 # Validate miner data
-                if not (bittensor_reg := miner.get("bittensor_registration")):
+                if not (bittensor_reg := miner.get("bittensor_details")):
                     logger.warning(f"Skipping miner {miner.get('id', 'unknown')}: No bittensor registration")
                     return
 
