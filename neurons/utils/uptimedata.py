@@ -98,6 +98,50 @@ def calculate_uptime(miner_uid: str, current_block: int, lookback_blocks: int = 
         logger.error(f"Error calculating uptime for miner {miner_uid}: {e}")
         return 0.0
 
+def calculate_historical_uptime(miner_uid: str, current_block: int, lookback_blocks: int = 14400) -> float:
+    """
+    Calculate historical uptime over a longer period for uptime multiplier calculation.
+    This provides more stable uptime metrics for bonus calculations.
+    
+    Args:
+        miner_uid: Miner UID string
+        current_block: Current block number
+        lookback_blocks: Number of blocks to look back (default: 14400 = 2x normal lookback)
+        
+    Returns:
+        float: Historical uptime percentage (0-100)
+    """
+    log_file = os.path.join(log_dir, f"miner_{miner_uid}_uptime.json")
+    if not os.path.exists(log_file) or not verify_log_integrity(log_file):
+        logger.info(f"No valid logs for miner {miner_uid}. Historical uptime: 0%")
+        return 0.0
+    
+    try:
+        with open(log_file, "r") as f:
+            logs = json.load(f)
+        if not logs:
+            logger.info(f"No logs for miner {miner_uid}. Historical uptime: 0%")
+            return 0.0
+        
+        # Use longer lookback for historical uptime
+        start_block = max(0, current_block - lookback_blocks)
+        historical_logs = [log for log in logs if log.get("block_number", 0) >= start_block]
+        
+        if not historical_logs:
+            logger.info(f"No logs within {lookback_blocks} blocks for miner {miner_uid}. Historical uptime: 0%")
+            return 0.0
+        
+        # Calculate historical uptime
+        active_blocks = sum(1 for log in historical_logs if log["status"] in ["active", "initial_active"])
+        historical_uptime = (active_blocks / len(historical_logs)) * 100 if historical_logs else 0.0
+        
+        logger.info(f"Miner {miner_uid} historical uptime: {historical_uptime:.2f}% over {len(historical_logs)} blocks")
+        return historical_uptime
+        
+    except Exception as e:
+        logger.error(f"Error calculating historical uptime for miner {miner_uid}: {e}")
+        return 0.0
+
 
 def calculate_miner_rewards(miner_id: str, miner_score: float, current_block: int, tempo: int) -> Dict[str, Any]:
     """
@@ -141,14 +185,15 @@ def calculate_miner_rewards(miner_id: str, miner_score: float, current_block: in
         blocks_since_last = max(0, current_block - last_rewarded_block)
         if payment_logs_empty:
             blocks_active = 1  # Current block only
-            first_time_discount = 0.7
+            first_time_discount = 1.0  # No penalty for new miners
         else:
             blocks_active = blocks_since_last
             first_time_discount = 1.0
 
-        # Calculate reward
+        # Calculate reward with fairer multipliers
         base_reward = 0
-        status_multiplier = 2.0 if current_status in ["active", "initial_active"] else 0.25
+        # Reduced status multiplier difference (3x instead of 8x)
+        status_multiplier = 1.5 if current_status in ["active", "initial_active"] else 0.5
         if blocks_active > 0:
             hourly_rate = 0.2  # Tokens per hour
             uptime_hours = (blocks_active * tempo) / 3600
@@ -168,17 +213,56 @@ def calculate_miner_rewards(miner_id: str, miner_score: float, current_block: in
             "reward_amount": round(final_reward, 6)
         }
         try:
-            with open(payment_log_file, "a+") as f:
-                f.seek(0)
-                payment_logs = json.load(f) if f.read(1) else []
-                payment_logs.append(payment_log)
-                f.seek(0)
-                f.truncate()
-                json.dump(payment_logs, f)
-            os.chmod(payment_log_file, 0o600)
-            save_checksum(payment_log_file)
+            # First, try to read existing content safely
+            existing_logs = []
+            if os.path.exists(payment_log_file) and os.path.getsize(payment_log_file) > 0:
+                try:
+                    with open(payment_log_file, "r") as f:
+                        existing_logs = json.load(f)
+                        if not isinstance(existing_logs, list):
+                            existing_logs = []
+                except (json.JSONDecodeError, ValueError, UnicodeDecodeError) as e:
+                    logger.warning(f"Corrupted payment log for miner {miner_id}: {e}, starting fresh")
+                    existing_logs = []
+            
+            # Add new payment log
+            existing_logs.append(payment_log)
+            
+            # Write back with atomic operation
+            temp_file = payment_log_file + ".tmp"
+            try:
+                with open(temp_file, "w") as f:
+                    json.dump(existing_logs, f, indent=2, ensure_ascii=False)
+                # Atomic rename
+                os.replace(temp_file, payment_log_file)
+                os.chmod(payment_log_file, 0o600)
+                save_checksum(payment_log_file)
+                logger.debug(f"Successfully saved payment log for miner {miner_id}")
+            except Exception as write_e:
+                logger.error(f"Error writing payment log for miner {miner_id}: {write_e}")
+                # Clean up temp file if it exists
+                if os.path.exists(temp_file):
+                    os.remove(temp_file)
+                raise
+                
         except Exception as e:
-            logger.error(f"Error saving payment log for miner {miner_id}: {e}")
+            logger.error(f"Critical error saving payment log for miner {miner_id}: {e}")
+            # Emergency fallback: create minimal log file
+            try:
+                with open(payment_log_file, "w") as f:
+                    json.dump([payment_log], f, indent=2)
+                os.chmod(payment_log_file, 0o600)
+                logger.info(f"Emergency recovery: created minimal payment log for miner {miner_id}")
+            except Exception as emergency_e:
+                logger.critical(f"Failed emergency recovery for miner {miner_id}: {emergency_e}")
+                # Last resort: try to save to backup location
+                backup_file = payment_log_file + ".backup"
+                try:
+                    with open(backup_file, "w") as f:
+                        json.dump([payment_log], f, indent=2)
+                    logger.warning(f"Saved payment log to backup location: {backup_file}")
+                except Exception as backup_e:
+                    logger.critical(f"All payment log recovery attempts failed for miner {miner_id}: {backup_e}")
 
         return {
             "miner_id": miner_id,

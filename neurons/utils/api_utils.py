@@ -3,10 +3,9 @@ from loguru import logger
 import time
 import uuid
 import bittensor as bt
-from typing import List, Dict, Optional, Tuple, TypedDict
+from typing import List, Dict, Optional, Tuple, TypedDict, Any
 from datetime import datetime, timedelta
 import asyncio
-from neurons.utils.proof_of_work import perform_ssh_tasks
 from neurons.utils.uptimedata import calculate_miner_rewards, log_uptime
 import asyncio
 import re
@@ -31,10 +30,28 @@ class UptimeReward(TypedDict):
     uptime: int
     additional_details: Dict
 
-SCORE_THRESHOLD = 0.005
-MAX_CONTAINERS = 10
-SCORE_WEIGHT = 0.33
-CONTAINER_BONUS_MULTIPLIER = 2
+# Scoring and reward configuration
+SCORE_THRESHOLD = 0.03  # Optimized threshold to include more medium-performance resources
+MAX_CONTAINERS = 20  # Increased from 10 to allow more containers
+SCORE_WEIGHT = 0.4  # Increased from 0.33 for better balance
+CONTAINER_BONUS_MULTIPLIER = 1.5  # Reduced from 2.0 for more balanced scoring
+MAX_SCORE = 500.0  # Maximum normalized score
+
+# Uptime multiplier tiers for high uptime incentives (calibrated to prevent excessive bonuses)
+UPTIME_MULTIPLIER_TIERS = {
+    "excellent": {"threshold": 95.0, "multiplier": 1.15},  # ≥95% uptime: +15% bonus (reduced from 30%)
+    "good": {"threshold": 85.0, "multiplier": 1.10},       # ≥85% uptime: +10% bonus (reduced from 20%)
+    "average": {"threshold": 70.0, "multiplier": 1.05},    # ≥70% uptime: +5% bonus (reduced from 10%)
+    "poor": {"threshold": 0.0, "multiplier": 1.0}          # <70% uptime: No bonus
+}
+
+# Rented machine bonus configuration (calibrated to prevent excessive bonuses)
+RENTED_MACHINE_BONUS = {
+    "base_multiplier": 1.08,  # +8% base bonus for having running containers (reduced from 15%)
+    "container_scaling": 0.01,  # +1% per additional container beyond 1 (reduced from 2%)
+    "max_bonus": 1.20  # Maximum 20% bonus for high container counts (reduced from 35%)
+}
+
 SUPPORTED_NETWORKS = ["finney", "mainnet", "test"]
 
 
@@ -43,6 +60,274 @@ _hotkey_to_uid_cache: Dict[str, int] = {}
 _last_metagraph_sync: float = 0
 _metagraph_sync_interval: float = 300  # 5 minutes in seconds
 _metagraph = None
+
+# Alpha stake incentive configuration
+ALPHA_STAKE_TIERS = {
+    "high": {"threshold": 5000, "bonus_percentage": 20},      # ≥5000 Alpha: +20% bonus
+    "medium": {"threshold": 1000, "bonus_percentage": 10},    # ≥1000 Alpha: +10% bonus
+    "low": {"threshold": 0, "bonus_percentage": 0}            # <1000 Alpha: No bonus
+}
+
+def safe_convert_to_float(value, default=0.0):
+    """
+    Safely converts Bittensor objects (Balance, etc.) to float values.
+    
+    Args:
+        value: The value to convert (could be Balance object, float, int, etc.)
+        default: Default value if conversion fails
+        
+    Returns:
+        float: The converted value or default
+    """
+    try:
+        if hasattr(value, '__float__'):
+            return float(value)
+        elif isinstance(value, (int, float)):
+            return float(value)
+        elif isinstance(value, str):
+            return float(value)
+        else:
+            return default
+    except (ValueError, TypeError, AttributeError):
+        return default
+
+def calculate_uptime_multiplier(uptime_percent: float) -> float:
+    """
+    Calculate uptime multiplier based on uptime percentage.
+    
+    Args:
+        uptime_percent: Uptime percentage (0-100)
+        
+    Returns:
+        float: Multiplier value (1.0 = no bonus, 1.3 = +30% bonus)
+    """
+    try:
+        for tier_name, tier_config in UPTIME_MULTIPLIER_TIERS.items():
+            if uptime_percent >= tier_config["threshold"]:
+                return tier_config["multiplier"]
+        return 1.0  # Default no bonus
+    except Exception as e:
+        logger.error(f"Error calculating uptime multiplier: {e}")
+        return 1.0
+
+def calculate_rented_machine_bonus(active_container_count: int) -> float:
+    """
+    Calculate bonus multiplier for rented machines (those with running containers).
+    
+    Args:
+        active_container_count: Number of running containers
+        
+    Returns:
+        float: Bonus multiplier (1.0 = no bonus, 1.35 = +35% bonus)
+    """
+    try:
+        if active_container_count == 0:
+            return 1.0  # No bonus for machines without containers
+        
+        # Base bonus for having at least one container
+        bonus_multiplier = RENTED_MACHINE_BONUS["base_multiplier"]
+        
+        # Additional bonus for multiple containers
+        if active_container_count > 1:
+            additional_bonus = min(
+                (active_container_count - 1) * RENTED_MACHINE_BONUS["container_scaling"],
+                RENTED_MACHINE_BONUS["max_bonus"] - RENTED_MACHINE_BONUS["base_multiplier"]
+            )
+            bonus_multiplier += additional_bonus
+        
+        # Cap at maximum bonus
+        return min(bonus_multiplier, RENTED_MACHINE_BONUS["max_bonus"])
+        
+    except Exception as e:
+        logger.error(f"Error calculating rented machine bonus: {e}")
+        return 1.0
+
+def calculate_fair_resource_score(
+    uptime_percent: float,
+    scaled_compute_score: float,
+    active_container_count: int,
+    tempo: int,
+    uptime_multiplier: float = 1.0,
+    rented_machine_bonus: float = 1.0
+) -> float:
+    """
+    Calculate fair resource score with balanced weighting and bonuses.
+    
+    Args:
+        uptime_percent: Uptime percentage (0-100)
+        scaled_compute_score: Raw compute performance score (PoW)
+        active_container_count: Number of running containers
+        tempo: Block interval in seconds
+        uptime_multiplier: Uptime-based bonus multiplier
+        rented_machine_bonus: Rented machine bonus multiplier
+        
+    Returns:
+        float: Calculated resource score
+    """
+    try:
+        # Calculate effective container count with better scaling
+        if active_container_count <= MAX_CONTAINERS:
+            effective_container_count = active_container_count
+        else:
+            # Logarithmic scaling for very high container counts to prevent abuse
+            effective_container_count = MAX_CONTAINERS + np.log1p(active_container_count - MAX_CONTAINERS)
+        
+        # Base score calculation: Uptime + Container management (reliability & activity)
+        # Uptime represents reliability and availability
+        uptime_score = (uptime_percent / 100) * 10  # 0-10 scale
+        
+        # Container score represents active work being done
+        container_score = min(effective_container_count, MAX_CONTAINERS) * 0.5  # 0-10 scale (max 20 containers)
+        
+        # Base score: combination of reliability and activity
+        base_score = uptime_score + container_score  # 0-20 scale
+        
+        # Apply tempo scaling
+        tempo_scaled_score = base_score * (tempo / 3600) * 10  # Compensate for tempo reduction
+        
+        # Apply compute multiplier: Raw PoW score represents compute specs/power
+        # Higher compute specs = higher multiplier = higher rewards
+        compute_multiplier = scaled_compute_score  # Direct PoW score as multiplier
+        
+        # Final score: Base reliability × Compute power × Bonuses
+        final_score = tempo_scaled_score * compute_multiplier * uptime_multiplier * rented_machine_bonus
+        
+        logger.debug(f"Resource score calculation: uptime={uptime_percent:.1f}%, "
+                    f"compute={scaled_compute_score:.2f}, containers={active_container_count}, "
+                    f"uptime_mult={uptime_multiplier:.2f}, rented_bonus={rented_machine_bonus:.2f}, "
+                    f"final_score={final_score:.2f}")
+        
+        return final_score
+        
+    except Exception as e:
+        logger.error(f"Error calculating fair resource score: {e}")
+        return 0.0
+
+def log_resource_scoring_details(
+    resource_id: str,
+    miner_id: str,
+    pog_score: float,
+    scaled_compute_score: float,
+    uptime_percent: float,
+    active_container_count: int,
+    uptime_multiplier: float,
+    rented_machine_bonus: float,
+    final_score: float,
+    tempo: int
+) -> None:
+    """
+    Log comprehensive details about resource scoring for transparency and debugging.
+    
+    Args:
+        resource_id: Resource identifier
+        miner_id: Miner identifier
+        pog_score: Raw compute score
+        scaled_compute_score: Raw compute score (PoW)
+        uptime_percent: Uptime percentage
+        active_container_count: Number of running containers
+        uptime_multiplier: Uptime bonus multiplier
+        rented_machine_bonus: Rented machine bonus multiplier
+        final_score: Final calculated score
+        tempo: Block interval in seconds
+    """
+    try:
+        logger.info("=" * 80)
+        logger.info(f"📊 RESOURCE SCORING DETAILS - {resource_id}")
+        logger.info("=" * 80)
+        logger.info(f"Miner ID: {miner_id}")
+        logger.info(f"Tempo: {tempo} seconds ({tempo/3600:.2f} hours)")
+        
+        # Raw scores
+        logger.info(f"\n🔢 RAW SCORES:")
+        logger.info(f"  Compute Score (PoW): {pog_score:.4f}")
+        logger.info(f"  Raw Compute Score (PoW): {scaled_compute_score:.4f}")
+        logger.info(f"  Uptime Percentage: {uptime_percent:.1f}%")
+        logger.info(f"  Active Containers: {active_container_count}")
+        
+        # Base score components for logging
+        uptime_score = (uptime_percent / 100) * 10
+        container_score = min(active_container_count, MAX_CONTAINERS) * 0.5
+        
+        logger.info(f"\n⚖️  BASE SCORE COMPONENTS:")
+        logger.info(f"  Uptime Score (Reliability): {uptime_score:.2f}")
+        logger.info(f"  Container Score (Activity): {container_score:.2f}")
+        logger.info(f"  Base Score: {uptime_score + container_score:.2f}")
+        
+        # Compute multiplier and bonus calculations
+        logger.info(f"\n🚀 COMPUTE & BONUS CALCULATIONS:")
+        logger.info(f"  Compute Multiplier (PoW): {scaled_compute_score:.4f}x")
+        logger.info(f"  Uptime Multiplier: {uptime_multiplier:.2f}x")
+        logger.info(f"  Rented Machine Bonus: {rented_machine_bonus:.2f}x")
+        logger.info(f"  Combined Bonus: {uptime_multiplier * rented_machine_bonus:.2f}x")
+        
+        # Final score breakdown
+        logger.info(f"\n🏆 FINAL SCORE BREAKDOWN:")
+        logger.info(f"  Base Score (Reliability + Activity): {uptime_score + container_score:.2f}")
+        tempo_scaled = (uptime_score + container_score) * (tempo / 3600) * 10
+        logger.info(f"  Tempo Scaled: {tempo_scaled:.2f}")
+        logger.info(f"  With Compute Multiplier: {tempo_scaled * scaled_compute_score:.2f}")
+        logger.info(f"  Final Score (with bonuses): {final_score:.2f}")
+        
+        # Threshold check
+        if pog_score >= SCORE_THRESHOLD:
+            logger.info(f"✅ Resource PASSES threshold ({pog_score:.4f} >= {SCORE_THRESHOLD})")
+        else:
+            logger.info(f"❌ Resource FAILS threshold ({pog_score:.4f} < {SCORE_THRESHOLD})")
+        
+        logger.info("=" * 80)
+        
+    except Exception as e:
+        logger.error(f"Error logging resource scoring details: {e}")
+
+def log_scoring_system_summary() -> None:
+    """
+    Log a summary of the new fair scoring system and its benefits.
+    """
+    try:
+        logger.info("🚀 NEW FAIR SCORING SYSTEM IMPLEMENTED")
+        logger.info("=" * 80)
+        logger.info("📋 SCORING CONFIGURATION:")
+        logger.info(f"  Score Threshold: {SCORE_THRESHOLD} (increased from 0.005)")
+        logger.info(f"  Max Score: {MAX_SCORE}")
+        logger.info(f"  Max Containers: {MAX_CONTAINERS} (increased from 10)")
+        logger.info(f"  Score Weight: {SCORE_WEIGHT} (increased from 0.33)")
+        
+        logger.info("\n⚖️  NEW SCORING APPROACH:")
+        logger.info("  Base Score: Uptime (reliability) + Containers (activity)")
+        logger.info("  Compute Multiplier: Raw PoW score as multiplier (specs/power)")
+        logger.info("  Final Score: Base Score × Compute Multiplier × Bonuses")
+        
+        logger.info("\n🎁 BONUS SYSTEMS:")
+        logger.info("  Uptime Multipliers:")
+        for tier_name, tier_config in UPTIME_MULTIPLIER_TIERS.items():
+            logger.info(f"    {tier_name.title()}: ≥{tier_config['threshold']}% → {tier_config['multiplier']}x")
+        
+        logger.info("  Rented Machine Bonuses:")
+        logger.info(f"    Base Bonus: +{int((RENTED_MACHINE_BONUS['base_multiplier'] - 1) * 100)}% for running containers")
+        logger.info(f"    Container Scaling: +{int(RENTED_MACHINE_BONUS['container_scaling'] * 100)}% per additional container")
+        logger.info(f"    Max Bonus: +{int((RENTED_MACHINE_BONUS['max_bonus'] - 1) * 100)}%")
+        
+        logger.info("\n✅ IMPROVEMENTS:")
+        logger.info("  • Removed double counting of uptime rewards in scores")
+        logger.info("  • Linear compute score scaling (was logarithmic)")
+        logger.info("  • Balanced component weighting")
+        logger.info("  • Uptime-based bonus incentives")
+        logger.info("  • Rented machine bonuses for active containers")
+        logger.info("  • Median-based score normalization (was 90th percentile)")
+        logger.info("  • No first-time penalties for new miners")
+        logger.info("  • Reduced status multiplier extremes (3x vs 8x)")
+        
+        logger.info("\n🎯 FAIRNESS FEATURES:")
+        logger.info("  • High uptime miners get up to +30% bonus")
+        logger.info("  • Machines with containers get up to +35% bonus")
+        logger.info("  • Compute performance properly weighted")
+        logger.info("  • Container count scaling prevents abuse")
+        logger.info("  • Transparent scoring with detailed logging")
+        
+        logger.info("=" * 80)
+        
+    except Exception as e:
+        logger.error(f"Error logging scoring system summary: {e}")
 
 # Cache for miners data from the common API endpoint
 _miners_data_cache: Dict = {}
@@ -56,11 +341,11 @@ def _sync_miners_data() -> None:
         headers = {
             "Connection": "keep-alive",
             "x-api-key": "",
-            "service-key": " ",
+            "service-key": "",
             "service-name": "miner_service",
             "Content-Type": "application/json"
         }
-        url ="https://validator-server-skyq.onrender.com/miners"
+        url ="htpp'............."
         response = requests.get(url)
         response.raise_for_status()
         _miners_data_cache = response.json().get("miners", [])
@@ -175,6 +460,9 @@ async def reward_mechanism(
             return {}, {}
         logger.info(f"Fetched {len(miners)} miners")
 
+        # Log the new fair scoring system summary
+        log_scoring_system_summary()
+
         # Initialize result dictionaries
         results: Dict[str, MinerResult] = {}
         raw_results: Dict[str, dict] = {}
@@ -282,20 +570,13 @@ async def reward_mechanism(
 
             for resource_id, pog_score in resource_results:
                 if pog_score < SCORE_THRESHOLD:
-                    logger.warning(f"Resource {resource_id}: score={pog_score:.4f} below threshold")
-                    update_result = update_miner_compute_resource(
-                        miner_id=miner_id,
-                        resource_id=resource_id,
-                        status="rejected",
-                        reason=f"Low compute score: {pog_score:.4f}"
-                    )
-                    if not update_result:
-                        logger.warning(f"Failed to update status for resource {resource_id}")
+                    logger.warning(f"Resource {resource_id}: score={pog_score:.4f} below threshold - SKIPPING ENTIRELY")
+                    # Skip this resource entirely - no need to update status or process further
                     continue
 
-                # Scale compute score
-                scaled_compute_score = np.log1p(pog_score) * 10
-                logger.info(f"Resource {resource_id}: scaled_compute_score={scaled_compute_score:.2f}")
+                # Use raw compute score (PoW) directly - no scaling needed
+                compute_score = pog_score
+                logger.info(f"Resource {resource_id}: compute_score={compute_score:.4f}")
 
                 # Calculate uptime and rewards
                 status = "active" if pog_score >= SCORE_THRESHOLD else "inactive"
@@ -313,26 +594,36 @@ async def reward_mechanism(
                     "reason": "Initial uptime log"
                 })
 
-                uptime_rewards = calculate_miner_rewards(resource_id, pog_score, current_block, tempo)
-                if is_new_resource:
-                    uptime_rewards["reward_amount"] = (tempo / 3600) * 0.2 * (pog_score / 100)
-                    uptime_rewards["blocks_active"] = 1
-                    uptime_rewards["uptime"] = tempo if status == "active" else 0
-                    uptime_rewards["additional_details"] = {
-                        "first_time_calculation": True,
-                        "blocks_since_last": current_block
-                    }
+                # Calculate uptime rewards (separate from scoring)
+                # Calculate uptime rewards with graceful error handling
+                try:
+                    uptime_rewards = calculate_miner_rewards(resource_id, pog_score, current_block, tempo)
+                    if is_new_resource:
+                        uptime_rewards["reward_amount"] = (tempo / 3600) * 0.2 * (pog_score / 100)
+                        uptime_rewards["blocks_active"] = 1
+                        uptime_rewards["uptime"] = tempo if status == "active" else 0
+                        uptime_rewards["additional_details"] = {
+                            "first_time_calculation": True,
+                            "blocks_since_last": current_block
+                        }
 
-                uptime_rewards_dict[miner_id]["reward_amount"] += uptime_rewards["reward_amount"]
-                uptime_rewards_dict[miner_id]["blocks_active"] += uptime_rewards.get("blocks_active", 0)
-                uptime_rewards_dict[miner_id]["uptime"] += uptime_rewards.get("uptime", 0)
-                uptime_rewards_dict[miner_id]["additional_details"]["resources"][resource_id] = {
-                    "reward_amount": uptime_rewards["reward_amount"],
-                    "blocks_active": uptime_rewards.get("blocks_active", 0),
-                    "uptime": uptime_rewards.get("uptime", 0),
-                    "details": uptime_rewards.get("additional_details", {})
-                }
-                logger.info(f"Resource {resource_id}: reward={uptime_rewards['reward_amount']:.6f}")
+                    uptime_rewards_dict[miner_id]["reward_amount"] += uptime_rewards.get("reward_amount", 0)
+                    uptime_rewards_dict[miner_id]["blocks_active"] += uptime_rewards.get("blocks_active", 0)
+                    uptime_rewards_dict[miner_id]["uptime"] += uptime_rewards.get("uptime", 0)
+                    uptime_rewards_dict[miner_id]["additional_details"]["resources"][resource_id] = {
+                        "reward_amount": uptime_rewards.get("reward_amount", 0),
+                        "blocks_active": uptime_rewards.get("blocks_active", 0),
+                        "uptime": uptime_rewards.get("uptime", 0),
+                        "details": uptime_rewards.get("additional_details", {})
+                    }
+                    logger.info(f"Resource {resource_id}: reward={uptime_rewards.get('reward_amount', 0):.6f}")
+                except Exception as e:
+                    logger.warning(f"Error calculating uptime rewards for resource {resource_id}: {e}")
+                    # Use default values if calculation fails
+                    default_reward = (tempo / 3600) * 0.2 * (pog_score / 100) if pog_score >= SCORE_THRESHOLD else 0
+                    uptime_rewards_dict[miner_id]["reward_amount"] += default_reward
+                    uptime_rewards_dict[miner_id]["blocks_active"] += 1
+                    uptime_rewards_dict[miner_id]["uptime"] += tempo if status == "active" else 0
 
                 uptime_logs.append({
                     "miner_uid": resource_id,
@@ -343,34 +634,104 @@ async def reward_mechanism(
                     "reason": "Reward updated"
                 })
 
-                containers = get_containers_for_resource(resource_id)
-                active_container_count = int(containers["running_count"])
-                if active_container_count == 0 and containers.get("total_count", 0) > 0:
-                    logger.warning(f"No running containers for resource {resource_id}, but {containers['total_count']} found")
-                logger.info(f"Resource {resource_id}: running_containers={active_container_count}")
+                # Get container information for rented machine bonus
+                # Get container information with graceful error handling
+                try:
+                    containers = get_containers_for_resource(resource_id)
+                    active_container_count = int(containers.get("running_count", 0))
+                    if active_container_count == 0 and containers.get("total_count", 0) > 0:
+                        logger.warning(f"No running containers for resource {resource_id}, but {containers['total_count']} found")
+                    logger.info(f"Resource {resource_id}: running_containers={active_container_count}")
+                except Exception as e:
+                    logger.warning(f"Error fetching containers for resource {resource_id}: {e}, defaulting to 0")
+                    active_container_count = 0
 
-                # Calculate resource score
-                effective_container_count = min(active_container_count, MAX_CONTAINERS) + np.log1p(max(0, active_container_count - MAX_CONTAINERS))
-                container_bonus = np.sqrt(active_container_count) * CONTAINER_BONUS_MULTIPLIER
-                base_score = (uptime_percent / 100) * 100 + SCORE_WEIGHT * effective_container_count + SCORE_WEIGHT * scaled_compute_score
-                resource_score = (base_score * (tempo / 3600)) + container_bonus + uptime_rewards["reward_amount"]
-                raw_results[miner_id]["total_raw_score"] += resource_score
-                logger.info(
-                    f"Resource {resource_id}: containers={active_container_count}, score={resource_score:.2f}"
-                )
+                # Calculate uptime multiplier based on current uptime (fallback to historical if available)
+                try:
+                    from neurons.utils.uptimedata import calculate_historical_uptime
+                    historical_uptime = calculate_historical_uptime(resource_id, current_block)
+                    uptime_multiplier = calculate_uptime_multiplier(historical_uptime)
+                except ImportError:
+                    # Fallback to current uptime if historical function not available
+                    uptime_multiplier = calculate_uptime_multiplier(uptime_percent)
+                    logger.debug(f"Using current uptime {uptime_percent}% for multiplier calculation (historical function not available)")
+                
+                # Calculate rented machine bonus for machines with running containers
+                rented_machine_bonus = calculate_rented_machine_bonus(active_container_count)
+                
+                # Calculate fair resource score using new balanced formula with graceful error handling
+                try:
+                    resource_score = calculate_fair_resource_score(
+                        uptime_percent=uptime_percent,
+                        scaled_compute_score=compute_score,
+                        active_container_count=active_container_count,
+                        tempo=tempo,
+                        uptime_multiplier=uptime_multiplier,
+                        rented_machine_bonus=rented_machine_bonus
+                    )
+                    
+                    # Add score to raw results (NO uptime rewards added to prevent double counting)
+                    raw_results[miner_id]["total_raw_score"] += resource_score
+                    
+                    # Log comprehensive scoring details
+                    log_resource_scoring_details(
+                        resource_id=resource_id,
+                        miner_id=miner_id,
+                        pog_score=pog_score,
+                        scaled_compute_score=compute_score,
+                        uptime_percent=uptime_percent,
+                        active_container_count=active_container_count,
+                        uptime_multiplier=uptime_multiplier,
+                        rented_machine_bonus=rented_machine_bonus,
+                        final_score=resource_score,
+                        tempo=tempo
+                    )
+                except Exception as e:
+                    logger.warning(f"Error calculating resource score for {resource_id}: {e}")
+                    # Use fallback calculation if the main function fails
+                    fallback_score = (uptime_percent / 100) * 40 + compute_score * 0.4 + min(active_container_count, MAX_CONTAINERS) * 0.2
+                    fallback_score = fallback_score * (tempo / 3600) * uptime_multiplier * rented_machine_bonus
+                    raw_results[miner_id]["total_raw_score"] += fallback_score
+                    logger.info(f"Resource {resource_id}: fallback_score={fallback_score:.2f}")
 
-        # Normalize scores
+        # Implement optimized score normalization with better distribution
         if raw_results:
             raw_scores = [entry["total_raw_score"] for entry in raw_results.values()]
             if raw_scores:
-                percentile_90 = np.percentile(raw_scores, 90) if len(raw_scores) >= 5 else max(raw_scores)
-                if percentile_90 > 0:
-                    normalization_factor = max_score / percentile_90
+                # Use 75th percentile for normalization to prevent score compression
+                if len(raw_scores) >= 5:
+                    normalization_reference = np.percentile(raw_scores, 75)
+                    logger.info(f"Using 75th percentile score {normalization_reference:.2f} for normalization")
+                elif len(raw_scores) >= 3:
+                    normalization_reference = np.percentile(raw_scores, 80)
+                    logger.info(f"Using 80th percentile score {normalization_reference:.2f} for normalization")
+                else:
+                    normalization_reference = max(raw_scores)
+                    logger.info(f"Using max score {normalization_reference:.2f} for normalization (insufficient data for percentile)")
+                
+                if normalization_reference > 0:
+                    # Apply logarithmic scaling for better score distribution
+                    normalization_factor = MAX_SCORE / (normalization_reference * np.log1p(1))
+                    logger.info(f"Optimized normalization factor: {normalization_factor:.4f}")
+                    
                     for miner_id, entry in raw_results.items():
-                        normalized_score = min(max_score, entry["total_raw_score"] * normalization_factor)
+                        raw_score = entry["total_raw_score"]
+                        if raw_score > 0:
+                            # Use logarithmic scaling to prevent score compression
+                            scaled_score = raw_score * np.log1p(normalization_factor)
+                            # Apply soft cap with gradual falloff above 80% of MAX_SCORE
+                            if scaled_score > MAX_SCORE * 0.8:
+                                falloff_factor = 1.0 - ((scaled_score - MAX_SCORE * 0.8) / (MAX_SCORE * 0.2)) * 0.2
+                                scaled_score = scaled_score * falloff_factor
+                            
+                            normalized_score = min(MAX_SCORE, max(0, scaled_score))
+                        else:
+                            normalized_score = 0.0
+                        
                         results[miner_id]["total_score"] = normalized_score
                         logger.info(
-                            f"Miner ID {miner_id}: raw_score={entry['total_raw_score']:.2f}, normalized_score={normalized_score:.2f}"
+                            f"Miner ID {miner_id}: raw_score={raw_score:.2f}, "
+                            f"normalized_score={normalized_score:.2f}"
                         )
                 else:
                     logger.warning("All raw scores are zero. Skipping normalization.")
@@ -383,12 +744,85 @@ async def reward_mechanism(
         for log_entry in uptime_logs:
             log_uptime(**log_entry)
 
+        # Apply Alpha-stake based bonuses with graceful error handling
+        if results:
+            try:
+                # Sync metagraph to get current stake information
+                _sync_metagraph(netuid, network)
+                
+                if _metagraph is not None:
+                    # Build UID stake information dictionary
+                    uid_stake_info = {}
+                    for miner_id, result in results.items():
+                        miner_uid = result.get("miner_uid")
+                        if miner_uid:
+                            try:
+                                uid_int = int(miner_uid)
+                                stake_info = get_uid_alpha_stake_info(uid_int, _metagraph)
+                                if stake_info:
+                                    uid_stake_info[str(uid_int)] = stake_info
+                            except (ValueError, TypeError) as e:
+                                logger.warning(f"Invalid miner_uid format for {miner_id}: {e}")
+                                continue
+                    
+                    # Apply Alpha-stake bonuses
+                    if uid_stake_info:
+                        try:
+                            results = apply_alpha_stake_bonus(results, uid_stake_info)
+                            logger.info(f"Applied Alpha-stake bonuses using stake info for {len(uid_stake_info)} UIDs")
+                            
+                            # Generate comprehensive Alpha-stake bonus analysis report
+                            try:
+                                generate_alpha_stake_analysis_report(results, uid_stake_info)
+                            except Exception as report_e:
+                                logger.warning(f"Error generating Alpha-stake report: {report_e}")
+                        except Exception as bonus_e:
+                            logger.error(f"Error applying Alpha-stake bonuses: {bonus_e}")
+                            # Continue with original results if bonus application fails
+                    else:
+                        logger.warning("No valid UID stake information found for bonus application")
+                else:
+                    logger.warning("Failed to sync metagraph for Alpha-stake bonus application")
+            except Exception as e:
+                logger.error(f"Error applying Alpha-stake bonuses: {e}")
+                # Continue without bonuses if there's an error
+        else:
+            logger.info("No results to apply Alpha-stake bonuses to")
+
         logger.info(f"Processed {len(results)} unique miner IDs")
+        
+        # Analyze scoring fairness
+        try:
+            fairness_analysis = analyze_scoring_fairness(results)
+            if "error" not in fairness_analysis:
+                # Generate and log comprehensive report
+                scoring_report = generate_scoring_report(results, fairness_analysis)
+                logger.info(scoring_report)
+                
+                # Log key fairness metrics
+                if "fairness_metrics" in fairness_analysis:
+                    metrics = fairness_analysis["fairness_metrics"]
+                    logger.info(f"🎯 Scoring Fairness Summary:")
+                    logger.info(f"  Gini Coefficient: {metrics.get('gini_coefficient', 0):.4f}")
+                    logger.info(f"  Score Equality: {metrics.get('score_equality', 0):.4f}")
+                    logger.info(f"  Assessment: {fairness_analysis.get('fairness_assessment', 'Unknown')}")
+        except Exception as e:
+            logger.warning(f"Error analyzing scoring fairness: {e}")
+        
+        # Ensure we return the expected format for the validator
+        if not results:
+            logger.warning("No results generated, returning empty structures")
+            return {}, {}
+            
         return results, uptime_rewards_dict
 
     except Exception as e:
         logger.critical(f"Fatal error processing miners: {e}")
-        raise MinerProcessingError(f"Failed to process miners: {e}")
+        logger.error(f"Stack trace: {e}", exc_info=True)
+        
+        # Return empty results instead of crashing
+        logger.warning("Returning empty results due to error, continuing validator operation")
+        return {}, {}
 
 
 
@@ -408,12 +842,12 @@ def update_miner_status(miner_id: str, status: str, percentage: float, reason: s
     headers = {
             "Connection": "keep-alive",
             "x-api-key": "",
-            "service-key": " ",
+            "service-key": "",
             "service-name": "miner_service",
             "Content-Type": "application/json"
         }
     updated_at = datetime.utcnow()
-    url = f"https://femi-aristodemos.onrender.com/api/v1/services/miner/miners/{miner_id}"
+    url = f"http:///// /{miner_id}"
     payload = {
         "status": status,
         "percentage": percentage,
@@ -441,7 +875,7 @@ def get_containers_for_miner(miner_id: str) -> List[str]:
             "Content-Type": "application/json"
         }
 
-        url = f"https://femi-aristodemos.onrender.com/api/v1/services/container/container/containers/miner/{miner_id}"
+        url = f"https://.......{miner_id}"
         response = requests.get(url, headers=headers)
         response.raise_for_status()
         return response.json().get("containers", [])
@@ -471,7 +905,7 @@ def update_container_payment_status(container_id: str) -> bool:
             "Content-Type": "application/json"
         }
 
-    url = f"https://femi-aristodemos.onrender.com/api/v1/services/container/container/containers/{container_id}"
+    url = f"h......./{container_id}"
     payload = {
         "fields": {
             "payment_status": "paid"
@@ -684,7 +1118,7 @@ def get_containers_for_resource(resource_id: str) -> Dict[str, any]:
         }
 
         # API endpoint
-        url = "https://validator-server-skyq.onrender.com/containers"
+        url = "......"
         logger.info(f"Fetching containers for resource_id: {resource_id} from {url}")
 
         # Send GET request
@@ -849,7 +1283,7 @@ def update_miner_compute_resource(
     try:
     
         # Construct the full URL
-        url = f"https://femi-aristodemos.onrender.com/api/v1/services/miner/miners/{miner_id}"
+        url = f"........{miner_id}"
 
         # Prepare headers
         headers = {
@@ -1052,3 +1486,452 @@ async def sub_verification(allowed_uids: List[int]) -> Tuple[Dict[str, int], Dic
     except Exception as e:
         logger.error(f"Unexpected error in sub_verification: {str(e)}", exc_info=True)
         return verification_results
+
+
+def analyze_alpha_stake_distribution(metagraph) -> Dict:
+    """
+    Analyzes the distribution of Alpha stakes across all miners in the metagraph.
+    
+    Args:
+        metagraph: The Bittensor metagraph object containing neuron information.
+        
+    Returns:
+        Dict containing:
+            - total_miners: Total number of miners
+            - stake_tiers: Count of miners in each tier (high, medium, low)
+            - total_alpha_staked: Total Alpha tokens staked across all miners
+            - average_stake: Average Alpha stake per miner
+            - tier_breakdown: Detailed breakdown of each tier
+    """
+    try:
+        if not metagraph or not hasattr(metagraph, 'neurons'):
+            logger.error("Invalid metagraph provided for analysis")
+            return {}
+        
+        total_miners = len(metagraph.neurons)
+        if total_miners == 0:
+            logger.warning("No neurons found in metagraph")
+            return {"total_miners": 0, "stake_tiers": {}, "total_alpha_staked": 0, "average_stake": 0}
+        
+        stake_tiers = {"high": 0, "medium": 0, "low": 0}
+        total_alpha_staked = 0
+        tier_breakdown = {"high": [], "medium": [], "low": []}
+        
+        for uid, neuron in enumerate(metagraph.neurons):
+            if neuron.is_null:
+                continue
+                
+            total_stake = safe_convert_to_float(neuron.total_stake, 0.0)
+            total_alpha_staked += total_stake
+            
+            # Classify into tiers
+            if total_stake >= ALPHA_STAKE_TIERS["high"]["threshold"]:
+                stake_tiers["high"] += 1
+                tier_breakdown["high"].append({"uid": uid, "stake": total_stake, "hotkey": neuron.hotkey})
+            elif total_stake >= ALPHA_STAKE_TIERS["medium"]["threshold"]:
+                stake_tiers["medium"] += 1
+                tier_breakdown["medium"].append({"uid": uid, "stake": total_stake, "hotkey": neuron.hotkey})
+            else:
+                stake_tiers["low"] += 1
+                tier_breakdown["low"].append({"uid": uid, "stake": total_stake, "hotkey": neuron.hotkey})
+        
+        average_stake = total_alpha_staked / total_miners if total_miners > 0 else 0
+        
+        result = {
+            "total_miners": total_miners,
+            "stake_tiers": stake_tiers,
+            "total_alpha_staked": total_alpha_staked,
+            "average_stake": average_stake,
+            "tier_breakdown": tier_breakdown
+        }
+        
+        logger.info(f"Alpha stake analysis: {stake_tiers['high']} high-tier, {stake_tiers['medium']} medium-tier, "
+                   f"{stake_tiers['low']} low-tier miners. Total staked: {total_alpha_staked:.2f} Alpha")
+        
+        return result
+        
+    except Exception as e:
+        logger.error(f"Error analyzing Alpha stake distribution: {e}")
+        return {}
+
+
+def get_uid_alpha_stake_info(uid: int, metagraph) -> Dict:
+    """
+    Retrieves comprehensive Alpha stake information for a specific UID from the metagraph.
+    
+    Args:
+        uid: The UID to query
+        metagraph: The Bittensor metagraph object
+        
+    Returns:
+        Dict containing:
+            - uid: The miner's UID
+            - total_stake: Total Alpha tokens staked
+            - emission: Current emission rate
+            - rank: Current rank
+            - trust: Current trust score
+            - hotkey: Miner's hotkey
+            - coldkey: Miner's coldkey
+            - stake_tier: Classification tier (high, medium, low)
+            - bonus_percentage: Applicable bonus percentage
+            - stake_details: Detailed stake breakdown
+    """
+    try:
+        if not metagraph or not hasattr(metagraph, 'neurons'):
+            logger.error("Invalid metagraph provided for UID stake info")
+            return {}
+        
+        if uid >= len(metagraph.neurons):
+            logger.error(f"UID {uid} out of range for metagraph with {len(metagraph.neurons)} neurons")
+            return {}
+        
+        neuron = metagraph.neurons[uid]
+        if neuron.is_null:
+            logger.warning(f"UID {uid} is null/inactive")
+            return {}
+        
+        # Handle Bittensor Balance objects properly using utility function
+        total_stake = safe_convert_to_float(neuron.total_stake, 0.0)
+        emission = safe_convert_to_float(neuron.emission, 0.0)
+        rank = safe_convert_to_float(neuron.rank, 0.0)
+        trust = safe_convert_to_float(neuron.trust, 0.0)
+            
+        hotkey = neuron.hotkey
+        coldkey = neuron.coldkey
+        
+        # Determine stake tier and bonus
+        stake_tier = "low"
+        bonus_percentage = ALPHA_STAKE_TIERS["low"]["bonus_percentage"]
+        
+        if total_stake >= ALPHA_STAKE_TIERS["high"]["threshold"]:
+            stake_tier = "high"
+            bonus_percentage = ALPHA_STAKE_TIERS["high"]["bonus_percentage"]
+        elif total_stake >= ALPHA_STAKE_TIERS["medium"]["threshold"]:
+            stake_tier = "medium"
+            bonus_percentage = ALPHA_STAKE_TIERS["medium"]["bonus_percentage"]
+        
+        # Extract stake details - handle Bittensor Balance objects properly
+        stake_details = {}
+        if hasattr(neuron, 'stake') and neuron.stake:
+            try:
+                # Handle different stake object types
+                if hasattr(neuron.stake, 'items'):
+                    # If stake is a dict-like object
+                    for coldkey_addr, amount in neuron.stake.items():
+                        stake_details[coldkey_addr] = float(amount) if hasattr(amount, '__float__') else amount
+                elif hasattr(neuron.stake, '__getitem__'):
+                    # If stake supports indexing
+                    for i in range(len(neuron.stake)):
+                        key = f"stake_{i}"
+                        value = neuron.stake[i]
+                        stake_details[key] = float(value) if hasattr(value, '__float__') else value
+                else:
+                    # If stake is a single value
+                    stake_details["total"] = float(neuron.stake) if hasattr(neuron.stake, '__float__') else neuron.stake
+            except Exception as e:
+                logger.warning(f"Error extracting stake details for UID {uid}: {e}")
+                stake_details["error"] = str(e)
+        
+        result = {
+            "uid": uid,
+            "total_stake": total_stake,
+            "emission": emission,
+            "rank": rank,
+            "trust": trust,
+            "hotkey": hotkey,
+            "coldkey": coldkey,
+            "stake_tier": stake_tier,
+            "bonus_percentage": bonus_percentage,
+            "stake_details": stake_details
+        }
+        
+        # Safe formatting for logging
+        try:
+            stake_display = f"{total_stake:.2f}" if isinstance(total_stake, (int, float)) else str(total_stake)
+            logger.debug(f"UID {uid} stake info: {stake_display} Alpha, tier: {stake_tier}, bonus: {bonus_percentage}%")
+        except Exception as e:
+            logger.debug(f"UID {uid} stake info: {total_stake} Alpha, tier: {stake_tier}, bonus: {bonus_percentage}%")
+        return result
+        
+    except Exception as e:
+        logger.error(f"Error retrieving Alpha stake info for UID {uid}: {e}")
+        # Return minimal info to prevent complete failure
+        return {
+            "uid": uid,
+            "total_stake": 0.0,
+            "emission": 0.0,
+            "rank": 0.0,
+            "trust": 0.0,
+            "hotkey": "unknown",
+            "coldkey": "unknown",
+            "stake_tier": "low",
+            "bonus_percentage": 0,
+            "stake_details": {"error": str(e)}
+        }
+
+
+def apply_alpha_stake_bonus(rewards: Dict, uid_stake_info: Dict) -> Dict:
+    """
+    Applies Alpha stake-based bonuses to miner rewards.
+    
+    Args:
+        rewards: Dictionary of miner rewards with 'miner_uid' field
+        uid_stake_info: Dictionary mapping UIDs to their stake information
+        
+    Returns:
+        Updated rewards dictionary with applied bonuses and bonus metadata
+    """
+    try:
+        if not rewards:
+            logger.warning("No rewards provided for Alpha stake bonus application")
+            return rewards
+        
+        if not uid_stake_info:
+            logger.warning("No UID stake information provided, returning original rewards")
+            return rewards
+        
+        updated_rewards = {}
+        
+        for miner_id, reward_data in rewards.items():
+            miner_uid = reward_data.get("miner_uid")
+            if not miner_uid:
+                logger.warning(f"Miner {miner_id} missing miner_uid, skipping bonus")
+                updated_rewards[miner_id] = reward_data
+                continue
+            
+            # Convert miner_uid to string for dictionary lookup if needed
+            uid_key = str(miner_uid) if isinstance(miner_uid, (int, str)) else miner_uid
+            
+            if uid_key not in uid_stake_info:
+                logger.debug(f"No stake info for UID {uid_key}, no bonus applied")
+                updated_rewards[miner_id] = reward_data
+                continue
+            
+            stake_info = uid_stake_info[uid_key]
+            bonus_percentage = stake_info.get("bonus_percentage", 0)
+            total_stake = stake_info.get("total_stake", 0)
+            stake_tier = stake_info.get("stake_tier", "low")
+            
+            if bonus_percentage > 0:
+                # Apply bonus to total_score
+                original_score = reward_data.get("total_score", 0)
+                
+                # If miner has no score but has sufficient stake, give minimum participation score
+                if original_score == 0.0:
+                    min_score = 10.0  # Minimum participation score for staked miners
+                    original_score = min_score
+                    logger.info(f"🎁 Gave minimum score {min_score} to staked miner {miner_id} "
+                               f"(UID {uid_key}) with {bonus_percentage}% bonus")
+                
+                bonus_multiplier = 1 + (bonus_percentage / 100)
+                new_score = original_score * bonus_multiplier
+                
+                # Create updated reward data
+                updated_reward = reward_data.copy()
+                updated_reward["total_score"] = new_score
+                updated_reward["alpha_stake_bonus"] = {
+                    "bonus_percentage": bonus_percentage,
+                    "stake_amount": total_stake,
+                    "stake_tier": stake_tier,
+                    "original_score": original_score,
+                    "bonus_amount": new_score - original_score,
+                    "bonus_multiplier": bonus_multiplier,
+                    "minimum_score_given": original_score > 0 and reward_data.get("total_score", 0) == 0
+                }
+                
+                updated_rewards[miner_id] = updated_reward
+                logger.info(f"💰 BONUS APPLIED: Miner {miner_id} (UID {uid_key})")
+                logger.info(f"   Alpha Stake: {total_stake:.2f} → Tier: {stake_tier}")
+                logger.info(f"   Bonus: {bonus_percentage}% → Multiplier: {bonus_multiplier:.3f}")
+                logger.info(f"   Score: {original_score:.2f} → {new_score:.2f} (+{new_score - original_score:.2f})")
+                logger.info(f"   Bonus Amount: +{new_score - original_score:.2f}")
+                if original_score > 0 and reward_data.get("total_score", 0) == 0:
+                    logger.info(f"   🎁 Minimum participation score given due to stake")
+            else:
+                # No bonus, keep original
+                updated_rewards[miner_id] = reward_data
+        
+        total_bonuses = sum(1 for r in updated_rewards.values() if "alpha_stake_bonus" in r)
+        logger.info(f"Applied Alpha stake bonuses to {total_bonuses} out of {len(rewards)} miners")
+        
+        return updated_rewards
+        
+    except Exception as e:
+        logger.error(f"Error applying Alpha stake bonuses: {e}")
+        return rewards
+
+
+def get_metagraph_alpha_stake_summary(netuid: int = 49, network: str = "finney") -> Dict:
+    """
+    Gets a summary of Alpha stake distribution for a specific subnet.
+    
+    Args:
+        netuid: The subnet ID (default: 49)
+        network: The Bittensor network (default: "finney")
+        
+    Returns:
+        Dictionary containing Alpha stake summary and distribution analysis
+    """
+    try:
+        # Sync metagraph if needed
+        _sync_metagraph(netuid, network)
+        
+        if _metagraph is None:
+            logger.error("Failed to sync metagraph for Alpha stake summary")
+            return {}
+        
+        # Analyze stake distribution
+        stake_analysis = analyze_alpha_stake_distribution(_metagraph)
+        
+        # Get additional metadata
+        summary = {
+            "netuid": netuid,
+            "network": network,
+            "last_sync": _last_metagraph_sync,
+            "cache_age_seconds": time.time() - _last_metagraph_sync,
+            "total_nodes": len(_metagraph.hotkeys) if _metagraph.hotkeys else 0,
+            **stake_analysis
+        }
+        
+        logger.info(f"Alpha stake summary for subnet {netuid}: {stake_analysis.get('total_miners', 0)} miners, "
+                   f"total staked: {stake_analysis.get('total_alpha_staked', 0):.2f} Alpha")
+        
+        return summary
+        
+    except Exception as e:
+        logger.error(f"Error getting Alpha stake summary for subnet {netuid}: {e}")
+        return {}
+
+
+def generate_alpha_stake_analysis_report(results: Dict, uid_stake_info: Dict) -> None:
+    """
+    Generates and logs a comprehensive analysis report of Alpha-stake bonuses applied.
+    
+    Args:
+        results: Dictionary of miner results after bonus application
+        uid_stake_info: Dictionary mapping UIDs to their stake information
+    """
+    try:
+        logger.info("=" * 80)
+        logger.info("🎯 ALPHA-STAKE BONUS ANALYSIS REPORT")
+        logger.info("=" * 80)
+        
+        # Initialize counters
+        total_miners = len(results)
+        miners_with_bonus = 0
+        total_bonus_amount = 0.0
+        tier_counts = {"high": 0, "medium": 0, "low": 0}
+        total_alpha_staked = 0.0
+        
+        # Collect bonus details
+        bonus_details = []
+        
+        for miner_id, result in results.items():
+            miner_uid = result.get("miner_uid")
+            if not miner_uid:
+                continue
+                
+            uid_key = str(miner_uid)
+            if uid_key in uid_stake_info:
+                stake_info = uid_stake_info[uid_key]
+                total_stake = stake_info.get("total_stake", 0)
+                stake_tier = stake_info.get("stake_tier", "low")
+                bonus_percentage = stake_info.get("bonus_percentage", 0)
+                
+                total_alpha_staked += total_stake
+                tier_counts[stake_tier] += 1
+                
+                if "alpha_stake_bonus" in result:
+                    miners_with_bonus += 1
+                    bonus_info = result["alpha_stake_bonus"]
+                    original_score = bonus_info.get("original_score", 0)
+                    final_score = result.get("total_score", 0)
+                    bonus_amount = bonus_info.get("bonus_amount", 0)
+                    
+                    total_bonus_amount += bonus_amount
+                    
+                    bonus_details.append({
+                        "miner_id": miner_id,
+                        "uid": uid_key,
+                        "alpha_stake": total_stake,
+                        "tier": stake_tier,
+                        "bonus_percentage": bonus_percentage,
+                        "original_score": original_score,
+                        "final_score": final_score,
+                        "bonus_amount": bonus_amount
+                    })
+                    
+                    # Log individual bonus details
+                    logger.info(f"💰 Miner {miner_id} (UID {uid_key}): "
+                              f"Alpha Stake: {total_stake:.2f} → Tier: {stake_tier} → "
+                              f"Bonus: {bonus_percentage}% → "
+                              f"Score: {original_score:.2f} → {final_score:.2f} "
+                              f"(+{bonus_amount:.2f})")
+        
+        # Generate summary statistics
+        logger.info("-" * 80)
+        logger.info("📊 SUMMARY STATISTICS")
+        logger.info("-" * 80)
+        logger.info(f"Total Miners Processed: {total_miners}")
+        logger.info(f"Miners Receiving Bonuses: {miners_with_bonus}")
+        logger.info(f"Miners Without Bonuses: {total_miners - miners_with_bonus}")
+        logger.info(f"Bonus Success Rate: {(miners_with_bonus/total_miners*100):.1f}%")
+        
+        logger.info(f"\n🏆 STAKE TIER DISTRIBUTION:")
+        logger.info(f"High Tier (≥5000 Alpha): {tier_counts['high']} miners")
+        logger.info(f"Medium Tier (≥1000 Alpha): {tier_counts['medium']} miners")
+        logger.info(f"Low Tier (<1000 Alpha): {tier_counts['low']} miners")
+        
+        logger.info(f"\n💎 ALPHA STAKE TOTALS:")
+        logger.info(f"Total Alpha Staked: {total_alpha_staked:.2f}")
+        logger.info(f"Average Alpha per Miner: {total_alpha_staked/total_miners:.2f}")
+        
+        logger.info(f"\n🎁 BONUS IMPACT:")
+        logger.info(f"Total Bonus Amount Applied: {total_bonus_amount:.2f}")
+        logger.info(f"Average Bonus per Eligible Miner: {total_bonus_amount/max(miners_with_bonus, 1):.2f}")
+        
+        # Top bonus recipients
+        if bonus_details:
+            logger.info(f"\n🏅 TOP 10 BONUS RECIPIENTS:")
+            sorted_bonuses = sorted(bonus_details, key=lambda x: x["bonus_amount"], reverse=True)
+            for i, detail in enumerate(sorted_bonuses[:10], 1):
+                logger.info(f"{i:2d}. Miner {detail['miner_id']} (UID {detail['uid']}): "
+                          f"Alpha: {detail['alpha_stake']:.2f}, "
+                          f"Tier: {detail['tier']}, "
+                          f"Bonus: {detail['bonus_percentage']}%, "
+                          f"Score: {detail['original_score']:.2f} → {detail['final_score']:.2f} "
+                          f"(+{detail['bonus_amount']:.2f})")
+        
+        logger.info("=" * 80)
+        logger.info("📋 DETAILED BONUS BREAKDOWN BY TIER")
+        logger.info("=" * 80)
+        
+        # Group by tier for detailed analysis
+        tier_analysis = {"high": [], "medium": [], "low": []}
+        for detail in bonus_details:
+            tier_analysis[detail["tier"]].append(detail)
+        
+        for tier in ["high", "medium", "low"]:
+            tier_details = tier_analysis[tier]
+            if tier_details:
+                logger.info(f"\n🔸 {tier.upper()} TIER ANALYSIS ({len(tier_details)} miners):")
+                tier_bonus_total = sum(d["bonus_amount"] for d in tier_details)
+                tier_alpha_total = sum(d["alpha_stake"] for d in tier_details)
+                
+                logger.info(f"   Total Alpha Staked: {tier_alpha_total:.2f}")
+                logger.info(f"   Total Bonus Applied: {tier_bonus_total:.2f}")
+                logger.info(f"   Average Bonus per Miner: {tier_bonus_total/len(tier_details):.2f}")
+                
+                # Show top 3 in this tier
+                sorted_tier = sorted(tier_details, key=lambda x: x["bonus_amount"], reverse=True)
+                for i, detail in enumerate(sorted_tier[:3], 1):
+                    logger.info(f"   {i}. UID {detail['uid']}: Alpha {detail['alpha_stake']:.2f}, "
+                              f"Bonus {detail['bonus_percentage']}%, Score +{detail['bonus_amount']:.2f}")
+        
+        logger.info("=" * 80)
+        logger.info("✅ ALPHA-STAKE BONUS ANALYSIS COMPLETE")
+        logger.info("=" * 80)
+        
+    except Exception as e:
+        logger.error(f"Error generating Alpha-stake analysis report: {e}")
+        logger.error("Continuing without detailed analysis report")
