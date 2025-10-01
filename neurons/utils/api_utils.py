@@ -536,7 +536,7 @@ def _sync_miners_data() -> None:
             "service-name": "miner_service",
             "Content-Type": "application/json"
         }
-        url ="https://polariscloudai-main-pf5lil.laravel.cloud/api/v1/validator/miners"
+        url =""
         logger.info(f"📡 API Request: {url}")
         response = requests.get(url)
         response.raise_for_status()
@@ -1193,7 +1193,7 @@ def update_miner_status(miner_id: str, status: str, percentage: float, reason: s
             "Content-Type": "application/json"
         }
     updated_at = datetime.utcnow()
-    url = f"https://femi-aristodemos.onrender.com/api/v1/services/miner/miners/{miner_id}"
+    url = f""
     payload = {
         "status": status,
         "percentage": percentage,
@@ -1221,7 +1221,7 @@ def get_containers_for_miner(miner_id: str) -> List[str]:
             "Content-Type": "application/json"
         }
 
-        url = f"https://femi-aristodemos.onrender.com/api/v1/services/container/container/containers/miner/{miner_id}"
+        url = f""
         response = requests.get(url, headers=headers)
         response.raise_for_status()
         return response.json().get("containers", [])
@@ -1251,7 +1251,7 @@ def update_container_payment_status(container_id: str) -> bool:
             "Content-Type": "application/json"
         }
 
-    url = f"https://femi-aristodemos.onrender.com/api/v1/services/container/container/containers/{container_id}"
+    url = f""
     payload = {
         "fields": {
             "payment_status": "paid"
@@ -1451,7 +1451,7 @@ def _sync_containers_data() -> None:
         logger.info("🔄 CONTAINERS CACHE: Fetching fresh containers data from API...")
         
         # API endpoint - no headers needed as tested
-        url = "https://polariscloudai-main-pf5lil.laravel.cloud/api/v1/validator/containers"
+        url = ""
         
         # Send GET request without headers for better performance
         response = requests.get(url, timeout=10)
@@ -1692,7 +1692,7 @@ def update_miner_compute_resource(
     try:
     
         # Construct the full URL
-        url = f"https://femi-aristodemos.onrender.com/api/v1/services/miner/miners/{miner_id}"
+        url = f""
 
         # Prepare headers
     
