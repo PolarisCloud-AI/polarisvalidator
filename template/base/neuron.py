@@ -112,6 +112,15 @@ class BaseNeuron(ABC):
         if self.should_set_weights():
             self.set_weights()
 
+    def set_weights(self):
+        """
+        Sets the weights for the neuron using the subtensor.
+        This method should be overridden by subclasses to implement specific weight-setting logic.
+        """
+        bt.logging.warning(
+            "set_weights() not implemented for this neuron. You should implement this function in your subclass."
+        )
+
         # Always save state.
         self.save_state()
 
