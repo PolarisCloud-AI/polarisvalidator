@@ -2,6 +2,7 @@ import numpy as np
 import torch
 import random
 import bittensor as bt
+from typing import Tuple, List
 from loguru import logger
 from template.base.utils.config import __spec_version__
 
@@ -38,30 +39,67 @@ def normalize_max_weight(x: np.ndarray, limit: float = 0.1) -> np.ndarray:
     
     return weights
 
-def convert_weights_and_uids_for_emit(weighted_scores):
-    """
-    Converts weighted scores to weights and UIDs.
-    
+def convert_weights_and_uids_for_emit(
+    uids: np.ndarray, weights: np.ndarray
+) -> Tuple[List[int], List[int]]:
+    r"""Converts weights into integer u32 representation that sum to MAX_INT_WEIGHT.
     Args:
-        weighted_scores: Dict of UID to score.
-    
+        uids (:obj:`np.ndarray,`):
+            Array of uids as destinations for passed weights.
+        weights (:obj:`np.ndarray,`):
+            Array of weights.
     Returns:
-        Tuple of (weights, uids).
+        weight_uids (List[int]):
+            Uids as a list.
+        weight_vals (List[int]):
+            Weights as a list.
     """
-    weighted_scores = weighted_scores.copy()
+    # Ensure weights sum to exactly 1.0
+    if weights.sum() > 0:
+        weights = weights / weights.sum()
     
-    total_score = sum(weighted_scores.values())
-    if total_score <= 0:
-        logger.warning("No valid scores. Returning empty weights.")
-        return [], []
+    # Convert to Bittensor's expected integer format
+    MAX_INT_WEIGHT = 4294967295  # 2^32 - 1
     
-    uids = [int(uid) for uid in weighted_scores.keys()]
-    scores = np.array([weighted_scores.get(str(uid), 0.0) for uid in uids], dtype=np.float32)
+    # Debug: Log the weights before conversion
+    logger.debug(f"Normalized weights before conversion: {weights.tolist()}")
+    logger.debug(f"Weight sum before conversion: {weights.sum():.10f}")
     
-    weights = normalize_max_weight(scores, limit=0.1)
+    # Use a different approach: distribute weights proportionally
+    # First, calculate how many total "units" we have
+    total_units = MAX_INT_WEIGHT
     
-    logger.info(f"Converted weights: UIDs={uids}, Weights={weights.tolist()}, Sum={sum(weights)}")
-    return weights.tolist(), uids
+    # Calculate proportional integer weights
+    weight_vals = []
+    for weight in weights:
+        # Calculate proportional share
+        proportional_share = int(weight * total_units)
+        # Ensure minimum weight of 1 for any non-zero weight
+        if weight > 0 and proportional_share == 0:
+            proportional_share = 1
+        weight_vals.append(proportional_share)
+    
+    weight_vals = np.array(weight_vals, dtype=np.int64)
+    
+    # Debug: Log the weights after conversion
+    logger.debug(f"Weights after conversion: {weight_vals.tolist()}")
+    logger.debug(f"Weight sum after conversion: {weight_vals.sum()}")
+    
+    # Ensure the total sum is exactly MAX_INT_WEIGHT (handle rounding errors)
+    total_weight = weight_vals.sum()
+    if total_weight != MAX_INT_WEIGHT:
+        # Adjust the largest weight to make total exactly MAX_INT_WEIGHT
+        diff = MAX_INT_WEIGHT - total_weight
+        max_idx = np.argmax(weight_vals)
+        weight_vals[max_idx] += diff
+        logger.debug(f"Adjusted weight at index {max_idx} by {diff}, new total: {weight_vals.sum()}")
+    
+    # Convert to lists
+    uids_list = uids.tolist()
+    weights_list = weight_vals.tolist()
+    
+    logger.info(f"Converted weights: UIDs={uids_list}, Weights={weights_list}, Sum={sum(weights_list)}")
+    return uids_list, weights_list
 
 def process_weights_for_netuid(
     weights: list[float],
@@ -104,12 +142,12 @@ def process_weights_for_netuid(
         logger.info(f"Setting weights: UIDs={filtered_uids}, Weights={filtered_weights}, Sum={sum(filtered_weights)}")
         logger.info(f"Wallet: {wallet}")
         result = subtensor.set_weights(
+            wallet,
             netuid=netuid,
             uids=torch.tensor(filtered_uids, dtype=torch.int64),
             weights=torch.tensor(filtered_weights, dtype=torch.float32),
             wait_for_finalization=False,
             wait_for_inclusion=False,
-            wallet=wallet,
             version_key=__spec_version__
         )
         if result[0]:

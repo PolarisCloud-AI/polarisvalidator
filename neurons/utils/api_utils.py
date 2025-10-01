@@ -6,7 +6,7 @@ import bittensor as bt
 from typing import List, Dict, Optional, Tuple, TypedDict, Any
 from datetime import datetime, timedelta
 import asyncio
-from neurons.utils.uptimedata import calculate_miner_rewards, log_uptime
+from utils.uptimedata import calculate_miner_rewards, log_uptime
 import asyncio
 import re
 import numpy as np
@@ -32,6 +32,7 @@ class UptimeReward(TypedDict):
 
 # Scoring and reward configuration
 SCORE_THRESHOLD = 0.03  # Optimized threshold to include more medium-performance resources
+MAX_POW_SCORE = 1.0  # Maximum allowed POW score - resources above this are skipped
 MAX_CONTAINERS = 20  # Increased from 10 to allow more containers
 SCORE_WEIGHT = 0.4  # Increased from 0.33 for better balance
 CONTAINER_BONUS_MULTIPLIER = 1.5  # Reduced from 2.0 for more balanced scoring
@@ -329,15 +330,205 @@ def log_scoring_system_summary() -> None:
     except Exception as e:
         logger.error(f"Error logging scoring system summary: {e}")
 
+def analyze_scoring_fairness(results: Dict[str, MinerResult]) -> Dict[str, Any]:
+    """
+    Analyze the fairness of the scoring system based on miner results.
+    
+    Args:
+        results: Dictionary mapping miner_id to MinerResult
+        
+    Returns:
+        Dictionary containing fairness analysis metrics
+    """
+    try:
+        if not results:
+            return {"error": "No results to analyze"}
+        
+        # Extract scores
+        scores = [result.get("total_score", 0) for result in results.values()]
+        if not scores:
+            return {"error": "No scores found in results"}
+        
+        # Calculate fairness metrics
+        import numpy as np
+        
+        fairness_metrics = {
+            "total_miners": len(scores),
+            "score_range": {
+                "min": float(np.min(scores)),
+                "max": float(np.max(scores)),
+                "range": float(np.max(scores) - np.min(scores))
+            },
+            "score_distribution": {
+                "mean": float(np.mean(scores)),
+                "median": float(np.median(scores)),
+                "std": float(np.std(scores)),
+                "q25": float(np.percentile(scores, 25)),
+                "q75": float(np.percentile(scores, 75))
+            },
+            "score_equality": {
+                "gini_coefficient": float(calculate_gini_coefficient(scores)),
+                "coefficient_of_variation": float(np.std(scores) / np.mean(scores)) if np.mean(scores) > 0 else 0
+            },
+            "performance_tiers": {
+                "high_performers": len([s for s in scores if s >= np.percentile(scores, 80)]),
+                "medium_performers": len([s for s in scores if np.percentile(scores, 20) <= s < np.percentile(scores, 80)]),
+                "low_performers": len([s for s in scores if s < np.percentile(scores, 20)])
+            }
+        }
+        
+        # Analyze score distribution fairness
+        fairness_assessment = {
+            "is_fair": True,
+            "issues": [],
+            "recommendations": []
+        }
+        
+        # Check for extreme score disparities
+        if fairness_metrics["score_equality"]["gini_coefficient"] > 0.6:
+            fairness_assessment["is_fair"] = False
+            fairness_assessment["issues"].append("High score inequality detected")
+            fairness_assessment["recommendations"].append("Consider adjusting scoring weights")
+        
+        # Check for score compression
+        if fairness_metrics["score_range"]["range"] < 10:
+            fairness_assessment["issues"].append("Score compression detected")
+            fairness_assessment["recommendations"].append("Consider expanding score range")
+        
+        return {
+            "fairness_metrics": fairness_metrics,
+            "fairness_assessment": fairness_assessment,
+            "analysis_timestamp": time.time()
+        }
+        
+    except Exception as e:
+        logger.error(f"Error analyzing scoring fairness: {e}")
+        return {"error": str(e)}
+
+def calculate_gini_coefficient(scores: List[float]) -> float:
+    """
+    Calculate Gini coefficient for score distribution fairness analysis.
+    
+    Args:
+        scores: List of scores
+        
+    Returns:
+        Gini coefficient (0 = perfect equality, 1 = perfect inequality)
+    """
+    try:
+        import numpy as np
+        
+        if len(scores) == 0:
+            return 0.0
+        
+        # Sort scores
+        sorted_scores = np.sort(scores)
+        n = len(sorted_scores)
+        
+        # Calculate Gini coefficient
+        cumsum = np.cumsum(sorted_scores)
+        return (n + 1 - 2 * np.sum(cumsum) / cumsum[-1]) / n if cumsum[-1] > 0 else 0.0
+        
+    except Exception as e:
+        logger.error(f"Error calculating Gini coefficient: {e}")
+        return 0.0
+
+def generate_scoring_report(results: Dict[str, MinerResult], fairness_analysis: Dict[str, Any]) -> str:
+    """
+    Generate a comprehensive scoring report based on results and fairness analysis.
+    
+    Args:
+        results: Dictionary mapping miner_id to MinerResult
+        fairness_analysis: Fairness analysis results
+        
+    Returns:
+        Formatted scoring report string
+    """
+    try:
+        if "error" in fairness_analysis:
+            return f"❌ Scoring Report Error: {fairness_analysis['error']}"
+        
+        fairness_metrics = fairness_analysis.get("fairness_metrics", {})
+        fairness_assessment = fairness_analysis.get("fairness_assessment", {})
+        
+        report_lines = [
+            "📊 COMPREHENSIVE SCORING REPORT",
+            "=" * 50,
+            f"📈 Total Miners Processed: {fairness_metrics.get('total_miners', 0)}",
+            "",
+            "🎯 SCORE DISTRIBUTION:",
+            f"  • Range: {fairness_metrics.get('score_range', {}).get('min', 0):.2f} - {fairness_metrics.get('score_range', {}).get('max', 0):.2f}",
+            f"  • Mean: {fairness_metrics.get('score_distribution', {}).get('mean', 0):.2f}",
+            f"  • Median: {fairness_metrics.get('score_distribution', {}).get('median', 0):.2f}",
+            f"  • Std Dev: {fairness_metrics.get('score_distribution', {}).get('std', 0):.2f}",
+            "",
+            "⚖️ FAIRNESS METRICS:",
+            f"  • Gini Coefficient: {fairness_metrics.get('score_equality', {}).get('gini_coefficient', 0):.3f}",
+            f"  • Coefficient of Variation: {fairness_metrics.get('score_equality', {}).get('coefficient_of_variation', 0):.3f}",
+            "",
+            "📊 PERFORMANCE TIERS:",
+            f"  • High Performers (80th+ percentile): {fairness_metrics.get('performance_tiers', {}).get('high_performers', 0)}",
+            f"  • Medium Performers (20th-80th percentile): {fairness_metrics.get('performance_tiers', {}).get('medium_performers', 0)}",
+            f"  • Low Performers (<20th percentile): {fairness_metrics.get('performance_tiers', {}).get('low_performers', 0)}",
+            "",
+            "✅ FAIRNESS ASSESSMENT:",
+            f"  • System Fair: {'Yes' if fairness_assessment.get('is_fair', False) else 'No'}",
+        ]
+        
+        # Add issues if any
+        issues = fairness_assessment.get("issues", [])
+        if issues:
+            report_lines.extend([
+                "",
+                "⚠️ IDENTIFIED ISSUES:",
+            ])
+            for issue in issues:
+                report_lines.append(f"  • {issue}")
+        
+        # Add recommendations if any
+        recommendations = fairness_assessment.get("recommendations", [])
+        if recommendations:
+            report_lines.extend([
+                "",
+                "💡 RECOMMENDATIONS:",
+            ])
+            for rec in recommendations:
+                report_lines.append(f"  • {rec}")
+        
+        # Add top performers
+        if results:
+            sorted_results = sorted(results.items(), key=lambda x: x[1].get("total_score", 0), reverse=True)
+            report_lines.extend([
+                "",
+                "🏆 TOP 5 PERFORMERS:",
+            ])
+            for i, (miner_id, result) in enumerate(sorted_results[:5], 1):
+                score = result.get("total_score", 0)
+                report_lines.append(f"  {i}. Miner {miner_id}: {score:.2f}")
+        
+        report_lines.extend([
+            "",
+            "=" * 50,
+            f"Report Generated: {time.strftime('%Y-%m-%d %H:%M:%S')}"
+        ])
+        
+        return "\n".join(report_lines)
+        
+    except Exception as e:
+        logger.error(f"Error generating scoring report: {e}")
+        return f"❌ Report Generation Error: {str(e)}"
+
+
 # Cache for miners data from the common API endpoint
 _miners_data_cache: Dict = {}
 _miners_data_last_fetch: float = 0
-_miners_data_cache_interval: float = 600  # 1 hour in seconds
+_miners_data_cache_interval: float = 600  # 10 minutes in seconds (original)
 
 def _sync_miners_data() -> None:
     """Fetches and caches miners data from the common API endpoint."""
     global _miners_data_cache, _miners_data_last_fetch
     try:
+        logger.info("🔄 PULLING LATEST DATA: Fetching fresh miners data from API...")
         headers = {
             "Connection": "keep-alive",
             "x-api-key": "",
@@ -345,22 +536,40 @@ def _sync_miners_data() -> None:
             "service-name": "miner_service",
             "Content-Type": "application/json"
         }
-        url ="htpp'............."
+        url ="https://polariscloudai-main-pf5lil.laravel.cloud/api/v1/validator/miners"
+        logger.info(f"📡 API Request: {url}")
         response = requests.get(url)
         response.raise_for_status()
         _miners_data_cache = response.json().get("miners", [])
         _miners_data_last_fetch = time.time()
-        logger.info(f"Cached miners data, total miners: {len(_miners_data_cache)}")
+        logger.info(f"✅ LATEST DATA PULLED: Cached {len(_miners_data_cache)} miners successfully")
+        logger.info(f"⏰ Cache timestamp: {time.strftime('%H:%M:%S', time.localtime(_miners_data_last_fetch))}")
     except Exception as e:
-        logger.error(f"Error caching miners data: {e}")
+        logger.error(f"❌ FAILED TO PULL LATEST DATA: Error caching miners data: {e}")
         _miners_data_cache = []
         _miners_data_last_fetch = time.time()
 
 def _get_cached_miners_data(force_refresh: bool = False) -> List[dict]:
     """Returns cached miners data, refreshing if necessary or forced."""
     global _miners_data_last_fetch
-    if force_refresh or time.time() - _miners_data_last_fetch > _miners_data_cache_interval or not _miners_data_cache:
+    current_time = time.time()
+    time_since_last_fetch = current_time - _miners_data_last_fetch
+    
+    # Check if we need to refresh
+    needs_refresh = force_refresh or time_since_last_fetch > _miners_data_cache_interval or not _miners_data_cache
+    
+    if needs_refresh:
+        if force_refresh:
+            logger.info("🔄 FORCE REFRESH: Pulling latest data (forced)")
+        elif time_since_last_fetch > _miners_data_cache_interval:
+            logger.info(f"⏰ CACHE EXPIRED: Pulling latest data (expired {time_since_last_fetch:.1f}s ago)")
+        elif not _miners_data_cache:
+            logger.info("📭 EMPTY CACHE: Pulling latest data (no cached data)")
+        
         _sync_miners_data()
+    else:
+        logger.info(f"📋 USING CACHED DATA: {len(_miners_data_cache)} miners (cached {time_since_last_fetch:.1f}s ago)")
+    
     return _miners_data_cache
 
 def _sync_metagraph(netuid: int, network: str = "finney") -> None:
@@ -378,11 +587,16 @@ def _sync_metagraph(netuid: int, network: str = "finney") -> None:
         _hotkey_to_uid_cache = {}
         _metagraph = None
 
+
+
 def aggregate_rewards(results, uptime_rewards_dict):
     import logging
+    import json
+    import os
     logger.debug(f"Aggregating rewards for scored miners.................")
 
     aggregated_rewards = {}
+    cpu_gpu_breakdown = {}  # Track CPU/GPU scores separately
 
     # Map miner_id to miner_uid from results
     miner_id_to_uid = {}
@@ -391,10 +605,23 @@ def aggregate_rewards(results, uptime_rewards_dict):
         miner_id_to_uid[miner_id] = miner_uid
 
         reward = info.get("total_score", 0)
+        cpu_score = info.get("cpu_score", 0)
+        gpu_score = info.get("gpu_score", 0)
+        has_cpu = info.get("has_cpu_resources", False)
+        
         if miner_uid:
             if miner_uid not in aggregated_rewards:
                 aggregated_rewards[miner_uid] = 0
+                cpu_gpu_breakdown[miner_uid] = {
+                    "cpu_score": 0.0,
+                    "gpu_score": 0.0,
+                    "has_cpu_resources": False
+                }
+            
             aggregated_rewards[miner_uid] += reward
+            cpu_gpu_breakdown[miner_uid]["cpu_score"] += cpu_score
+            cpu_gpu_breakdown[miner_uid]["gpu_score"] += gpu_score
+            cpu_gpu_breakdown[miner_uid]["has_cpu_resources"] = cpu_gpu_breakdown[miner_uid]["has_cpu_resources"] or has_cpu
 
     # Now aggregate from uptime_rewards_dict
     for miner_id, uptime_data in uptime_rewards_dict.items():
@@ -404,11 +631,16 @@ def aggregate_rewards(results, uptime_rewards_dict):
         if miner_uid:
             if miner_uid not in aggregated_rewards:
                 aggregated_rewards[miner_uid] = 0
+                cpu_gpu_breakdown[miner_uid] = {
+                    "cpu_score": 0.0,
+                    "gpu_score": 0.0,
+                    "has_cpu_resources": False
+                }
             aggregated_rewards[miner_uid] += uptime_reward
         else:
             logging.warning(f"Miner ID {miner_id} not found in results. Skipping.")
 
-    return aggregated_rewards
+    return aggregated_rewards, cpu_gpu_breakdown
 
 async def reward_mechanism(
     allowed_uids: List[int],
@@ -453,12 +685,13 @@ async def reward_mechanism(
 
     try:
         # Get cached miners data
+        logger.info("📊 REWARD MECHANISM: Getting miners data for processing...")
         miners = _get_cached_miners_data()
 
         if not miners:
-            logger.warning("No miners data available")
+            logger.warning("⚠️ REWARD MECHANISM: No miners data available")
             return {}, {}
-        logger.info(f"Fetched {len(miners)} miners")
+        logger.info(f"✅ REWARD MECHANISM: Processing {len(miners)} miners")
 
         # Log the new fair scoring system summary
         log_scoring_system_summary()
@@ -472,16 +705,28 @@ async def reward_mechanism(
 
         # Iterate through miners
         for miner in miners:
-            if (
-                not miner.get("bittensor_details")
-                or miner["bittensor_details"].get("miner_uid") is None
-                or int(miner["bittensor_details"]["miner_uid"]) not in allowed_uids
-            ):
+            # Handle both "miner_id" and "id" fields, ensure string type
+            miner_id_raw = miner.get("miner_id") or miner.get("id")
+            miner_id = str(miner_id_raw) if miner_id_raw is not None else "unknown"
+            
+            # Check if miner has compute resources first
+            compute_details = miner.get("resource_details", [])
+            if not compute_details:
+                logger.info(f"Miner {miner_id} has no compute resources, skipping")
                 continue
-
-            hotkey = miner["bittensor_details"].get("hotkey")
-            miner_uid = int(miner["bittensor_details"]["miner_uid"])
-            miner_id = miner.get("miner_id", "unknown")
+            
+            # Check if miner is Bittensor registered
+            bittensor_details = miner.get("bittensor_details")
+            if not bittensor_details or bittensor_details.get("miner_uid") is None:
+                logger.info(f"Miner {miner_id} is not Bittensor registered, skipping")
+                continue
+                
+            miner_uid = int(bittensor_details["miner_uid"])
+            if miner_uid not in allowed_uids:
+                logger.info(f"Miner {miner_id} UID {miner_uid} not in allowed UIDs, skipping")
+                continue
+                
+            hotkey = bittensor_details.get("hotkey")
             logger.info(f"Processing miner {miner_id} (UID: {miner_uid})")
 
             # Verify hotkey
@@ -498,7 +743,10 @@ async def reward_mechanism(
                 raw_results[miner_id] = {
                     "miner_id": miner_id,
                     "miner_uid": miner_uid,
-                    "total_raw_score": 0.0
+                    "total_raw_score": 0.0,
+                    "cpu_score": 0.0,
+                    "gpu_score": 0.0,
+                    "has_cpu_resources": False
                 }
                 uptime_rewards_dict[miner_id] = {
                     "reward_amount": 0.0,
@@ -510,15 +758,36 @@ async def reward_mechanism(
                     "miner_id": miner_id,
                     "miner_uid": str(miner_uid),
                     "hotkey": hotkey,
-                    "total_score": 0.0
+                    "total_score": 0.0,
+                    "cpu_score": 0.0,
+                    "gpu_score": 0.0,
+                    "has_cpu_resources": False
                 }
 
             # Process compute resources concurrently
-            compute_details = miner.get("resource_details", [])
             logger.info(f"Miner {miner_id} has {len(compute_details)} compute resource(s)")
 
+            # Collect all resource IDs for batch container processing
+            resource_ids = []
+            for resource in compute_details:
+                resource_id_raw = resource.get("id", "unknown")
+                resource_id = str(resource_id_raw) if resource_id_raw != "unknown" else "unknown"
+                if resource.get("validation_status") == "verified":
+                    resource_ids.append(resource_id)
+            
+            # Batch fetch container data for all resources
+            container_data = {}
+            if resource_ids:
+                try:
+                    container_data = get_containers_for_multiple_resources(resource_ids)
+                    logger.debug(f"Batch fetched container data for {len(resource_ids)} resources")
+                except Exception as e:
+                    logger.warning(f"Error batch fetching containers: {e}")
+                    container_data = {rid: {"running_count": 0} for rid in resource_ids}
+
             async def process_resource(resource, idx):
-                resource_id = resource.get("id", "unknown")
+                resource_id_raw = resource.get("id", "unknown")
+                resource_id = str(resource_id_raw) if resource_id_raw != "unknown" else "unknown"
                 validation_status = resource.get("validation_status")
                 if validation_status != "verified":
                     logger.info(f"Skipping resource {resource_id} (ID: {idx}): validation_status={validation_status}")
@@ -568,11 +837,31 @@ async def reward_mechanism(
                 if result is not None:
                     resource_results.append(result)
 
+            # Create a mapping of resource_id to resource_type
+            resource_type_map = {}
+            for resource in compute_details:
+                resource_id_raw = resource.get("id", "unknown")
+                resource_id_str = str(resource_id_raw) if resource_id_raw != "unknown" else "unknown"
+                resource_type_map[resource_id_str] = resource.get("resource_type", "Unknown")
+
             for resource_id, pog_score in resource_results:
+                # Skip resources with POW scores above maximum allowed
+                if pog_score > MAX_POW_SCORE:
+                    logger.warning(f"Resource {resource_id}: POW score={pog_score:.4f} exceeds maximum {MAX_POW_SCORE} - SKIPPING ENTIRELY")
+                    continue
+                
                 if pog_score < SCORE_THRESHOLD:
                     logger.warning(f"Resource {resource_id}: score={pog_score:.4f} below threshold - SKIPPING ENTIRELY")
                     # Skip this resource entirely - no need to update status or process further
                     continue
+
+                # Get resource type (CPU or GPU)
+                resource_type = resource_type_map.get(resource_id, "Unknown")
+                logger.info(f"Resource {resource_id}: type={resource_type}, POW={pog_score:.4f}")
+                
+                # Track if miner has CPU resources
+                if resource_type == "CPU":
+                    raw_results[miner_id]["has_cpu_resources"] = True
 
                 # Use raw compute score (PoW) directly - no scaling needed
                 compute_score = pog_score
@@ -635,15 +924,13 @@ async def reward_mechanism(
                 })
 
                 # Get container information for rented machine bonus
-                # Get container information with graceful error handling
+                # Use pre-fetched container data for better performance
                 try:
-                    containers = get_containers_for_resource(resource_id)
+                    containers = container_data.get(resource_id, {"running_count": 0})
                     active_container_count = int(containers.get("running_count", 0))
-                    if active_container_count == 0 and containers.get("total_count", 0) > 0:
-                        logger.warning(f"No running containers for resource {resource_id}, but {containers['total_count']} found")
                     logger.info(f"Resource {resource_id}: running_containers={active_container_count}")
                 except Exception as e:
-                    logger.warning(f"Error fetching containers for resource {resource_id}: {e}, defaulting to 0")
+                    logger.warning(f"Error getting container data for resource {resource_id}: {e}, defaulting to 0")
                     active_container_count = 0
 
                 # Calculate uptime multiplier based on current uptime (fallback to historical if available)
@@ -673,6 +960,18 @@ async def reward_mechanism(
                     # Add score to raw results (NO uptime rewards added to prevent double counting)
                     raw_results[miner_id]["total_raw_score"] += resource_score
                     
+                    # Track CPU vs GPU scores separately
+                    if resource_type == "CPU":
+                        raw_results[miner_id]["cpu_score"] += resource_score
+                        logger.info(f"Resource {resource_id}: Added {resource_score:.2f} to CPU score")
+                    elif resource_type == "GPU":
+                        raw_results[miner_id]["gpu_score"] += resource_score
+                        logger.info(f"Resource {resource_id}: Added {resource_score:.2f} to GPU score")
+                    else:
+                        # Unknown type - treat as GPU for safety
+                        raw_results[miner_id]["gpu_score"] += resource_score
+                        logger.warning(f"Resource {resource_id}: Unknown type, treating as GPU")
+                    
                     # Log comprehensive scoring details
                     log_resource_scoring_details(
                         resource_id=resource_id,
@@ -692,6 +991,15 @@ async def reward_mechanism(
                     fallback_score = (uptime_percent / 100) * 40 + compute_score * 0.4 + min(active_container_count, MAX_CONTAINERS) * 0.2
                     fallback_score = fallback_score * (tempo / 3600) * uptime_multiplier * rented_machine_bonus
                     raw_results[miner_id]["total_raw_score"] += fallback_score
+                    
+                    # Track fallback scores by type
+                    if resource_type == "CPU":
+                        raw_results[miner_id]["cpu_score"] += fallback_score
+                    elif resource_type == "GPU":
+                        raw_results[miner_id]["gpu_score"] += fallback_score
+                    else:
+                        raw_results[miner_id]["gpu_score"] += fallback_score
+                    
                     logger.info(f"Resource {resource_id}: fallback_score={fallback_score:.2f}")
 
         # Implement optimized score normalization with better distribution
@@ -716,6 +1024,10 @@ async def reward_mechanism(
                     
                     for miner_id, entry in raw_results.items():
                         raw_score = entry["total_raw_score"]
+                        cpu_score = entry["cpu_score"]
+                        gpu_score = entry["gpu_score"]
+                        has_cpu = entry["has_cpu_resources"]
+                        
                         if raw_score > 0:
                             # Use logarithmic scaling to prevent score compression
                             scaled_score = raw_score * np.log1p(normalization_factor)
@@ -725,13 +1037,31 @@ async def reward_mechanism(
                                 scaled_score = scaled_score * falloff_factor
                             
                             normalized_score = min(MAX_SCORE, max(0, scaled_score))
+                            
+                            # Normalize CPU and GPU scores proportionally
+                            if cpu_score > 0:
+                                normalized_cpu = (cpu_score / raw_score) * normalized_score
+                            else:
+                                normalized_cpu = 0.0
+                            
+                            if gpu_score > 0:
+                                normalized_gpu = (gpu_score / raw_score) * normalized_score
+                            else:
+                                normalized_gpu = 0.0
                         else:
                             normalized_score = 0.0
+                            normalized_cpu = 0.0
+                            normalized_gpu = 0.0
                         
                         results[miner_id]["total_score"] = normalized_score
+                        results[miner_id]["cpu_score"] = normalized_cpu
+                        results[miner_id]["gpu_score"] = normalized_gpu
+                        results[miner_id]["has_cpu_resources"] = has_cpu
+                        
                         logger.info(
-                            f"Miner ID {miner_id}: raw_score={raw_score:.2f}, "
-                            f"normalized_score={normalized_score:.2f}"
+                            f"Miner ID {miner_id} (UID {entry['miner_uid']}): "
+                            f"total={normalized_score:.2f} (CPU={normalized_cpu:.2f}, GPU={normalized_gpu:.2f}), "
+                            f"has_cpu_resources={has_cpu}"
                         )
                 else:
                     logger.warning("All raw scores are zero. Skipping normalization.")
@@ -765,11 +1095,11 @@ async def reward_mechanism(
                                 logger.warning(f"Invalid miner_uid format for {miner_id}: {e}")
                                 continue
                     
-                    # Apply Alpha-stake bonuses
+                    # Apply Alpha-stake bonuses to normalized scores
                     if uid_stake_info:
                         try:
-                            results = apply_alpha_stake_bonus(results, uid_stake_info)
-                            logger.info(f"Applied Alpha-stake bonuses using stake info for {len(uid_stake_info)} UIDs")
+                            results = apply_alpha_stake_bonus_to_normalized_scores(results, uid_stake_info)
+                            logger.info(f"Applied Alpha-stake bonuses to normalized scores for {len(uid_stake_info)} UIDs")
                             
                             # Generate comprehensive Alpha-stake bonus analysis report
                             try:
@@ -777,14 +1107,14 @@ async def reward_mechanism(
                             except Exception as report_e:
                                 logger.warning(f"Error generating Alpha-stake report: {report_e}")
                         except Exception as bonus_e:
-                            logger.error(f"Error applying Alpha-stake bonuses: {bonus_e}")
-                            # Continue with original results if bonus application fails
+                            logger.error(f"Error applying Alpha-stake bonuses to normalized scores: {bonus_e}")
+                            # Continue with normalized results if bonus application fails
                     else:
                         logger.warning("No valid UID stake information found for bonus application")
                 else:
                     logger.warning("Failed to sync metagraph for Alpha-stake bonus application")
             except Exception as e:
-                logger.error(f"Error applying Alpha-stake bonuses: {e}")
+                logger.error(f"Error applying Alpha-stake bonuses to normalized scores: {e}")
                 # Continue without bonuses if there's an error
         else:
             logger.info("No results to apply Alpha-stake bonuses to")
@@ -803,9 +1133,25 @@ async def reward_mechanism(
                 if "fairness_metrics" in fairness_analysis:
                     metrics = fairness_analysis["fairness_metrics"]
                     logger.info(f"🎯 Scoring Fairness Summary:")
-                    logger.info(f"  Gini Coefficient: {metrics.get('gini_coefficient', 0):.4f}")
-                    logger.info(f"  Score Equality: {metrics.get('score_equality', 0):.4f}")
-                    logger.info(f"  Assessment: {fairness_analysis.get('fairness_assessment', 'Unknown')}")
+                    
+                    # Log score equality metrics
+                    if "score_equality" in metrics:
+                        score_equality = metrics["score_equality"]
+                        logger.info(f"  Gini Coefficient: {score_equality.get('gini_coefficient', 0):.4f}")
+                        logger.info(f"  Coefficient of Variation: {score_equality.get('coefficient_of_variation', 0):.4f}")
+                    
+                    # Log score distribution
+                    if "score_distribution" in metrics:
+                        score_dist = metrics["score_distribution"]
+                        logger.info(f"  Score Range: {score_dist.get('min', 0):.2f} - {score_dist.get('max', 0):.2f}")
+                        logger.info(f"  Mean Score: {score_dist.get('mean', 0):.2f}")
+                    
+                    # Log fairness assessment
+                    if "fairness_assessment" in fairness_analysis:
+                        assessment = fairness_analysis["fairness_assessment"]
+                        logger.info(f"  System Fair: {'Yes' if assessment.get('is_fair', False) else 'No'}")
+                        if assessment.get('issues'):
+                            logger.info(f"  Issues: {', '.join(assessment['issues'])}")
         except Exception as e:
             logger.warning(f"Error analyzing scoring fairness: {e}")
         
@@ -847,7 +1193,7 @@ def update_miner_status(miner_id: str, status: str, percentage: float, reason: s
             "Content-Type": "application/json"
         }
     updated_at = datetime.utcnow()
-    url = f"http:///// /{miner_id}"
+    url = f"https://femi-aristodemos.onrender.com/api/v1/services/miner/miners/{miner_id}"
     payload = {
         "status": status,
         "percentage": percentage,
@@ -875,7 +1221,7 @@ def get_containers_for_miner(miner_id: str) -> List[str]:
             "Content-Type": "application/json"
         }
 
-        url = f"https://.......{miner_id}"
+        url = f"https://femi-aristodemos.onrender.com/api/v1/services/container/container/containers/miner/{miner_id}"
         response = requests.get(url, headers=headers)
         response.raise_for_status()
         return response.json().get("containers", [])
@@ -905,7 +1251,7 @@ def update_container_payment_status(container_id: str) -> bool:
             "Content-Type": "application/json"
         }
 
-    url = f"h......./{container_id}"
+    url = f"https://femi-aristodemos.onrender.com/api/v1/services/container/container/containers/{container_id}"
     payload = {
         "fields": {
             "payment_status": "paid"
@@ -948,8 +1294,9 @@ def check_resource_unique(resource_id: str, miner_id: str) -> bool:
         # Extract target resource's IP and port
         target_ip_port = None
         for miner in miners:
-            if miner.get("id") == miner_id:
-                compute_details = miner.get("compute_resources_details", [])
+            miner_id_from_data = str(miner.get("miner_id") or miner.get("id"))
+            if miner_id_from_data == str(miner_id):
+                compute_details = miner.get("resource_details", [])
                 for resource in compute_details:
                     if resource.get("id") == resource_id:
                         ssh = resource.get("network", {}).get("ssh")
@@ -972,8 +1319,9 @@ def check_resource_unique(resource_id: str, miner_id: str) -> bool:
         # Check uniqueness across all resources
         for miner in miners:
             compute_details = miner.get("compute_resources_details", [])
+            miner_id_from_data = str(miner.get("miner_id") or miner.get("id"))
             for resource in compute_details:
-                if resource.get("id") == resource_id and miner.get("id") == miner_id:
+                if resource.get("id") == resource_id and miner_id_from_data == str(miner_id):
                     continue  # Skip the target resource itself
 
                 ssh = resource.get("network", {}).get("ssh")
@@ -986,7 +1334,7 @@ def check_resource_unique(resource_id: str, miner_id: str) -> bool:
                     if (ip, port) == target_ip_port:
                         logger.info(
                             f"Resource {resource_id} of miner {miner_id} shares IP {ip} and port {port} "
-                            f"with resource {resource.get('id')} of miner {miner.get('id')}"
+                            f"with resource {resource.get('id')} of miner {miner_id_from_data}"
                         )
                         return False
                 except (IndexError, ValueError):
@@ -1012,9 +1360,9 @@ def get_miners_compute_resources() -> dict[str, dict]:
 
         # Construct dictionary of miner IDs to compute resources
         return {
-            miner.get("id"): miner.get('compute_resources_details', [])
+            str(miner.get("miner_id") or miner.get("id")): miner.get('resource_details', [])
             for miner in miners
-            if miner.get("id")
+            if miner.get("miner_id") or miner.get("id")
         }
 
     except Exception as e:
@@ -1038,14 +1386,15 @@ def get_miner_details(miner_id: str) -> dict:
     
     # Search for the miner by ID
     for miner in miners_data:
-        if miner.get("id") == miner_id:
+        miner_id_from_data = str(miner.get("miner_id") or miner.get("id"))
+        if miner_id_from_data == str(miner_id):
             logger.info(f"Found miner {miner_id} in _miners_data_cache")
             return miner
     
     logger.warning(f"Miner {miner_id} not found in _miners_data_cache")
     return {}
 
-def get_miner_uid_by_hotkey(hotkey: str, netuid: int, network: str = "finney", force_refresh: bool = False) -> int | None:
+def get_miner_uid_by_hotkey(hotkey: str, netuid: int, network: str = "finney", force_refresh: bool = False) -> Optional[int]:
     """
     Retrieves the miner UID for a given hotkey on a specific Bittensor subnet using cached metagraph data.
 
@@ -1090,6 +1439,58 @@ def get_miner_uid_by_hotkey(hotkey: str, netuid: int, network: str = "finney", f
         return None
     
 
+# Global cache for containers data
+_containers_cache = {}
+_containers_cache_timestamp = 0
+_containers_cache_interval = 300  # 5 minutes cache interval
+
+def _sync_containers_data() -> None:
+    """Fetches and caches containers data from the API."""
+    global _containers_cache, _containers_cache_timestamp
+    try:
+        logger.info("🔄 CONTAINERS CACHE: Fetching fresh containers data from API...")
+        
+        # API endpoint - no headers needed as tested
+        url = "https://polariscloudai-main-pf5lil.laravel.cloud/api/v1/validator/containers"
+        
+        # Send GET request without headers for better performance
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()
+        
+        # Parse and cache response
+        data = response.json()
+        _containers_cache = data.get("containers", [])
+        _containers_cache_timestamp = time.time()
+        
+        logger.info(f"✅ CONTAINERS CACHE: Cached {len(_containers_cache)} containers successfully")
+        
+    except Exception as e:
+        logger.error(f"❌ CONTAINERS CACHE: Error caching containers data: {e}")
+        _containers_cache = []
+        _containers_cache_timestamp = time.time()
+
+def _get_cached_containers_data(force_refresh: bool = False) -> List[dict]:
+    """Returns cached containers data, refreshing if necessary or forced."""
+    global _containers_cache_timestamp
+    current_time = time.time()
+    time_since_last_fetch = current_time - _containers_cache_timestamp
+    
+    needs_refresh = force_refresh or time_since_last_fetch > _containers_cache_interval or not _containers_cache
+    
+    if needs_refresh:
+        if force_refresh:
+            logger.info("🔄 CONTAINERS CACHE: Force refresh - pulling latest data")
+        elif time_since_last_fetch > _containers_cache_interval:
+            logger.info(f"⏰ CONTAINERS CACHE: Cache expired - pulling latest data ({time_since_last_fetch:.1f}s ago)")
+        elif not _containers_cache:
+            logger.info("📭 CONTAINERS CACHE: Empty cache - pulling latest data")
+        
+        _sync_containers_data()
+    else:
+        logger.debug(f"📋 CONTAINERS CACHE: Using cached data ({len(_containers_cache)} containers, {time_since_last_fetch:.1f}s old)")
+    
+    return _containers_cache
+
 def get_containers_for_resource(resource_id: str) -> Dict[str, any]:
     """
     Fetches containers for a specific resource ID from the Polaris API and counts those in 'running' status.
@@ -1106,49 +1507,57 @@ def get_containers_for_resource(resource_id: str) -> Dict[str, any]:
         # Validate input
         if not resource_id or not isinstance(resource_id, str):
             logger.error(f"Invalid resource_id provided: {resource_id}")
-            return {"running_count": 0, "containers": []}
+            return {"running_count": 0}
 
-        # Set up headers
-        headers = {
-            "Connection": "keep-alive",
-            "x-api-key": "",
-            "service-key": " ",
-            "service-name": "miner_service",
-            "Content-Type": "application/json"
-        }
-
-        # API endpoint
-        url = "......"
-        logger.info(f"Fetching containers for resource_id: {resource_id} from {url}")
-
-        # Send GET request
-        response = requests.get(url)
-        response.raise_for_status()  # Raises an exception for 4xx/5xx status codes
-
-        # Parse response
-        container_list = response.json().get("containers", [])
-        logger.info(f"Retrieved {len(container_list)} containers for resource_id: {resource_id}")
-
+        # Get cached containers data
+        container_list = _get_cached_containers_data()
+        
         # Filter containers by resource_id and count running ones
         matching_containers = [container for container in container_list if container.get("resource_id") == resource_id]
         running_count = sum(1 for container in matching_containers if container.get("status") == "running")
 
-        logger.info(f"Found {len(matching_containers)} containers for resource_id {resource_id}, "
-                    f"{running_count} in 'running' status")
+        logger.debug(f"Resource {resource_id}: {len(matching_containers)} containers, {running_count} running")
 
         return {
             "running_count": running_count
         }
 
-    except requests.RequestException as e:
-        logger.error(f"Network error fetching containers for resource {resource_id}: {e}")
-        return {"running_count": 0, "containers": []}
     except Exception as e:
-        logger.error(f"Unexpected error fetching containers for resource {resource_id}: {e}")
-        return {"running_count": 0, "containers": []}
+        logger.error(f"Error fetching containers for resource {resource_id}: {e}")
+        return {"running_count": 0}
 
-
-
+def get_containers_for_multiple_resources(resource_ids: List[str]) -> Dict[str, Dict[str, any]]:
+    """
+    Efficiently fetches container counts for multiple resources using a single API call.
+    
+    Args:
+        resource_ids (List[str]): List of resource IDs to check.
+        
+    Returns:
+        Dict[str, Dict[str, any]]: Dictionary mapping resource_id to container data.
+    """
+    try:
+        # Get cached containers data once
+        container_list = _get_cached_containers_data()
+        
+        # Process all resources in one pass
+        results = {}
+        for resource_id in resource_ids:
+            if not resource_id or not isinstance(resource_id, str):
+                results[resource_id] = {"running_count": 0}
+                continue
+                
+            matching_containers = [container for container in container_list if container.get("resource_id") == resource_id]
+            running_count = sum(1 for container in matching_containers if container.get("status") == "running")
+            
+            results[resource_id] = {"running_count": running_count}
+        
+        logger.debug(f"Processed {len(resource_ids)} resources with {len(container_list)} total containers")
+        return results
+        
+    except Exception as e:
+        logger.error(f"Error fetching containers for multiple resources: {e}")
+        return {resource_id: {"running_count": 0} for resource_id in resource_ids}
 
 def extract_miner_ids(data: List[dict]) -> List[str]:
     """
@@ -1283,16 +1692,9 @@ def update_miner_compute_resource(
     try:
     
         # Construct the full URL
-        url = f"........{miner_id}"
+        url = f"https://femi-aristodemos.onrender.com/api/v1/services/miner/miners/{miner_id}"
 
         # Prepare headers
-        headers = {
-            "Connection": "keep-alive",
-            "x-api-key": "",
-            "service-key": " ",
-            "service-name": "miner_service",
-            "Content-Type": "application/json"
-        }
     
         # Prepare payload
         payload = {
@@ -1365,22 +1767,25 @@ async def sub_verification(allowed_uids: List[int]) -> Tuple[Dict[str, int], Dic
             """Process individual miner and their compute resources."""
             try:
                 # Validate miner data
+                miner_id_from_data = str(miner.get("miner_id") or miner.get("id") or "unknown")
                 if not (bittensor_reg := miner.get("bittensor_details")):
-                    logger.warning(f"Skipping miner {miner.get('id', 'unknown')}: No bittensor registration")
+                    logger.warning(f"Skipping miner {miner_id_from_data}: No bittensor registration")
                     return
 
                 miner_uid = bittensor_reg.get("miner_uid")
                 if miner_uid is None or int(miner_uid) not in allowed_uids:
-                    logger.debug(f"Skipping miner {miner.get('id', 'unknown')}: UID {miner_uid} not in allowed list")
+                    logger.debug(f"Skipping miner {miner_id_from_data}: UID {miner_uid} not in allowed list")
                     return
 
                 miner_uid = int(miner_uid)
-                miner_id = miner.get("id", "unknown")
+                # Handle both "miner_id" and "id" fields, ensure string type
+                miner_id_raw = miner.get("miner_id") or miner.get("id")
+                miner_id = str(miner_id_raw) if miner_id_raw is not None else "unknown"
                 hotkey_cache[miner_id] = miner_uid
                 logger.info(f"Processing miner {miner_id} (UID: {miner_uid})")
 
                 # Process compute resources
-                compute_details = miner.get("compute_resources_details", [])
+                compute_details = miner.get("resource_details", [])
                 if not compute_details:
                     logger.info(f"Miner {miner_id} has no compute resources")
                     return
@@ -1450,6 +1855,11 @@ async def sub_verification(allowed_uids: List[int]) -> Tuple[Dict[str, int], Dic
 
                 # Update verification results
                 for resource_id, pog_score in resource_results:
+                    # Skip resources with POW scores above maximum allowed
+                    if pog_score > MAX_POW_SCORE:
+                        logger.warning(f"Resource {resource_id}: POW score={pog_score:.4f} exceeds maximum {MAX_POW_SCORE} - SKIPPING VERIFICATION")
+                        continue
+                    
                     try:
                         status = "verified" if pog_score >= SCORE_THRESHOLD else "rejected"
                         reason = (f"Verified with score: {pog_score:.4f}" if status == "verified" 
@@ -1476,7 +1886,7 @@ async def sub_verification(allowed_uids: List[int]) -> Tuple[Dict[str, int], Dic
                                    exc_info=True)
 
             except Exception as e:
-                logger.error(f"Error processing miner {miner.get('id', 'unknown')}: {str(e)}", exc_info=True)
+                logger.error(f"Error processing miner {miner_id_from_data}: {str(e)}", exc_info=True)
 
         # Process miners concurrently
         await asyncio.gather(*[process_miner(miner) for miner in miners], return_exceptions=True)
@@ -1935,3 +2345,86 @@ def generate_alpha_stake_analysis_report(results: Dict, uid_stake_info: Dict) ->
     except Exception as e:
         logger.error(f"Error generating Alpha-stake analysis report: {e}")
         logger.error("Continuing without detailed analysis report")
+def apply_alpha_stake_bonus_to_normalized_scores(rewards: Dict, uid_stake_info: Dict) -> Dict:
+    """
+    Applies Alpha stake-based bonuses to ALREADY NORMALIZED miner scores.
+    
+    Args:
+        rewards: Dictionary of miner rewards with normalized 'total_score' field
+        uid_stake_info: Dictionary mapping UIDs to their stake information
+        
+    Returns:
+        Updated rewards dictionary with applied bonuses to normalized scores
+    """
+    try:
+        if not rewards:
+            logger.warning("No rewards provided for Alpha stake bonus application")
+            return rewards
+        
+        if not uid_stake_info:
+            logger.warning("No UID stake information provided, returning original rewards")
+            return rewards
+        
+        updated_rewards = {}
+        
+        for miner_id, reward_data in rewards.items():
+            miner_uid = reward_data.get("miner_uid")
+            if not miner_uid:
+                logger.warning(f"Miner {miner_id} missing miner_uid, skipping bonus")
+                updated_rewards[miner_id] = reward_data
+                continue
+            
+            # Convert miner_uid to string for dictionary lookup if needed
+            uid_key = str(miner_uid) if isinstance(miner_uid, (int, str)) else miner_uid
+            
+            if uid_key not in uid_stake_info:
+                logger.debug(f"No stake info for UID {uid_key}, no bonus applied")
+                updated_rewards[miner_id] = reward_data
+                continue
+            
+            stake_info = uid_stake_info[uid_key]
+            bonus_percentage = stake_info.get("bonus_percentage", 0)
+            total_stake = stake_info.get("total_stake", 0)
+            stake_tier = stake_info.get("stake_tier", "low")
+            
+            if bonus_percentage > 0:
+                # Get the NORMALIZED score (already processed through normalization)
+                normalized_score = reward_data.get("total_score", 0)
+                
+                # Apply bonus to normalized score
+                bonus_multiplier = 1 + (bonus_percentage / 100)
+                new_score = normalized_score * bonus_multiplier
+                
+                # Create updated reward data
+                updated_reward = reward_data.copy()
+                updated_reward["total_score"] = new_score
+                updated_reward["alpha_stake_bonus"] = {
+                    "bonus_percentage": bonus_percentage,
+                    "stake_amount": total_stake,
+                    "stake_tier": stake_tier,
+                    "normalized_score": normalized_score,  # Store the normalized score
+                    "bonus_amount": new_score - normalized_score,
+                    "bonus_multiplier": bonus_multiplier,
+                    "bonus_applied_to": "normalized_score"  # Indicate when bonus was applied
+                }
+                
+                updated_rewards[miner_id] = updated_reward
+                logger.info(f"💰 BONUS APPLIED TO NORMALIZED SCORE: Miner {miner_id} (UID {uid_key})")
+                logger.info(f"   Alpha Stake: {total_stake:.2f} → Tier: {stake_tier}")
+                logger.info(f"   Bonus: {bonus_percentage}% → Multiplier: {bonus_multiplier:.3f}")
+                logger.info(f"   Normalized Score: {normalized_score:.2f} → {new_score:.2f} (+{new_score - normalized_score:.2f})")
+                logger.info(f"   Bonus Amount: +{new_score - normalized_score:.2f}")
+            else:
+                # No bonus, keep original
+                updated_rewards[miner_id] = reward_data
+        
+        total_bonuses = sum(1 for r in updated_rewards.values() if "alpha_stake_bonus" in r)
+        logger.info(f"Applied Alpha stake bonuses to normalized scores for {total_bonuses} out of {len(rewards)} miners")
+        
+        return updated_rewards
+        
+    except Exception as e:
+        logger.error(f"Error applying Alpha stake bonuses to normalized scores: {e}")
+        return rewards
+
+

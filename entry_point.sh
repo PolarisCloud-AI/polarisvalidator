@@ -51,7 +51,7 @@ if [[ "$OS" == "Linux" ]] || [[ "$OS" == "macOS" ]]; then
         -v "$WALLET_PATH:/root/.bittensor" \
         -e WALLET_NAME="$WALLET_NAME" \
         -e WALLET_HOTKEY="$WALLET_HOTKEY" \
-        bateesa/polaris-validator
+        bigideaafrica/polaris-validator
 elif [[ "$OS" == "Windows" ]]; then
     echo -e "${GREEN}Running Docker container for Windows...${NC}"
     # Convert path format for Docker
@@ -64,13 +64,13 @@ elif [[ "$OS" == "Windows" ]]; then
             -v "${HOME}/.bittensor:/root/.bittensor" \
             -e WALLET_NAME="$WALLET_NAME" \
             -e WALLET_HOTKEY="$WALLET_HOTKEY" \
-            bateesa/polaris-validator
+            bigideaafrica/polaris-validator
     else
         # Command Prompt format
         docker run --rm -it \
             -v "$WALLET_PATH:/root/.bittensor" \
             -e WALLET_NAME="$WALLET_NAME" \
             -e WALLET_HOTKEY="$WALLET_HOTKEY" \
-            bateesa/polaris-validator
+            bigideaafrica/polaris-validator
     fi
 fi

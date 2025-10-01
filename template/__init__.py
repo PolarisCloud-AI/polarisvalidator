@@ -19,13 +19,9 @@
 
 # TODO(developer): Change this value when updating your code base.
 # Define the version of the template module.
-__version__ = "0.0.0"
+__version__ = "9.10.0"
 version_split = __version__.split(".")
-__spec_version__ = (
-    (1000 * int(version_split[0]))
-    + (10 * int(version_split[1]))
-    + (1 * int(version_split[2]))
-)
+__spec_version__ = 9010000  # Fixed spec version for Bittensor 9.10.0
 
 # Import all submodules.
 from . import protocol

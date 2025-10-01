@@ -1,0 +1,353 @@
+MINERS WITH POW SCORES > 1.0
+==================================================
+
+UID: 55
+Miner ID: yhtA1z4TEwmqTXeYdJ0j
+Resource ID: 63477522-76b5-46e2-a7a7-aeebb58eb66a
+POW Score: 1010.6938
+CPU Score: 5.0138
+GPU Score: 5.6800
+Status: ok
+Tier: insufficient
+Qualified: True
+Validation Status: verified
+------------------------------
+
+UID: 55
+Miner ID: yhtA1z4TEwmqTXeYdJ0j
+Resource ID: 63d846c4-cb20-4798-99c4-773a1d1e8a92
+POW Score: 1010.6887
+CPU Score: 5.0277
+GPU Score: 5.6610
+Status: ok
+Tier: insufficient
+Qualified: True
+Validation Status: verified
+------------------------------
+
+UID: 223
+Miner ID: UrZBoxijLdXVhM1VtNw7
+Resource ID: 96cf51fd-239e-429a-9421-2ad06981aca3
+POW Score: 1010.6861
+CPU Score: 5.0121
+GPU Score: 5.6740
+Status: ok
+Tier: insufficient
+Qualified: True
+Validation Status: verified
+------------------------------
+
+UID: 223
+Miner ID: UrZBoxijLdXVhM1VtNw7
+Resource ID: a893fbdc-415d-4294-9aa0-e1907d26b107
+POW Score: 1010.6493
+CPU Score: 5.0123
+GPU Score: 5.6370
+Status: ok
+Tier: insufficient
+Qualified: True
+Validation Status: verified
+------------------------------
+
+UID: 55
+Miner ID: yhtA1z4TEwmqTXeYdJ0j
+Resource ID: e3bd67a9-1c58-4b94-9477-bedeb5ead052
+POW Score: 1010.6427
+CPU Score: 5.0177
+GPU Score: 5.6250
+Status: ok
+Tier: insufficient
+Qualified: True
+Validation Status: verified
+------------------------------
+
+UID: 55
+Miner ID: yhtA1z4TEwmqTXeYdJ0j
+Resource ID: c9172bb6-33ec-49c3-a0ef-c0d0afbab598
+POW Score: 1010.5960
+CPU Score: 5.0960
+GPU Score: 5.5000
+Status: ok
+Tier: insufficient
+Qualified: True
+Validation Status: verified
+------------------------------
+
+UID: 223
+Miner ID: UrZBoxijLdXVhM1VtNw7
+Resource ID: 39aa5b80-67e9-40b1-9016-c1aa42f8282a
+POW Score: 1010.5840
+CPU Score: 5.0510
+GPU Score: 5.5330
+Status: ok
+Tier: insufficient
+Qualified: True
+Validation Status: verified
+------------------------------
+
+UID: 55
+Miner ID: yhtA1z4TEwmqTXeYdJ0j
+Resource ID: 27d402e5-c4f7-4c1c-839f-0f7bd24c0921
+POW Score: 1010.5790
+CPU Score: 5.0900
+GPU Score: 5.4890
+Status: ok
+Tier: insufficient
+Qualified: True
+Validation Status: verified
+------------------------------
+
+UID: 223
+Miner ID: UrZBoxijLdXVhM1VtNw7
+Resource ID: 4260d914-11e3-43d7-9670-35eab6a4f113
+POW Score: 1010.5535
+CPU Score: 5.0115
+GPU Score: 5.5420
+Status: ok
+Tier: insufficient
+Qualified: True
+Validation Status: verified
+------------------------------
+
+UID: 223
+Miner ID: UrZBoxijLdXVhM1VtNw7
+Resource ID: cb8035c6-919c-4008-8d51-6e084c6674ca
+POW Score: 1010.5398
+CPU Score: 5.0168
+GPU Score: 5.5230
+Status: ok
+Tier: insufficient
+Qualified: True
+Validation Status: verified
+------------------------------
+
+UID: 223
+Miner ID: UrZBoxijLdXVhM1VtNw7
+Resource ID: 66f642f7-991d-4461-8a20-3408d7e02046
+POW Score: 1010.5167
+CPU Score: 5.0177
+GPU Score: 5.4990
+Status: ok
+Tier: insufficient
+Qualified: True
+Validation Status: verified
+------------------------------
+
+UID: 223
+Miner ID: UrZBoxijLdXVhM1VtNw7
+Resource ID: b74afc4f-3dda-4396-b2f2-1d90e3b4ff53
+POW Score: 1010.5110
+CPU Score: 5.0220
+GPU Score: 5.4890
+Status: ok
+Tier: insufficient
+Qualified: True
+Validation Status: verified
+------------------------------
+
+UID: 223
+Miner ID: UrZBoxijLdXVhM1VtNw7
+Resource ID: a496c0bb-013f-4d4d-9f82-d7a14f772345
+POW Score: 1010.5081
+CPU Score: 5.0181
+GPU Score: 5.4900
+Status: ok
+Tier: insufficient
+Qualified: True
+Validation Status: verified
+------------------------------
+
+UID: 55
+Miner ID: yhtA1z4TEwmqTXeYdJ0j
+Resource ID: 609708f3-38d3-4515-9510-5e24a8d732e7
+POW Score: 1010.4927
+CPU Score: 5.0277
+GPU Score: 5.4650
+Status: ok
+Tier: insufficient
+Qualified: True
+Validation Status: verified
+------------------------------
+
+UID: 223
+Miner ID: UrZBoxijLdXVhM1VtNw7
+Resource ID: ff5e9789-b6c9-4171-8b2e-9cc158400f88
+POW Score: 1010.4874
+CPU Score: 5.0294
+GPU Score: 5.4580
+Status: ok
+Tier: insufficient
+Qualified: True
+Validation Status: verified
+------------------------------
+
+UID: 223
+Miner ID: UrZBoxijLdXVhM1VtNw7
+Resource ID: 9a20a671-a078-4aa0-ad6a-2b54f0312e21
+POW Score: 1010.4720
+CPU Score: 5.0630
+GPU Score: 5.4090
+Status: ok
+Tier: insufficient
+Qualified: True
+Validation Status: verified
+------------------------------
+
+UID: 223
+Miner ID: UrZBoxijLdXVhM1VtNw7
+Resource ID: 27ec4a1f-58ef-4371-9dde-f995c1d172ea
+POW Score: 1010.4540
+CPU Score: 5.0710
+GPU Score: 5.3830
+Status: ok
+Tier: insufficient
+Qualified: True
+Validation Status: verified
+------------------------------
+
+UID: 223
+Miner ID: UrZBoxijLdXVhM1VtNw7
+Resource ID: be733271-12d9-47ca-9b42-2ab81a6e96ce
+POW Score: 1010.4435
+CPU Score: 5.0145
+GPU Score: 5.4290
+Status: ok
+Tier: insufficient
+Qualified: True
+Validation Status: verified
+------------------------------
+
+UID: 55
+Miner ID: yhtA1z4TEwmqTXeYdJ0j
+Resource ID: ebf57e97-3ef1-41de-9e5e-57836040278a
+POW Score: 1010.4434
+CPU Score: 5.0124
+GPU Score: 5.4310
+Status: ok
+Tier: insufficient
+Qualified: True
+Validation Status: verified
+------------------------------
+
+UID: 223
+Miner ID: UrZBoxijLdXVhM1VtNw7
+Resource ID: e4de1f46-b9d4-4dd3-98e5-1ee2d004ba1f
+POW Score: 1010.4330
+CPU Score: 5.0880
+GPU Score: 5.3450
+Status: ok
+Tier: insufficient
+Qualified: True
+Validation Status: verified
+------------------------------
+
+UID: 55
+Miner ID: yhtA1z4TEwmqTXeYdJ0j
+Resource ID: 68bccc1f-6360-4e73-9c38-4c64a185ac66
+POW Score: 1010.4057
+CPU Score: 5.0247
+GPU Score: 5.3810
+Status: ok
+Tier: insufficient
+Qualified: True
+Validation Status: verified
+------------------------------
+
+UID: 55
+Miner ID: yhtA1z4TEwmqTXeYdJ0j
+Resource ID: ea3a2674-68fa-4816-99d1-6e65490b4e74
+POW Score: 1010.4041
+CPU Score: 5.0171
+GPU Score: 5.3870
+Status: ok
+Tier: insufficient
+Qualified: True
+Validation Status: verified
+------------------------------
+
+UID: 55
+Miner ID: yhtA1z4TEwmqTXeYdJ0j
+Resource ID: 213b91ac-b1d8-4a33-8a4d-71c45e6c5484
+POW Score: 1010.3684
+CPU Score: 5.0144
+GPU Score: 5.3540
+Status: ok
+Tier: insufficient
+Qualified: True
+Validation Status: verified
+------------------------------
+
+UID: 55
+Miner ID: yhtA1z4TEwmqTXeYdJ0j
+Resource ID: 59e7d355-9635-4467-bdc6-be36c47d2787
+POW Score: 1010.3498
+CPU Score: 5.0218
+GPU Score: 5.3280
+Status: ok
+Tier: insufficient
+Qualified: True
+Validation Status: verified
+------------------------------
+
+UID: 55
+Miner ID: yhtA1z4TEwmqTXeYdJ0j
+Resource ID: 8cb3cb72-fd5a-4a45-b29e-ebb9baf80252
+POW Score: 1010.3037
+CPU Score: 5.0257
+GPU Score: 5.2780
+Status: ok
+Tier: insufficient
+Qualified: True
+Validation Status: verified
+------------------------------
+
+UID: 223
+Miner ID: UrZBoxijLdXVhM1VtNw7
+Resource ID: bc5689b1-7272-4b4f-afc4-69056471176c
+POW Score: 1010.2750
+CPU Score: 5.0260
+GPU Score: 5.2490
+Status: ok
+Tier: insufficient
+Qualified: True
+Validation Status: verified
+------------------------------
+
+UID: 55
+Miner ID: yhtA1z4TEwmqTXeYdJ0j
+Resource ID: 4a8662f3-09d3-4ef6-91e5-59b53b11eb95
+POW Score: 1010.2588
+CPU Score: 5.0108
+GPU Score: 5.2480
+Status: ok
+Tier: insufficient
+Qualified: True
+Validation Status: verified
+------------------------------
+
+UID: 55
+Miner ID: yhtA1z4TEwmqTXeYdJ0j
+Resource ID: e737b0b9-c0ea-4c7a-a365-d6673037ccc6
+POW Score: 1010.2508
+CPU Score: 5.0188
+GPU Score: 5.2320
+Status: ok
+Tier: insufficient
+Qualified: True
+Validation Status: verified
+------------------------------
+
+UID: 223
+Miner ID: UrZBoxijLdXVhM1VtNw7
+Resource ID: ffb21c01-14b3-4c2f-af70-cb6744299ef5
+POW Score: 1010.2454
+CPU Score: 5.0234
+GPU Score: 5.2220
+Status: ok
+Tier: insufficient
+Qualified: True
+Validation Status: verified
+------------------------------
+
+
+Total resources with POW > 1.0: 29

@@ -5,11 +5,10 @@ import bittensor as bt
 import copy
 import time
 import os
-import json
+import torch
 from loguru import logger
 from template.base.validator import BaseValidatorNeuron
 from template.base.utils.weight_utils import (
-    convert_weights_and_uids_for_emit,
     process_weights_for_netuid
 )
 from utils.api_utils import (
@@ -134,6 +133,7 @@ class PolarisNode(BaseValidatorNeuron):
             return uid
         logger.warning(f"Hotkey {hotkey} not found in subnet {netuid}")
         return None
+    
 
     def check_registered(self):
         """Checks if the validator is registered on the subnet."""
@@ -201,14 +201,6 @@ class PolarisNode(BaseValidatorNeuron):
                 if not await self.is_subnet_ready_for_weights():
                     logger.info("Subnet not ready for weights.")
                     return
-                subnet_price = self.default_subnet_price
-                try:
-                    async with bt.AsyncSubtensor(network=self.config.subtensor.network) as sub:
-                        subnet_info = await sub.subnet(self.config.netuid)
-                        subnet_price = float(subnet_info.price) if subnet_info and subnet_info.price > 0 else self.default_subnet_price
-                    logger.info(f"Subnet price: {subnet_price}")
-                except Exception as e:
-                    logger.error(f"Error fetching subnet price, using default {self.default_subnet_price}: {e}")
 
                 # Apply score decay
                 self.scores *= self.score_decay
@@ -218,40 +210,145 @@ class PolarisNode(BaseValidatorNeuron):
                 for uid, score in results.items():
                     uid = int(uid)
                     if uid < len(self.scores):
-                        self.scores[uid] = max(self.scores[uid], float(score) * subnet_price)
+                        self.scores[uid] = max(self.scores[uid], float(score))
+                
                 logger.info(f"Updated scores, top 5: {sorted(zip(range(len(self.scores)), self.scores), key=lambda x: x[1], reverse=True)[:5]}")
 
-                # Prepare weighted scores
+                # Prepare weighted scores - only include non-zero scores
                 weighted_scores = {str(uid): float(score) for uid, score in enumerate(self.scores) if score > 0}
+                
+                if not weighted_scores:
+                    logger.warning("No weighted scores to convert. Skipping weight update.")
+                    return
 
-                weights, uids = convert_weights_and_uids_for_emit(weighted_scores)
-
-                for attempt in range(self.max_retries):
-                    success = process_weights_for_netuid(
-                        weights=weights,
-                        uids=uids,
-                        netuid=self.config.netuid,
-                        subtensor=self.subtensor,
-                        wallet=self.wallet
-                    )
-
-                    if success:
-                        logger.info(f"Weights updated successfully on attempt {attempt + 1}.")
-                        self.last_weight_update_block = self.subtensor.block
-                        self.scores = np.zeros(self.metagraph.n, dtype=np.float32)
-                        self.step += 1
-                        self.save_state()
-                        break
+                logger.info(f"Converting {len(weighted_scores)} weighted scores to weights")
+                logger.debug(f"weighted_scores type: {type(weighted_scores)}")
+                logger.debug(f"weighted_scores: {weighted_scores}")
+                
+                # Convert scores to weights using the utility function
+                try:
+                    # Ensure weighted_scores is properly formatted as a dictionary
+                    if not isinstance(weighted_scores, dict):
+                        logger.error(f"weighted_scores must be a dictionary, got {type(weighted_scores)}")
+                        return
+                    
+                    # Filter out any None or invalid values
+                    valid_scores = {str(uid): float(score) for uid, score in weighted_scores.items() 
+                                   if uid is not None and score is not None and score > 0}
+                    
+                    if not valid_scores:
+                        logger.warning("No valid scores found in weighted_scores")
+                        return
+                    
+                    # Convert to the format expected by the conflicting template function
+                    uids_array = np.array([int(uid) for uid in valid_scores.keys()], dtype=np.int64)
+                    weights_array = np.array([float(score) for score in valid_scores.values()], dtype=np.float32)
+                    
+                    # Log before normalization
+                    logger.info(f"Before normalization - Total: {weights_array.sum()}, Count: {len(weights_array)}")
+                    logger.debug(f"Before normalization weights: {weights_array.tolist()}")
+                    
+                    # Normalize weights to sum to 1.0
+                    if weights_array.sum() > 0:
+                        weights_array = weights_array / weights_array.sum()
+                    
+                    # Log after normalization to verify total is 1.0
+                    logger.info(f"After normalization - Total: {weights_array.sum():.10f}, Count: {len(weights_array)}")
+                    logger.debug(f"After normalization weights: {weights_array.tolist()}")
+                    
+                    # Ensure total is exactly 1.0 (handle floating point precision)
+                    if abs(weights_array.sum() - 1.0) > 1e-10:
+                        logger.warning(f"Weight sum is {weights_array.sum():.10f}, adjusting to exactly 1.0")
+                        weights_array = weights_array / weights_array.sum()
+                    
+                    # Use the normalized weights directly (Bittensor expects float weights that sum to 1.0)
+                    uids_list = uids_array.tolist()
+                    weights_list = weights_array.tolist()
+                    
+                    logger.info(f"Using float weights: {len(weights_list)} weights, {len(uids_list)} uids")
+                    logger.info(f"Weight sum: {sum(weights_list):.10f}")
+                    
+                    # Validate weights before setting
+                    if not weights_list or not uids_list:
+                        logger.error("Empty weights or UIDs")
+                        return
+                    
+                    # Check for any invalid values
+                    if any(w < 0 for w in weights_list):
+                        logger.error("Negative weights detected")
+                        return
+                    
+                    # Log weight statistics for debugging
+                    total_weight = sum(weights_list)
+                    logger.info(f"Weight stats: Total={total_weight:.10f}, Min={min(weights_list)}, Max={max(weights_list)}, Count={len(weights_list)}")
+                    
+                    # Check for individual weight limits (Bittensor typically limits per-UID weights)
+                    max_allowed_weight = 0.1  # 10% maximum per UID
+                    if max(weights_list) > max_allowed_weight:
+                        logger.warning(f"Individual weight {max(weights_list):.6f} exceeds limit {max_allowed_weight}, capping weights")
+                        # Cap weights and renormalize
+                        capped_weights = [min(w, max_allowed_weight) for w in weights_list]
+                        total_capped = sum(capped_weights)
+                        if total_capped > 0:
+                            weights_list = [w / total_capped for w in capped_weights]
+                            logger.info(f"Recalculated weights after capping, new total: {sum(weights_list):.10f}")
+                    
+                    # Final validation: ensure total weight is approximately 1.0 (with floating-point tolerance)
+                    if abs(total_weight - 1.0) > 1e-5:
+                        logger.error(f"Weight total {total_weight:.10f} does not equal 1.0")
+                        return
                     else:
-                        logger.warning(f"Weight update failed on attempt {attempt + 1}/{self.max_retries}")
-                        if attempt < self.max_retries - 1:
-                            delay = self.retry_delay_base * (2 ** attempt)
-                            logger.info(f"Retrying in {delay} seconds...")
-                            await asyncio.sleep(delay)
+                        logger.info(f"✅ Weight validation passed: Total={total_weight:.10f} equals 1.0")
+                except Exception as e:
+                    logger.error(f"Error converting weights: {e}")
+                    import traceback
+                    logger.error(f"Traceback: {traceback.format_exc()}")
+                    return
+
+                # Set weights using Bittensor's set_weights method
+                for attempt in range(self.max_retries):
+                    try:
+                        logger.info(f"Attempt {attempt + 1}: Setting weights...")
+                        
+                        # Convert to torch tensors as required by Bittensor
+                        uids_tensor = torch.tensor(uids_list, dtype=torch.int64)
+                        weights_tensor = torch.tensor(weights_list, dtype=torch.float32)
+                        
+                        # Call set_weights with correct signature
+                        result = self.subtensor.set_weights(
+                            self.wallet,
+                            netuid=self.config.netuid,
+                            uids=uids_tensor,
+                            weights=weights_tensor,
+                            wait_for_finalization=False,
+                            wait_for_inclusion=False,
+                            version_key=9010000  # Bittensor 9.10.0 spec version
+                        )
+                        
+                        if result[0]:  # Success
+                            logger.info(f"Weights set successfully on attempt {attempt + 1}")
+                            self.last_weight_update_block = self.subtensor.block
+                            self.scores = np.zeros(self.metagraph.n, dtype=np.float32)
+                            self.step += 1
+                            self.save_state()
+                            break
+                        else:
+                            logger.warning(f"Weight setting failed on attempt {attempt + 1}: {result[1]}")
+                            
+                    except Exception as e:
+                        logger.error(f"Error setting weights on attempt {attempt + 1}: {e}")
+                        
+                    if attempt < self.max_retries - 1:
+                        delay = self.retry_delay_base * (2 ** attempt)
+                        logger.info(f"Retrying in {delay} seconds...")
+                        await asyncio.sleep(delay)
                 else:
                     logger.error("All retry attempts failed. Skipping updates.")
+                    
             except Exception as e:
                 logger.error(f"Exception in update_validator_weights: {e}")
+                import traceback
+                logger.error(f"Traceback: {traceback.format_exc()}")
 
     async def verify_miners_loop(self):
         """Periodically verifies miners."""
@@ -273,10 +370,14 @@ class PolarisNode(BaseValidatorNeuron):
         while True:
             try:
                 logger.info("Starting process_miners_loop...")
-                miners= self.get_registered_miners()
+                
+                miners = self.get_registered_miners()
                 # Pass update_status_func (assuming self.update_miner_status exists)
-                results= await process_miners(miners=miners,tempo=self.tempo,max_score=self.max_allowed_weights)
+                # Alpha penalties are now applied within process_miners function
+                results = await process_miners(miners=miners, tempo=self.tempo, max_score=self.max_allowed_weights)
+                
                 await self.update_validator_weights(results)
+                
                 current_block = self.subtensor.block
                 blocks_since_last = current_block - self.last_weight_update_block
                 effective_rate_limit = max(self.tempo, self.weights_rate_limit)
@@ -312,7 +413,7 @@ class PolarisNode(BaseValidatorNeuron):
     async def forward(self):
         """Handles forward pass (placeholder)."""
         try:
-            await self.update_validator_weights({}, {}, {})
+            await self.update_validator_weights({})
         except Exception as e:
             logger.error(f"Error in forward: {e}")
 
@@ -326,8 +427,16 @@ class PolarisNode(BaseValidatorNeuron):
             logger.error(f"Error running validator: {e}")
 
 if __name__ == "__main__":
+    # Use the base neuron's config method which includes all Bittensor arguments
+    config = PolarisNode.config()
+    
+    # Test the wallet configuration
+    print(f"Wallet name: {config.wallet.name}")
+    print(f"Wallet hotkey: {config.wallet.hotkey}")
+    print(f"Netuid: {config.netuid}")
+    
     async def main():
-        async with PolarisNode() as validator:
+        async with PolarisNode(config=config) as validator:
             while True:
                 bt.logging.info(f"Validator running... {time.time()}")
                 await asyncio.sleep(300)
