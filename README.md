@@ -107,22 +107,6 @@ chmod +x entry_point.sh
 
 ---
 
-## 📚 **Documentation**
-
-### **Complete System Documentation**
-- **[REWARDING_MECHANISM_COMPREHENSIVE.md](./REWARDING_MECHANISM_COMPREHENSIVE.md)** - Complete rewarding mechanism
-  - Penalty system and burning mechanism
-  - Bonus calculations and special miner bonuses
-  - Monitoring, logging, and configuration
-
-### **Technical Implementation**
-- **[REWARD_MECHANISM_README.md](./REWARD_MECHANISM_README.md)** - Technical implementation details
-  - API functions and configuration parameters
-  - Error handling and performance optimization
-  - System architecture and core components
-
----
-
 ## ⚙️ **Configuration**
 
 ### **Key Parameters**
