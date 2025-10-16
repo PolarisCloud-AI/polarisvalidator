@@ -15,7 +15,7 @@
 
 ### **Key Features**
 - ✅ **Performance-Based Rewards** - Rewards tied to actual compute capability
-- ✅ **Penalty System** - 30% reduction for non-compliant resources (`allow_mining=false`)
+- ✅ **Penalty System** - 30% reduction for non-compliant resources (Those who did not allow mining)
 - ✅ **Multi-Layer Bonuses** - Uptime, container activity, and Alpha stake bonuses
 - ✅ **Quality Gates** - Strict PoW thresholds maintain network quality
 
@@ -98,17 +98,12 @@ chmod +x entry_point.sh
 - **Higher Uptime**: Better base scores (95-100% = +15% bonus)
 - **Active Containers**: More work = higher scores (5+ containers = +20% bonus)
 - **Alpha Stake**: Network participation bonuses (1000+ Alpha = +10% bonus)
-- **Compliance**: Ensure `allow_mining=true` to avoid 30% penalty
+- **Compliance**: Ensure you allow mining to avoid 30% penalty off your scores
 
-### **Expected Score Ranges**
-- **High Performance**: 2.5-4.0 × normalization factor
-- **Medium Performance**: 0.6-1.5 × normalization factor
-- **Low Performance**: **0 - completely excluded**
 
 ### **Penalty System**
-- **Non-compliant resources** (`allow_mining=false`) receive 30% score reduction
+- **Non-compliant resources** receive 30% score reduction for not allowing mining
 - **Penalties are burned** and redistributed to incentivize compliance
-- **Transparent tracking** of all penalty amounts
 
 ---
 
@@ -145,36 +140,12 @@ ALPHA_STAKE_MEDIUM_TIER = 1000  # Medium tier threshold
 
 ---
 
-## 🔧 **Troubleshooting**
-
-### **Common Issues**
-1. **Score Compression**: Check normalization parameters
-2. **Bonus Overwhelming**: Verify bonus multiplier calibration
-3. **Threshold Filtering**: Review SCORE_THRESHOLD setting
-4. **Performance Issues**: Monitor async processing efficiency
-
-### **Debug Commands**
-```python
-# Enable debug logging
-logger.setLevel(logging.DEBUG)
-
-# Monitor specific components
-logger.debug(f"Resource score calculation: uptime={uptime_percent:.1f}%, "
-            f"compute={compute_score:.2f}, containers={active_container_count}")
-```
-
----
 
 ## 🤝 **Support & Contributing**
 
 ### **Getting Help**
 - **Complete System**: [REWARDING_MECHANISM_COMPREHENSIVE.md](./REWARDING_MECHANISM_COMPREHENSIVE.md)
-- **Technical Issues**: [REWARD_MECHANISM_README.md](./REWARD_MECHANISM_README.md)
 
-### **Contributing**
-- **Open Issues**: [GitHub Repository](https://github.com/bigideaafrica/polarisvalidator)
-- **Submit PRs**: Pull requests welcome
-- **Community**: Join discussions and report bugs
 
 ---
 
