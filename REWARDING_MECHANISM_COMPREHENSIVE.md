@@ -84,22 +84,6 @@ Final Score = Base Score × Compute Multiplier × Bonus Multipliers
 
 ---
 
-## ⚠️ **Penalty System**
-
-### **Allow Mining Penalty**
-- **Trigger**: Resource has `allow_mining: false`
-- **Reduction**: 30% score reduction
-- **Formula**: `Penalized Score = Original Score × 0.7`
-- **Purpose**: Incentivize proper resource configuration
-
-### **Penalty Calculation**
-```python
-if not allow_mining:
-    original_score = resource_score
-    penalty_amount = original_score - (original_score * 0.7)
-    resource_score = resource_score * 0.7  # 30% reduction
-    total_penalty_amount += penalty_amount
-```
 
 ### **Penalty Tracking**
 - **Accumulation**: All penalties are summed across all resources
@@ -156,7 +140,7 @@ if not allow_mining:
 ## 🔥 **Penalty Burning System**
 
 ### **Penalty Collection**
-- **Source**: All penalties from `allow_mining: false` resources
+- **Source**: All penalties from resources where mining is not allowed
 - **Accumulation**: Sum of all penalty amounts across the network
 - **Tracking**: Real-time penalty amount calculation
 
@@ -166,38 +150,6 @@ if not allow_mining:
 - **Purpose**: Incentivize compliance and reward network participation
 - **Transparency**: All penalty amounts are logged and tracked
 
-### **Penalty Burning Process**
-```python
-if total_penalty_amount > 0:
-    # Find special miner in results
-    for miner_id, result in results.items():
-        miner_uid = result.get("miner_uid")
-        if miner_uid and str(miner_uid) == "SPECIAL_UID":
-            original_score = result.get("total_score", 0.0)
-            bonus_score = total_penalty_amount
-            result["total_score"] = original_score + bonus_score
-            break
-```
-
----
-
-## 💎 **Alpha Stake Bonuses**
-
-### **Stake Tier System**
-- **High Tier**: ≥5000 Alpha tokens → +20% bonus
-- **Medium Tier**: ≥1000 Alpha tokens → +10% bonus
-- **Low Tier**: <1000 Alpha tokens → No bonus
-
-### **Stake Bonus Calculation**
-```python
-if alpha_stake >= 5000:
-    bonus_multiplier = 1.20  # 20% bonus
-elif alpha_stake >= 1000:
-    bonus_multiplier = 1.10  # 10% bonus
-else:
-    bonus_multiplier = 1.00  # No bonus
-```
-
 ### **Stake Bonus Application**
 - **Additive**: Bonuses are added to existing scores
 - **Transparent**: All stake bonuses are logged
@@ -206,13 +158,6 @@ else:
 ---
 
 ## 🎯 **Special Miner Bonuses**
-
-### **Special Miner (UID 44)**
-- **Base Bonus**: 60% of total rewarded scores
-- **Penalty Bonus**: Additional bonus from penalty summation
-- **Additive System**: Penalty bonus added to base bonus
-- **Purpose**: Reward network participation and compliance
-
 
 ## ✅ **Quality Control**
 
@@ -233,56 +178,6 @@ else:
 - **Performance Tiers**: High, medium, and low performer categories
 - **Fairness Assessment**: Overall system fairness evaluation
 
----
-
-## 📊 **Monitoring & Logging**
-
-### **Detailed Logging**
-- **Resource Scoring**: Step-by-step score calculation
-- **Penalty Tracking**: Detailed penalty application and accumulation
-- **Bonus Application**: All bonus calculations and applications
-- **Final Scores**: Complete score breakdown and final values
-
-### **Performance Metrics**
-- **Processing Time**: Per-miner and total execution time
-- **Resource Counts**: Verified and filtered resource statistics
-- **Score Distribution**: Raw and normalized score ranges
-- **Bonus Impact**: Applied bonus multiplier statistics
-
-### **Transparency Features**
-- **Calculation Steps**: Detailed scoring breakdown
-- **Error Context**: Comprehensive error information
-- **Data Validation**: Input parameter verification
-- **Fallback Usage**: Alternative calculation tracking
-
----
-
-## ⚙️ **Configuration Parameters**
-
-### **Core Parameters**
-```python
-SCORE_THRESHOLD = 0.03  # Minimum PoW for participation
-ALLOW_MINING_PENALTY = 0.7  # 30% reduction for allow_mining=False
-ALPHA_STAKE_HIGH_TIER = 5000  # High tier threshold
-ALPHA_STAKE_MEDIUM_TIER = 1000  # Medium tier threshold
-```
-
-### **Bonus Multipliers**
-```python
-UPTIME_BONUS_HIGH = 1.15  # +15% for high uptime
-UPTIME_BONUS_MEDIUM = 1.10  # +10% for medium uptime
-UPTIME_BONUS_LOW = 1.05  # +5% for low uptime
-CONTAINER_BONUS_HIGH = 1.20  # +20% for high activity
-CONTAINER_BONUS_MEDIUM = 1.15  # +15% for medium activity
-CONTAINER_BONUS_LOW = 1.08  # +8% for low activity
-```
-
-### **Special Bonuses**
-```python
-UID_44_BONUS_PERCENTAGE = 0.60  # 60% bonus for special miner
-ALPHA_STAKE_BONUS_HIGH = 1.20  # +20% for high stake
-ALPHA_STAKE_BONUS_MEDIUM = 1.10  # +10% for medium stake
-```
 
 ---
 
@@ -301,13 +196,6 @@ ALPHA_STAKE_BONUS_MEDIUM = 1.10  # +10% for medium stake
 10. **Final Normalization**: Scale scores to final reward range
 11. **Weight Calculation**: Convert scores to network weights
 
-### **Error Handling**
-- **Graceful Degradation**: System continues with partial data
-- **Fallback Scoring**: Alternative methods when primary fails
-- **Silent Failures**: Non-critical errors don't interrupt processing
-- **Comprehensive Logging**: All errors and fallbacks are tracked
-
----
 
 ## 🎯 **Key Features Summary**
 
@@ -327,7 +215,6 @@ ALPHA_STAKE_BONUS_MEDIUM = 1.10  # +10% for medium stake
 - 30% reduction for non-compliant resources
 - Penalty accumulation and tracking
 - Penalty burning and redistribution
-- Transparent penalty logging
 
 ### **✅ Bonus System**
 - Uptime-based bonuses
@@ -335,28 +222,6 @@ ALPHA_STAKE_BONUS_MEDIUM = 1.10  # +10% for medium stake
 - Alpha stake bonuses
 - Special miner bonuses
 
-
----
-
-## 🚀 **System Benefits**
-
-### **For Miners**
-- **Clear Performance Metrics**: Understand exactly how rewards are calculated
-- **Fair Competition**: Performance-based rewards ensure fair competition
-- **Bonus Opportunities**: Multiple ways to earn additional rewards
-- **Quality Incentives**: Penalties encourage proper resource configuration
-
-### **For Network**
-- **Quality Assurance**: Strict thresholds maintain network quality
-- **Penalty Redistribution**: Penalties are burned and redistributed
-- **Transparent Operations**: All calculations are logged and verifiable
-- **Sustainable Growth**: Balanced system prevents reward inflation
-
-### **For Validators**
-- **Comprehensive Monitoring**: Detailed logging and metrics
-- **Error Handling**: Robust error handling and fallback mechanisms
-- **Performance Optimization**: Efficient processing and resource management
-- **Extensibility**: Modular design allows for future enhancements
 
 ---
 
