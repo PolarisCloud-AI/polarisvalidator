@@ -1,286 +1,157 @@
-# 🚀 **Polaris Cloud Validator (NETUID 49)**
+# 🚀 **Polaris Cloud Subnet (NETUID 49)**
 
-Welcome to the **Polaris Cloud Subnet** repository! This project is part of the decentralized AI ecosystem powered by **Bittensor**, where **miners** provide compute resources and **validators** ensure the integrity and reliability of the network through a sophisticated, fair, and transparent reward mechanism.
-
-## 🎯 **About Polaris Cloud Subnet**
+> **Decentralized AI compute network powered by Bittensor** - Miners provide compute resources, validators ensure network integrity through sophisticated reward mechanisms.
 
 ![subnetflow](https://github.com/user-attachments/assets/0f009ad7-2e41-4e0b-ab3c-64d0c146fdc7)
 
-The **Polaris Cloud Subnet** (NetUID 49) is designed to provide an efficient, secure, and decentralized platform for both **miners** and **validators**:
+---
 
-- **Miners** contribute compute resources, which are tracked and scored based on:
-  - **Compute Performance** (PoW score ≥ 0.03 required for participation)
-  - **Uptime Reliability** (availability and consistency)
-  - **Container Management** (active work being performed)
-  - **Network Contribution** (stake and participation)
+## 🎯 **What is Polaris Cloud?**
 
-- **Validators** ensure network security and reliability by:
-  - Maintaining ledger integrity
-  - Implementing fair reward distribution
-  - Enforcing quality control through performance thresholds
-  - Providing transparent scoring and bonus systems
+**Polaris Cloud Subnet** is a decentralized compute network where:
+- **Miners** contribute GPU/CPU resources and earn rewards based on performance
+- **Validators** maintain network security and distribute rewards fairly
+- **Quality Control** ensures only high-performance resources participate (PoW ≥ 0.03)
 
-> **🚨 CRITICAL**: The system implements a **strict performance threshold** where only miners with PoW ≥ 0.03 can participate. This ensures network quality while providing fair rewards.
+### **Key Features**
+- ✅ **Performance-Based Rewards** - Rewards tied to actual compute capability
+- ✅ **Penalty System** - 30% reduction for non-compliant resources (`allow_mining=false`)
+- ✅ **Multi-Layer Bonuses** - Uptime, container activity, and Alpha stake bonuses
+- ✅ **Quality Gates** - Strict PoW thresholds maintain network quality
 
-## 🏗️ **System Architecture & Reward Mechanism**
+---
 
-### **🎯 Core Philosophy**
-- **Fairness**: Rewards based on actual performance, not arbitrary factors
-- **Transparency**: Clear understanding of how rewards are calculated
-- **Quality Control**: Strict performance thresholds ensure network reliability
-- **Sustainability**: Balanced system that prevents reward inflation
+## 🏗️ **System Architecture**
 
-### **🚨 Performance Threshold System**
-- **PoW ≥ 0.03**: Required for ANY participation in the network
-- **PoW < 0.03**: **Completely excluded** - no rewards, no bonuses
-- **No exceptions**: Cannot buy rewards with stake alone
-- **Performance is the gatekeeper** for all network participation
+### **Reward Calculation**
+```
+Final Score = Base Score × Compute Multiplier × Bonus Multipliers
+```
 
-### **🔄 Multiplier-Based Scoring Architecture**
-The system uses a sophisticated scoring approach where:
-- **Base Score**: Uptime + Container management (reliability & activity)
-- **Compute Multiplier**: Raw PoW score as multiplier (specs/power)
-- **Final Score**: Base Score × Compute Multiplier × Bonuses
+**Base Score**: Uptime reliability + Container activity  
+**Compute Multiplier**: Raw PoW score (minimum 0.03 required)  
+**Bonuses**: Uptime (+5% to +15%), Container (+8% to +20%), Alpha Stake (+10% to +20%)
 
-### **🎁 Bonus Systems (Only for Qualified Miners)**
-- **Uptime Multipliers**: +5% to +15% for high availability
-- **Container Bonuses**: +8% to +20% for active work management
-- **Alpha Stake Bonuses**: +10% to +20% for network participation
+### **Penalty System**
+- **30% reduction** for resources that don't allow minning
+- **Penalty accumulation** across all non-compliant resources
+- **Penalty burning** - collected penalties redistributed to incentivize compliance
 
-## 📚 **Comprehensive Documentation**
+### **Quality Control**
+- **PoW ≥ 0.03**: Required for ANY participation
+- **PoW < 0.03**: Complete exclusion from rewards
+- **No exceptions**: Performance is the gatekeeper
 
-### **📖 Technical Implementation**
-- **[REWARD_MECHANISM_README.md](./REWARD_MECHANISM_README.md)** - Complete technical implementation guide
-  - System architecture and core components
-  - Detailed reward calculation formulas
-  - API functions and configuration parameters
-  - Error handling and performance optimization
+---
 
-### **👥 User-Friendly Guide**
-- **[REWARD_MECHANISM_OVERVIEW.md](./REWARD_MECHANISM_OVERVIEW.md)** - Simple explanation for users
-  - How rewards work in plain language
-  - Optimization tips and best practices
-  - Real-world examples and scenarios
-  - Troubleshooting common issues
+## 🚀 **Quick Start**
 
-### **🏗️ System Overview**
-- **[REWARD_MECHANISM_SUMMARY.md](./REWARD_MECHANISM_SUMMARY.md)** - High-level system summary
-  - Architecture diagrams and flow descriptions
-  - Configuration parameters and system behavior
-  - Performance metrics and monitoring
-  - Future enhancements and extensibility
+### **Prerequisites**
+- Python 3.8+
+- Docker (optional)
+- TAO tokens (minimum 1 TAO for registration)
 
-### **📊 Scoring Improvements**
-- **[SCORING_IMPROVEMENTS_SUMMARY.md](./SCORING_IMPROVEMENTS_SUMMARY.md)** - Recent system improvements
-  - Threshold system implementation
-  - Multiplier-based architecture changes
-  - Bonus calibration and optimization
-  - Performance and fairness metrics
-
-## 🎯 **Key System Features**
-
-### **✅ Quality Control**
-- **Performance Gate**: PoW ≥ 0.03 is the absolute requirement
-- **Resource Validation**: Must pass monitoring and authentication checks
-- **Hotkey Verification**: Ensures miner authenticity on the network
-- **Threshold Filtering**: Excludes resources with PoW < 0.03
-
-### **⚖️ Fair Reward Distribution**
-- **Performance-Based**: Rewards directly tied to compute capability
-- **Transparent Calculation**: Clear relationship between PoW and rewards
-- **Balanced Bonuses**: Enhancements that don't overwhelm base performance
-- **Sustainable System**: Prevents inflation while maintaining incentives
-
-### **🔍 Comprehensive Monitoring**
-- **Real-time Logging**: Detailed calculation breakdown and transparency
-- **Performance Metrics**: Processing time and resource statistics
-- **Score Distribution**: Raw and normalized score ranges
-- **Bonus Impact**: Applied bonus multiplier statistics
-
-## 💻 **System Requirements**
-
-To run a validator node on the **Polaris Cloud Subnet**, ensure your system meets the following requirements:
-
-- **Operating System**: Windows, macOS, or Linux
-- **RAM**: Minimum 8 GB
-- **CPU**: Modern multi-core processor (e.g., Intel i5 or AMD Ryzen 5)
-- **Python Version**: Python 3.8 or higher
-- **Docker**: Installed and running
-- **TAO Tokens**: At least **1 TAO token** (0.0005 TAO burned during registration)
-
-## 🚀 **Installation & Setup Guide**
-
-### **Step 1: Create Wallets**
-
-Create a **coldkey** and **hotkey** for the **subnet validator wallet**:
+### **1. Create Wallets**
 ```bash
 # Install bittensor CLI
 pip install bittensor-cli
 
-# Create a coldkey for the validator
+# Create validator wallet
 btcli wallet new_coldkey --wallet.name <your_wallet_name>
-
-# Create a hotkey for the validator
 btcli wallet new_hotkey --wallet.name <your_wallet_name> --wallet.hotkey default
 ```
 
-### **Step 2: Register Your Validator to the Subnet**
-
-Register your **subnet validator key** to the subnet:
+### **2. Register Validator**
 ```bash
 btcli subnet register --netuid 49 --subtensor.network finney --wallet.name <your_wallet_name> --wallet.hotkey default
 ```
 
-### **Step 3: Verify Wallet Registration**
+### **3. Run Validator**
 
-Check that your key has been successfully registered:
+**Option A: Direct Python**
 ```bash
-btcli wallet overview --wallet.name <your_wallet_name> --subtensor.network finney
-```
-
-## 🏃 **Running the Validator**
-
-Choose one of the following methods to run your validator:
-
-### **Method 1: From the Repository**
-
-#### **Step 1: Clone the Repository**
-```bash
-# Clone the Polaris Bittensor repository
 git clone https://github.com/bigideaafrica/polarisvalidator.git
-
-# Navigate into the project directory
 cd polarisvalidator
-```
-
-#### **Step 2: Install Requirements**
-Ensure you have **Python 3.8+** installed, then run:
-```bash
 pip install -r requirements.txt
-```
-
-#### **Step 3: Install the Package**
-```bash
 pip install -e .
+python neurons/validator.py --netuid 49 --wallet.name <validator-name> --wallet.hotkey <hot-key>
 ```
 
-#### **Step 4: Run the Validator**
-```bash 
-python neurons/validator.py --netuid 49 --wallet.name <validator-name> --wallet.hotkey <hot-key> --logging.debug
-```
-
-### **Method 2: Using Docker**
-
-#### **Step 1: Pull the Validator Docker Image**
+**Option B: Docker**
 ```bash
 docker pull bigideaafrica/polaris-validator
+docker run --rm -it -v ~/.bittensor:/root/.bittensor -e WALLET_NAME=<your_wallet_name> -e WALLET_HOTKEY=default bigideaafrica/polaris-validator
 ```
 
-#### **Step 2: Run the Validator Docker Container**
-
-**For macOS/Linux**:
+**Option C: Automated Script**
 ```bash
-docker run --rm -it -v ~/.bittensor:/root/.bittensor -e WALLET_NAME=<your_wallet_name> -e WALLET_HOTKEY=default  bigideaafrica/polaris-validator
+chmod +x entry_point.sh
+./entry_point.sh
 ```
 
-**For Windows (Command Prompt)**:
-```bash
-docker run --rm -it -v C:\Users\YourUsername\.bittensor:/root/.bittensor -e WALLET_NAME=<your_wallet_name> -e WALLET_HOTKEY=default bigideaafrica/polaris-validator
+---
+
+## 📊 **Reward System Details**
+
+### **For Miners**
+- **PoW ≥ 0.03**: Required for participation
+- **Higher Uptime**: Better base scores (95-100% = +15% bonus)
+- **Active Containers**: More work = higher scores (5+ containers = +20% bonus)
+- **Alpha Stake**: Network participation bonuses (1000+ Alpha = +10% bonus)
+- **Compliance**: Ensure `allow_mining=true` to avoid 30% penalty
+
+### **Expected Score Ranges**
+- **High Performance**: 2.5-4.0 × normalization factor
+- **Medium Performance**: 0.6-1.5 × normalization factor
+- **Low Performance**: **0 - completely excluded**
+
+### **Penalty System**
+- **Non-compliant resources** (`allow_mining=false`) receive 30% score reduction
+- **Penalties are burned** and redistributed to incentivize compliance
+- **Transparent tracking** of all penalty amounts
+
+---
+
+## 📚 **Documentation**
+
+### **Complete System Documentation**
+- **[REWARDING_MECHANISM_COMPREHENSIVE.md](./REWARDING_MECHANISM_COMPREHENSIVE.md)** - Complete rewarding mechanism
+  - Penalty system and burning mechanism
+  - Bonus calculations and special miner bonuses
+  - Monitoring, logging, and configuration
+
+### **Technical Implementation**
+- **[REWARD_MECHANISM_README.md](./REWARD_MECHANISM_README.md)** - Technical implementation details
+  - API functions and configuration parameters
+  - Error handling and performance optimization
+  - System architecture and core components
+
+---
+
+## ⚙️ **Configuration**
+
+### **Key Parameters**
+```python
+SCORE_THRESHOLD = 0.03  # Minimum PoW for participation
+ALLOW_MINING_PENALTY = 0.7  # 30% reduction for allow_mining=False
+ALPHA_STAKE_HIGH_TIER = 5000  # High tier threshold
+ALPHA_STAKE_MEDIUM_TIER = 1000  # Medium tier threshold
 ```
 
-**For Windows (PowerShell)**:
-```powershell
-docker run --rm -it -v ${HOME}/.bittensor:/root/.bittensor -e WALLET_NAME=<your_wallet_name> -e WALLET_HOTKEY=default   bigideaafrica/polaris-validator
-```
+### **Bonus Multipliers**
+- **Uptime**: 1.05x to 1.15x (5% to 15% bonus)
+- **Container**: 1.08x to 1.20x (8% to 20% bonus)
+- **Alpha Stake**: 1.10x to 1.20x (10% to 20% bonus)
 
-### **Method 3: Using the Automated Script**
+---
 
-For an easier setup, you can use our automated script:
-
-1. Download the `entry_point.sh` script from this repository
-2. Make it executable: `chmod +x entry_point.sh`
-3. Run it: `./entry_point.sh`
-
-The script will:
-- Detect your operating system
-- Ask for your wallet name and hotkey
-- Set up the correct path for your Bittensor wallets
-- Run the validator Docker image with the appropriate settings
-
-## 🛑 **Stopping the Validator**
-
-To stop your running validator node, press:
-```bash
-CTRL + C
-```
-
-## 📊 **Understanding the Reward System**
-
-### **🔍 How Rewards Are Calculated**
-
-1. **Performance Check**: Only miners with PoW ≥ 0.03 are considered
-2. **Base Scoring**: Uptime reliability + Container management
-3. **Compute Multiplication**: Raw PoW score acts as multiplier
-4. **Bonus Application**: Uptime, container, and stake bonuses
-5. **Score Normalization**: Scaling to 0-500 range with fair distribution
-
-### **🎯 What Miners Need to Know**
-
-- **PoW ≥ 0.03**: Required for any participation
-- **Uptime**: Higher availability = higher base scores
-- **Containers**: More active work = higher base scores
-- **Compute Power**: Higher specs = higher multipliers
-- **Stake**: Alpha tokens provide additional bonuses
-
-### **📈 Expected Score Ranges**
-
-- **High-Performance Miners**: 2.5-4.0 × normalization factor
-- **Medium-Performance Miners**: 0.6-1.5 × normalization factor
-- **Low-Performance Miners**: **0 - completely excluded**
-
-## 🔧 **Configuration & Customization**
-
-
-### **Bonus Calibration**
-- **Uptime Multipliers**: 1.05x to 1.15x (calibrated to prevent excessive bonuses)
-- **Container Bonuses**: 1.08x to 1.20x (balanced for fair distribution)
-- **Stake Bonuses**: 1.10x to 1.20x (enhancement without replacement)
-
-## 🚀 **Performance & Monitoring**
-
-### **Key Metrics**
-- **Processing Time**: Per-miner and total execution time
-- **Resource Counts**: Verified and filtered resource statistics
-- **Score Distribution**: Raw and normalized score ranges
-- **Bonus Impact**: Applied bonus multiplier statistics
-
-### **Debug Information**
-- **Calculation Steps**: Detailed scoring breakdown
-- **Error Context**: Comprehensive error information
-- **Data Validation**: Input parameter verification
-- **Fallback Usage**: Alternative calculation tracking
-
-## 🔮 **Future Enhancements**
-
-### **Planned Improvements**
-- **Dynamic Weighting**: Adaptive scoring based on network conditions
-- **Machine Learning**: Predictive performance modeling
-- **Advanced Analytics**: Real-time fairness metrics
-- **Performance Optimization**: Enhanced async processing
-
-### **Extensibility Features**
-- **Plugin Architecture**: Modular bonus system
-- **Configuration API**: Runtime parameter adjustment
-- **Custom Metrics**: User-defined scoring factors
-- **Integration Hooks**: External system connectivity
-
-## 🆘 **Troubleshooting**
+## 🔧 **Troubleshooting**
 
 ### **Common Issues**
 1. **Score Compression**: Check normalization parameters
 2. **Bonus Overwhelming**: Verify bonus multiplier calibration
 3. **Threshold Filtering**: Review SCORE_THRESHOLD setting
-4. **Performance Degradation**: Monitor async processing efficiency
+4. **Performance Issues**: Monitor async processing efficiency
 
 ### **Debug Commands**
 ```python
@@ -292,43 +163,41 @@ logger.debug(f"Resource score calculation: uptime={uptime_percent:.1f}%, "
             f"compute={compute_score:.2f}, containers={active_container_count}")
 ```
 
-## 🤝 **Support & Contributions**
+---
 
-We welcome contributions to the **Polaris Cloud Subnet**! If you encounter issues or have suggestions for improvements, feel free to:
-
-- **Open an Issue** on our [GitHub repository](https://github.com/bigideaafrica/polarisvalidator)
-- **Submit a Pull Request** with your improvements
-- **Join our community** discussions
-- **Report bugs** or performance issues
+## 🤝 **Support & Contributing**
 
 ### **Getting Help**
-- **Technical Issues**: Check the [REWARD_MECHANISM_README.md](./REWARD_MECHANISM_README.md)
-- **User Questions**: Refer to [REWARD_MECHANISM_OVERVIEW.md](./REWARD_MECHANISM_OVERVIEW.md)
-- **System Overview**: See [REWARD_MECHANISM_SUMMARY.md](./REWARD_MECHANISM_SUMMARY.md)
-- **Recent Changes**: Review [SCORING_IMPROVEMENTS_SUMMARY.md](./SCORING_IMPROVEMENTS_SUMMARY.md)
+- **Complete System**: [REWARDING_MECHANISM_COMPREHENSIVE.md](./REWARDING_MECHANISM_COMPREHENSIVE.md)
+- **Technical Issues**: [REWARD_MECHANISM_README.md](./REWARD_MECHANISM_README.md)
+
+### **Contributing**
+- **Open Issues**: [GitHub Repository](https://github.com/bigideaafrica/polarisvalidator)
+- **Submit PRs**: Pull requests welcome
+- **Community**: Join discussions and report bugs
+
+---
 
 ## 📄 **License**
 
 This project is licensed under the terms specified in the [LICENSE](./LICENSE) file.
 
+---
+
 ## 🏆 **System Status**
 
 **Current Version**: 2.1  
-**Last Updated**: 2025-08-12  
+**Last Updated**: 2025-10-15  
 **Status**: Production Ready ✅  
 **Maintainer**: Polaris Validator Team
 
 **Key Achievements**:
 - ✅ Strict PoW threshold for any participation
 - ✅ Multiplier-based scoring architecture
+- ✅ Penalty system with burning mechanism
 - ✅ Calibrated bonus systems
-- ✅ Improved score normalization
-- ✅ Enhanced logging and transparency
-- ✅ Robust error handling
-- ✅ Quality control mechanisms
+- ✅ Comprehensive monitoring and transparency
 
 ---
 
-**🎯 Quick Start**: For technical implementation, see [REWARD_MECHANISM_README.md](./REWARD_MECHANISM_README.md). For user understanding, see [REWARD_MECHANISM_OVERVIEW.md](./REWARD_MECHANISM_OVERVIEW.md).
-
-**🚀 Ready to Deploy**: The Polaris Validator provides a robust, fair, and sustainable reward mechanism that incentivizes quality network participation while maintaining transparency and reliability.
+**🎯 Ready to Deploy**: The Polaris Validator provides a robust, fair, and sustainable reward mechanism that incentivizes quality network participation while maintaining transparency and reliability.

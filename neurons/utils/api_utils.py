@@ -37,6 +37,7 @@ MAX_CONTAINERS = 20  # Increased from 10 to allow more containers
 SCORE_WEIGHT = 0.4  # Increased from 0.33 for better balance
 CONTAINER_BONUS_MULTIPLIER = 1.5  # Reduced from 2.0 for more balanced scoring
 MAX_SCORE = 500.0  # Maximum normalized score
+ALLOW_MINING_PENALTY = 0.7  # 30% reduction (0.7 multiplier) for resources with allow_mining=False
 
 # Uptime multiplier tiers for high uptime incentives (calibrated to prevent excessive bonuses)
 UPTIME_MULTIPLIER_TIERS = {
@@ -157,7 +158,7 @@ def calculate_fair_resource_score(
     Args:
         uptime_percent: Uptime percentage (0-100)
         scaled_compute_score: Raw compute performance score (PoW)
-        active_container_count: Number of running containers
+        active_container_count: Number of running containers and rented machines
         tempo: Block interval in seconds
         uptime_multiplier: Uptime-based bonus multiplier
         rented_machine_bonus: Rented machine bonus multiplier
@@ -536,7 +537,7 @@ def _sync_miners_data() -> None:
             "service-name": "miner_service",
             "Content-Type": "application/json"
         }
-        url =""
+        url ="xxxxxxxx"
         logger.info(f"📡 API Request: {url}")
         response = requests.get(url)
         response.raise_for_status()
@@ -640,6 +641,8 @@ def aggregate_rewards(results, uptime_rewards_dict):
         else:
             logging.warning(f"Miner ID {miner_id} not found in results. Skipping.")
 
+    
+
     return aggregated_rewards, cpu_gpu_breakdown
 
 async def reward_mechanism(
@@ -684,6 +687,9 @@ async def reward_mechanism(
         raise ValueError(f"Network must be one of {SUPPORTED_NETWORKS}")
 
     try:
+        # Track total penalty amounts from allow_mining=False resources
+        total_penalty_amount = 0.0
+        
         # Get cached miners data
         logger.info("📊 REWARD MECHANISM: Getting miners data for processing...")
         miners = _get_cached_miners_data()
@@ -857,7 +863,15 @@ async def reward_mechanism(
 
                 # Get resource type (CPU or GPU)
                 resource_type = resource_type_map.get(resource_id, "Unknown")
-                logger.info(f"Resource {resource_id}: type={resource_type}, POW={pog_score:.4f}")
+                
+                # Get allow_mining attribute from the original resource data
+                allow_mining = True  # Default to True if not found
+                for resource in compute_details:
+                    if str(resource.get("id")) == str(resource_id):
+                        allow_mining = resource.get("allow_mining", True)
+                        break
+                
+                logger.info(f"Resource {resource_id}: type={resource_type}, POW={pog_score:.4f}, allow_mining={allow_mining}")
                 
                 # Track if miner has CPU resources
                 if resource_type == "CPU":
@@ -957,6 +971,15 @@ async def reward_mechanism(
                         rented_machine_bonus=rented_machine_bonus
                     )
                     
+                    # Apply allow_mining penalty: 30% reduction if allow_mining is False
+                    if not allow_mining:
+                        original_score = resource_score
+                        penalty_amount = original_score - (original_score * ALLOW_MINING_PENALTY)
+                        total_penalty_amount += penalty_amount
+                        resource_score = resource_score * ALLOW_MINING_PENALTY  # 30% reduction
+                        penalty_percent = int((1 - ALLOW_MINING_PENALTY) * 100)
+                        logger.info(f"Resource {resource_id}: allow_mining=False, score reduced from {original_score:.2f} to {resource_score:.2f} (-{penalty_percent}%, penalty: {penalty_amount:.2f})")
+                    
                     # Add score to raw results (NO uptime rewards added to prevent double counting)
                     raw_results[miner_id]["total_raw_score"] += resource_score
                     
@@ -990,6 +1013,16 @@ async def reward_mechanism(
                     # Use fallback calculation if the main function fails
                     fallback_score = (uptime_percent / 100) * 40 + compute_score * 0.4 + min(active_container_count, MAX_CONTAINERS) * 0.2
                     fallback_score = fallback_score * (tempo / 3600) * uptime_multiplier * rented_machine_bonus
+                    
+                    # Apply allow_mining penalty: 30% reduction if allow_mining is False
+                    if not allow_mining:
+                        original_fallback_score = fallback_score
+                        penalty_amount = original_fallback_score - (original_fallback_score * ALLOW_MINING_PENALTY)
+                        total_penalty_amount += penalty_amount
+                        fallback_score = fallback_score * ALLOW_MINING_PENALTY  # 30% reduction
+                        penalty_percent = int((1 - ALLOW_MINING_PENALTY) * 100)
+                        logger.info(f"Resource {resource_id}: allow_mining=False, fallback score reduced from {original_fallback_score:.2f} to {fallback_score:.2f} (-{penalty_percent}%, penalty: {penalty_amount:.2f})")
+                    
                     raw_results[miner_id]["total_raw_score"] += fallback_score
                     
                     # Track fallback scores by type
@@ -1119,6 +1152,29 @@ async def reward_mechanism(
         else:
             logger.info("No results to apply Alpha-stake bonuses to")
 
+        # Apply penalty summation bonus to miner 44
+        if total_penalty_amount > 0:
+            logger.info(f"🎯 Total penalty amount from allow_mining=False resources: {total_penalty_amount:.2f}")
+            
+            # Find miner 44 in results
+            miner_44_found = False
+            for miner_id, result in results.items():
+                miner_uid = result.get("miner_uid")
+                if miner_uid and str(miner_uid) == "44":
+                    miner_44_found = True
+                    original_score = result.get("total_score", 0.0)
+                    bonus_score = total_penalty_amount
+                    result["total_score"] = original_score + bonus_score
+                    
+                    logger.info(f"🎯 Miner 44 bonus applied: {original_score:.2f} + {bonus_score:.2f} = {result['total_score']:.2f}")
+                    logger.info(f"🎯 Miner 44 received penalty summation bonus of {bonus_score:.2f} points")
+                    break
+            
+            if not miner_44_found:
+                logger.warning(f"🎯 Miner 44 not found in results, penalty amount {total_penalty_amount:.2f} not distributed")
+        else:
+            logger.info("🎯 No penalties from allow_mining=False resources, no bonus for miner 44")
+
         logger.info(f"Processed {len(results)} unique miner IDs")
         
         # Analyze scoring fairness
@@ -1193,7 +1249,7 @@ def update_miner_status(miner_id: str, status: str, percentage: float, reason: s
             "Content-Type": "application/json"
         }
     updated_at = datetime.utcnow()
-    url = f""
+    url = f"xxxxx"
     payload = {
         "status": status,
         "percentage": percentage,
@@ -1221,7 +1277,7 @@ def get_containers_for_miner(miner_id: str) -> List[str]:
             "Content-Type": "application/json"
         }
 
-        url = f""
+        url = f"xxxxxxx"
         response = requests.get(url, headers=headers)
         response.raise_for_status()
         return response.json().get("containers", [])
@@ -1251,7 +1307,7 @@ def update_container_payment_status(container_id: str) -> bool:
             "Content-Type": "application/json"
         }
 
-    url = f""
+    url = f"xxxxxxxxx"
     payload = {
         "fields": {
             "payment_status": "paid"
@@ -1451,7 +1507,7 @@ def _sync_containers_data() -> None:
         logger.info("🔄 CONTAINERS CACHE: Fetching fresh containers data from API...")
         
         # API endpoint - no headers needed as tested
-        url = ""
+        url = "xxxxxxxx"
         
         # Send GET request without headers for better performance
         response = requests.get(url, timeout=10)
@@ -1692,7 +1748,7 @@ def update_miner_compute_resource(
     try:
     
         # Construct the full URL
-        url = f""
+        url = f"xxxxxxxx"
 
         # Prepare headers
     

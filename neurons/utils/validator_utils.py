@@ -231,21 +231,21 @@ async def process_miners(
                                 logger.info(f"   Score: {total_score:.3f}")
                                 final_rewards[uid_str] = total_score
                         
-                        # Calculate 40% bonus from rewarded UIDs only (exclude penalized UIDs)
+                        # Calculate 60% bonus from rewarded UIDs only (exclude penalized UIDs)
                         total_rewarded_scores = sum(final_rewards.values())
-                        uid_44_40_percent_bonus = total_rewarded_scores * 0.40
+                        uid_44_60_percent_bonus = total_rewarded_scores * 0.60
                         logger.info(f"💰 UID 44 BONUS CALCULATION:")
                         logger.info(f"   Sum of rewarded UID scores: {total_rewarded_scores:.3f}")
-                        logger.info(f"   40% bonus for UID 44: {uid_44_40_percent_bonus:.3f}")
+                        logger.info(f"   60% bonus for UID 44: {uid_44_60_percent_bonus:.3f}")
                         
-                        # Calculate total for UID 44 (penalty losses + CPU scores + 40% bonus)
-                        uid_44_total = uid_44_penalty_collection + uid_44_cpu_collection + uid_44_40_percent_bonus
+                        # Calculate total for UID 44 (penalty losses + CPU scores + 60% bonus)
+                        uid_44_total = uid_44_penalty_collection + uid_44_cpu_collection + uid_44_60_percent_bonus
                         
                         logger.info("\n" + "=" * 80)
                         logger.info("🎁 UID 44 REWARD SUMMARY")
                         logger.info("=" * 80)
                         logger.info(f"  Total rewarded UID scores: {total_rewarded_scores:.3f}")
-                        logger.info(f"  40% bonus (from rewarded UIDs): {uid_44_40_percent_bonus:.3f}")
+                        logger.info(f"  60% bonus (from rewarded UIDs): {uid_44_60_percent_bonus:.3f}")
                         logger.info(f"  Penalty losses collected: {uid_44_penalty_collection:.3f}")
                         logger.info(f"  CPU scores collected: {uid_44_cpu_collection:.3f}")
                         logger.info(f"  TOTAL for UID 44: {uid_44_total:.3f}")
