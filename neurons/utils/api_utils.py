@@ -537,7 +537,7 @@ def _sync_miners_data() -> None:
             "service-name": "miner_service",
             "Content-Type": "application/json"
         }
-        url ="xxxxxxxx"
+        url = ""
         logger.info(f"📡 API Request: {url}")
         response = requests.get(url)
         response.raise_for_status()
@@ -587,6 +587,7 @@ def _sync_metagraph(netuid: int, network: str = "finney") -> None:
         logger.error(f"Error syncing metagraph for netuid {netuid}: {e}")
         _hotkey_to_uid_cache = {}
         _metagraph = None
+
 
 
 
@@ -640,8 +641,6 @@ def aggregate_rewards(results, uptime_rewards_dict):
             aggregated_rewards[miner_uid] += uptime_reward
         else:
             logging.warning(f"Miner ID {miner_id} not found in results. Skipping.")
-
-    
 
     return aggregated_rewards, cpu_gpu_breakdown
 
@@ -1249,7 +1248,7 @@ def update_miner_status(miner_id: str, status: str, percentage: float, reason: s
             "Content-Type": "application/json"
         }
     updated_at = datetime.utcnow()
-    url = f"xxxxx"
+    url = f""
     payload = {
         "status": status,
         "percentage": percentage,
@@ -1277,7 +1276,7 @@ def get_containers_for_miner(miner_id: str) -> List[str]:
             "Content-Type": "application/json"
         }
 
-        url = f"xxxxxxx"
+        url = f""
         response = requests.get(url, headers=headers)
         response.raise_for_status()
         return response.json().get("containers", [])
@@ -1307,7 +1306,7 @@ def update_container_payment_status(container_id: str) -> bool:
             "Content-Type": "application/json"
         }
 
-    url = f"xxxxxxxxx"
+    url = f""
     payload = {
         "fields": {
             "payment_status": "paid"
@@ -1507,7 +1506,7 @@ def _sync_containers_data() -> None:
         logger.info("🔄 CONTAINERS CACHE: Fetching fresh containers data from API...")
         
         # API endpoint - no headers needed as tested
-        url = "xxxxxxxx"
+        url = ""
         
         # Send GET request without headers for better performance
         response = requests.get(url, timeout=10)
@@ -1748,9 +1747,16 @@ def update_miner_compute_resource(
     try:
     
         # Construct the full URL
-        url = f"xxxxxxxx"
+        url = f""
 
         # Prepare headers
+        headers = {
+            "Connection": "keep-alive",
+            "x-api-key": "",
+            "service-key": "",
+            "service-name": "miner_service",
+            "Content-Type": "application/json"
+        }
     
         # Prepare payload
         payload = {
