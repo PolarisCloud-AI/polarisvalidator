@@ -65,7 +65,11 @@ def log_uptime(miner_uid: int, status: str, compute_score: float, uptime_reward:
                     data = json.load(f)
             else:
                 data = []
-                logger.warning(f"Log file for miner {miner_uid} missing or tampered. Starting fresh.")
+                # Only log as debug for new miners, warning only for tampered files
+                if os.path.exists(log_file):
+                    logger.warning(f"Log file for miner {miner_uid} tampered or corrupted. Starting fresh.")
+                else:
+                    logger.debug(f"Creating new log file for miner {miner_uid}.")
             data.append(log_entry)
             with open(log_file, "w") as f:
                 json.dump(data, f, indent=2)
@@ -77,22 +81,22 @@ def log_uptime(miner_uid: int, status: str, compute_score: float, uptime_reward:
 def calculate_uptime(miner_uid: str, current_block: int, lookback_blocks: int = 7200) -> float:
     log_file = os.path.join(log_dir, f"miner_{miner_uid}_uptime.json")
     if not os.path.exists(log_file) or not verify_log_integrity(log_file):
-        logger.info(f"No valid logs for miner {miner_uid}. Uptime: 0%")
+        logger.debug(f"No valid logs for miner {miner_uid}. Uptime: 0%")
         return 0.0
     try:
         with open(log_file, "r") as f:
             logs = json.load(f)
         if not logs:
-            logger.info(f"No logs for miner {miner_uid}. Uptime: 0%")
+            logger.debug(f"No logs for miner {miner_uid}. Uptime: 0%")
             return 0.0
         start_block = max(0, current_block - lookback_blocks)
         logs = [log for log in logs if log.get("block_number", 0) >= start_block]
         if not logs:
-            logger.info(f"No logs within {lookback_blocks} blocks for miner {miner_uid}. Uptime: 0%")
+            logger.debug(f"No logs within {lookback_blocks} blocks for miner {miner_uid}. Uptime: 0%")
             return 0.0
         active_blocks = sum(1 for log in logs if log["status"] in ["active", "initial_active"])
         uptime_percent = (active_blocks / len(logs)) * 100 if logs else 0.0
-        logger.info(f"Miner {miner_uid} uptime: {uptime_percent:.2f}% over {len(logs)} blocks")
+        logger.debug(f"Miner {miner_uid} uptime: {uptime_percent:.2f}% over {len(logs)} blocks")
         return uptime_percent
     except Exception as e:
         logger.error(f"Error calculating uptime for miner {miner_uid}: {e}")
@@ -113,14 +117,14 @@ def calculate_historical_uptime(miner_uid: str, current_block: int, lookback_blo
     """
     log_file = os.path.join(log_dir, f"miner_{miner_uid}_uptime.json")
     if not os.path.exists(log_file) or not verify_log_integrity(log_file):
-        logger.info(f"No valid logs for miner {miner_uid}. Historical uptime: 0%")
+        logger.debug(f"No valid logs for miner {miner_uid}. Historical uptime: 0%")
         return 0.0
     
     try:
         with open(log_file, "r") as f:
             logs = json.load(f)
         if not logs:
-            logger.info(f"No logs for miner {miner_uid}. Historical uptime: 0%")
+            logger.debug(f"No logs for miner {miner_uid}. Historical uptime: 0%")
             return 0.0
         
         # Use longer lookback for historical uptime
@@ -128,14 +132,14 @@ def calculate_historical_uptime(miner_uid: str, current_block: int, lookback_blo
         historical_logs = [log for log in logs if log.get("block_number", 0) >= start_block]
         
         if not historical_logs:
-            logger.info(f"No logs within {lookback_blocks} blocks for miner {miner_uid}. Historical uptime: 0%")
+            logger.debug(f"No logs within {lookback_blocks} blocks for miner {miner_uid}. Historical uptime: 0%")
             return 0.0
         
         # Calculate historical uptime
         active_blocks = sum(1 for log in historical_logs if log["status"] in ["active", "initial_active"])
         historical_uptime = (active_blocks / len(historical_logs)) * 100 if historical_logs else 0.0
         
-        logger.info(f"Miner {miner_uid} historical uptime: {historical_uptime:.2f}% over {len(historical_logs)} blocks")
+        logger.debug(f"Miner {miner_uid} historical uptime: {historical_uptime:.2f}% over {len(historical_logs)} blocks")
         return historical_uptime
         
     except Exception as e:
